@@ -145,7 +145,7 @@
     {
       "id": "classroom-personnel",
       "combined": true,
-      "description": "as of December 01, 2024:",
+      "description": "",
       "name": "Classroom Personnel",
       "sections": [
         {
@@ -379,7 +379,7 @@
     {
       "id": "related-service-providers",
       "combined": true,
-      "description": "as of December 01, 2024:",
+      "description": "",
       "name": "Related Service Providers",
       "sections": [
         {

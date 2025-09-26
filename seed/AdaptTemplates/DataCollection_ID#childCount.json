@@ -12,6 +12,10 @@
       "type": "select",
       "options": [
         {
+          "label": "2024-2025",
+          "value": "2025"
+        },
+        {
           "label": "2023-2024",
           "value": "2024"
         }
@@ -22,14 +26,14 @@
       "id": "reportingLevel",
       "label": "For what reporting level?",
       "options": [
-        {
-          "label": "SEA (State Education Agency)",
-          "value": "SEA (State Education Agency)"
-        },
-        {
-          "label": "LEA (Local Education Agency)",
-          "value": "LEA (Local Education Agency)"
-        }
+       {
+        "label": "SEA (State Education Agency)",
+        "value": "SEA (State Education Agency)"
+       },
+       {
+        "label": "LEA (Local Education Agency)",
+        "value": "LEA (Local Education Agency)"
+       }
       ],
       "required": true,
       "shortLabel": "Reporting level"

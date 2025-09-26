@@ -1,1412 +1,1495 @@
 {
-  "type": "ReportTemplate",
-  "id": "ID#assessment",
-  "title": "IDEA Assessment for State level",
-  "description": "This report represents the unduplicated number of children with disabilities grades 3 through high school who participated and received a valid score in the Reading/Language Arts and Mathematics state assessments.",
-  "metaTags": ["Part B", "Assessment"],
-  "reportingLevels": [
-    "SEA (State Education Agency)",
-    "LEA (Local Education Agency)",
-    "SCH (School)"
-  ],
-  "multiFile": false,
-  "pages": [
-    {
-      "id": "reading-lang-arts",
-      "combined": true,
-      "description": "as of December 01, 2022:",
-      "name": "Reading/Language Arts",
-      "sections": [
+    "type": "ReportTemplate",
+    "id": "ID#assessment",
+    "title": "IDEA Assessment for State level",
+    "description": "This report represents the unduplicated number of children with disabilities grades 3 through high school who participated and received a valid score in the Reading/Language Arts and Mathematics state assessments.",
+    "metaTags": [
+        "Part B",
+        "Assessment"
+    ],
+    "reportingLevels": ["SEA (State Education Agency)", "LEA (Local Education Agency)", "SCH (School)"],
+    "multiFile": false,
+    "pages": [
         {
-          "type": "quickSummary",
-          "content": {
-            "heading": {
-              "template": "In School Year {{dataView.fields.reportingYear}}, there were {{total}} children with disabilities in your State registered to participate in the Reading/Language Arts assessment.",
-              "variables": {
-                "total": {
-                  "args": [
-                    "assessmentcount",
-                    {
-                      "field": "ReportCode",
-                      "value": "c188"
-                    },
-                    {
-                      "field": "CategorySetCode",
-                      "value": "CSJ"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "REGPARTWACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "sum"
-                }
-              }
-            },
+            "id": "reading-lang-arts",
+            "combined": true,
+            "description": "",
+            "name": "Reading/Language Arts",
             "sections": [
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} of children were proficient and {{var_2}} of children were not proficient in the Reading/Language Arts assessment.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "extra": ["assessmenttypeadministered"],
-                          "field": "proficiencystatus",
-                          "value": "PROFICIENT"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c178"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmenttypeadministered",
-                          "value": [
-                            "HSREGASMTIWOACC",
-                            "HSREGASMTIWACC",
-                            "REGASSWOACC",
-                            "REGASSWACC",
-                            "ALTASSALTACH"
-                          ]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_2": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "extra": ["assessmenttypeadministered"],
-                          "field": "proficiencystatus",
-                          "value": "NOTPROFICIENT"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c178"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmenttypeadministered",
-                          "value": [
-                            "HSREGASMTIWOACC",
-                            "HSREGASMTIWACC",
-                            "REGASSWOACC",
-                            "REGASSWACC",
-                            "ALTASSALTACH"
-                          ]
-                        }
-                      ],
-                      "function": "percentage"
-                    }
-                  }
-                },
-                "title": "Proficiency"
-              },
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} of children participated in the regular assessment without accommodations, {{var_2}} of children participated in the regular assessment with accommodations, and {{var_3}} of children did not participate in the Reading/Language Arts assessment.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "REGPARTWOACC"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c188"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_2": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "REGPARTWACC"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c188"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_3": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "NPART"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c188"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    }
-                  }
-                },
-                "title": "Participation"
-              }
-            ]
-          },
-          "sectionLabel": "Quick Summary"
-        },
-        {
-          "type": "header",
-          "content": {
-            "body": "This section represents the number of children with disabilities grades 3 through high school who participated and received a valid score in the Reading Language Arts assessment according to assessment type, race/ethnicity, and grade level.",
-            "level": "h2",
-            "text": "Proficiency"
-          },
-          "sectionLabel": "Proficiency"
-        },
-        {
-          "type": "barChartGrouped",
-          "content": {
-            "allMap": "birth through 3 or older",
-            "chart": {
-              "dataRetrievalOperations": [
                 {
-                  "id": "rlaAchievementByAssessmentType",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
-                          "alias": "assessmenttypeadministered"
+                    "type": "quickSummary",
+                    "content": {
+                        "heading": {
+                            "template": "In School Year {{dataView.fields.reportingYear}}, there were {{total}} children with disabilities in your State registered to participate in the Reading/Language Arts assessment.",
+                            "variables": {
+                                "total": {
+                                    "args": [
+                                        "assessmentcount",
+                                        {
+                                            "field": "ReportCode",
+                                            "value": "c188"
+                                        },
+                                        {
+                                            "field": "CategorySetCode",
+                                            "value": "CSJ"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "REGPARTWACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "sum"
+                                }
+                            }
                         },
-                        "proficiencystatus"
-                      ]
+                        "sections": [
+                            {
+                                "body": {
+                                    "template": "In the reported data, {{var_1}} of children were proficient and {{var_2}} of children were not proficient in the Reading/Language Arts assessment.",
+                                    "variables": {
+                                        "var_1": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "extra": [
+                                                        "assessmenttypeadministered"
+                                                    ],
+                                                    "field": "proficiencystatus",
+                                                    "value": "PROFICIENT"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c178"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmenttypeadministered",
+                                                    "value": [
+                                                        "HSREGASMTIWOACC",
+                                                        "HSREGASMTIWACC",
+                                                        "REGASSWOACC",
+                                                        "REGASSWACC",
+                                                        "ALTASSALTACH"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_2": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "extra": [
+                                                        "assessmenttypeadministered"
+                                                    ],
+                                                    "field": "proficiencystatus",
+                                                    "value": "NOTPROFICIENT"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c178"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmenttypeadministered",
+                                                    "value": [
+                                                        "HSREGASMTIWOACC",
+                                                        "HSREGASMTIWACC",
+                                                        "REGASSWOACC",
+                                                        "REGASSWACC",
+                                                        "ALTASSALTACH"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        }
+                                    }
+                                },
+                                "title": "Proficiency"
+                            },
+                            {
+                                "body": {
+                                    "template": "In the reported data, {{var_1}} of children participated in the regular assessment without accommodations, {{var_2}} of children participated in the regular assessment with accommodations, and {{var_3}} of children did not participate in the Reading/Language Arts assessment.",
+                                    "variables": {
+                                        "var_1": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "REGPARTWOACC"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c188"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_2": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "REGPARTWACC"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c188"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_3": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "NPART"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c188"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        }
+                                    }
+                                },
+                                "title": "Participation"
+                            }
+                        ]
                     },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
-                          "alias": "assessmenttypeadministered"
-                        },
-                        "proficiencystatus"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c178"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Assessment Type",
-                    "filterOptions": [
-                      "REGASSWOACC",
-                      "REGASSWACC",
-                      "ALTASSALTACH"
-                    ]
-                  }
+                    "sectionLabel": "Quick Summary"
                 },
                 {
-                  "id": "rlaAchievementByRaceEthnicity",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
+                    "type": "header",
+                    "content": {
+                        "body": "This section represents the number of children with disabilities grades 3 through high school who participated and received a valid score in the Reading Language Arts assessment according to assessment type, race/ethnicity, and grade level.",
+                        "level": "h2",
+                        "text": "Proficiency"
                     },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": ["race", "proficiencystatus"]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": ["race", "proficiencystatus"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c178"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Race/Ethnicity",
-                    "filterOptions": [
-                      "MA",
-                      "MAN",
-                      "MAP",
-                      "MB",
-                      "MF",
-                      "MHN",
-                      "MHL",
-                      "MM",
-                      "MNP",
-                      "MPR",
-                      "MW"
-                    ]
-                  }
+                    "sectionLabel": "Proficiency"
                 },
                 {
-                  "id": "rlaAchievementByGradeLevel",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
+                    "type": "barChartGrouped",
+                    "content": {
+                        "allMap": "birth through 3 or older",
+                        "chart": {
+                            "dataRetrievalOperations": [
+                                {
+                                    "id": "rlaAchievementByAssessmentType",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
+                                                    "alias": "assessmenttypeadministered"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
+                                                    "alias": "assessmenttypeadministered"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c178"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Assessment Type",
+                                        "filterOptions": ["REGASSWOACC", "REGASSWACC", "ALTASSALTACH"]
+                                    }
+                                },
+                                {
+                                    "id": "rlaAchievementByRaceEthnicity",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                "race",
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                "race",
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c178"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Race/Ethnicity",
+                                        "filterOptions": ["MA", "MAN", "MAP", "MB", "MF", "MHN", "MHL", "MM", "MNP", "MPR", "MW"]
+                                    }
+                                },
+                                {
+                                    "id": "rlaAchievementByGradeLevel",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c178"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Grade Level",
+                                        "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
+                                    }
+                                }
+                            ],
+                            "filterBy": [
+                                "assessmenttypeadministered",
+                                "race",
+                                "gradelevel"
+                            ],
+                            "filterOn": "x",
+                            "groupBy": "proficiencystatus",
+                            "xAxisLabel": "proficiencystatus",
+                            "xAxisValue": "proficiencystatus",
+                            "yAxisLabel": "Child Count",
+                            "yAxisValue": "assessmentcount"
                         },
-                        "proficiencystatus"
-                      ]
+                        "dataLabel": "Setting",
+                        "descriptionTemplate": "There are {{proficient-total}} ({{proficient-percentage}}) of children who were proficient and {{notproficient-total}} ({{notproficient-percentage}}) of children who were not proficient in the Reading/Language Arts assessment.",
+                        "explainTemplate": "In the reported data, ({{proficient-percentage}}) of children were proficient and ({{notproficient-percentage}}) of children were not proficient in the Reading/Language Arts assessment.",
+                        "filterDescription": "Choose a section range to see specific data and insights.",
+                        "noDataDescription": "",
+                        "prefix": "",
+                        "title": "All Assessment Types, Race/Ethnicity, and Grade Levels"
                     },
-                    {
-                      "type": "number",
-                      "field": "limit"
+                    "sectionLabel": "Achievement Chart"
+                },
+                {
+                    "type": "header",
+                    "content": {
+                        "body": "This section represents the number of children with disabilities grades 3 through high school who were enrolled to participate in the Mathematics assessment according to race/ethnicity, and grade level.",
+                        "level": "h2",
+                        "text": "Participation"
                     },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END"
+                    "sectionLabel": "Participation"
+                },
+                {
+                    "type": "barChartGrouped",
+                    "content": {
+                        "allMap": "birth through 3 or older",
+                        "chart": {
+                            "dataRetrievalOperations": [
+                                {
+                                    "id": "rlaParticipationByRaceEthnicity",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                "race",
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                "race",
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c188"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "REGPARTWACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Race/Ethnicity",
+                                        "filterOptions": ["MA", "MAN", "MAP", "MB", "MF", "MHN", "MHL", "MM", "MNP", "MPR", "MW"]
+                                    }
+                                },
+                                {
+                                    "id": "rlaParticipationByGradeLevel",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c188"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "REGPARTWACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Grade Level",
+                                        "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
+                                    }
+                                }
+                            ],
+                            "filterBy": [
+                                "race",
+                                "gradelevel"
+                            ],
+                            "filterOn": "x",
+                            "groupBy": "assessmentregistrationparticipationindicator",
+                            "xAxisLabel": "assessmentregistrationparticipationindicator",
+                            "xAxisValue": "assessmentregistrationparticipationindicator",
+                            "yAxisLabel": "Child Count",
+                            "yAxisValue": "assessmentcount"
                         },
-                        "proficiencystatus"
-                      ]
+                        "dataLabel": "Setting",
+                        "descriptionTemplate": "There are {{REGPARTWOACC-total}} ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, {{REGPARTWACC-total}} ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, {{NPART-total}} ({{NPART-percentage}}) of children did not participate, {{PARTELP-total}} ({{PARTELP-percentage}}) of children participated in the English language proficiency assessment, and {{MEDEXEMPT-total}} ({{MEDEXEMPT-percentage}}) of children had medical exemption in the Reading/Language Arts assessment.",
+                        "explainTemplate": "In the reported data, ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, and ({{NPART-percentage}}) of children did not participate in the Reading/Language Arts assessment.",
+                        "filterDescription": "Choose a section range to see specific data and insights.",
+                        "noDataDescription": "",
+                        "prefix": "ages",
+                        "title": "All Race/Ethnicity, and Grade Levels"
                     },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c178"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Grade Level",
-                    "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
-                  }
+                    "sectionLabel": "Participation Chart"
                 }
-              ],
-              "filterBy": ["assessmenttypeadministered", "race", "gradelevel"],
-              "filterOn": "x",
-              "groupBy": "proficiencystatus",
-              "xAxisLabel": "proficiencystatus",
-              "xAxisValue": "proficiencystatus",
-              "yAxisLabel": "Child Count",
-              "yAxisValue": "assessmentcount"
-            },
-            "dataLabel": "Setting",
-            "descriptionTemplate": "There are {{proficient-total}} ({{proficient-percentage}}) of children who were proficient and {{notproficient-total}} ({{notproficient-percentage}}) of children who were not proficient in the Reading/Language Arts assessment.",
-            "explainTemplate": "In the reported data, ({{proficient-percentage}}) of children were proficient and ({{notproficient-percentage}}) of children were not proficient in the Reading/Language Arts assessment.",
-            "filterDescription": "Choose a section range to see specific data and insights.",
-            "noDataDescription": "",
-            "prefix": "",
-            "title": "All Assessment Types, Race/Ethnicity, and Grade Levels"
-          },
-          "sectionLabel": "Achievement Chart"
+            ],
+            "title": "Reading/Language Arts"
         },
         {
-          "type": "header",
-          "content": {
-            "body": "This section represents the number of children with disabilities grades 3 through high school who were enrolled to participate in the Mathematics assessment according to race/ethnicity, and grade level.",
-            "level": "h2",
-            "text": "Participation"
-          },
-          "sectionLabel": "Participation"
-        },
-        {
-          "type": "barChartGrouped",
-          "content": {
-            "allMap": "birth through 3 or older",
-            "chart": {
-              "dataRetrievalOperations": [
-                {
-                  "id": "rlaParticipationByRaceEthnicity",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        "race",
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        "race",
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c188"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "REGPARTWACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Race/Ethnicity",
-                    "filterOptions": [
-                      "MA",
-                      "MAN",
-                      "MAP",
-                      "MB",
-                      "MF",
-                      "MHN",
-                      "MHL",
-                      "MM",
-                      "MNP",
-                      "MPR",
-                      "MW"
-                    ]
-                  }
-                },
-                {
-                  "id": "rlaParticipationByGradeLevel",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
-                        },
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
-                        },
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c188"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "REGPARTWACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Grade Level",
-                    "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
-                  }
-                }
-              ],
-              "filterBy": ["race", "gradelevel"],
-              "filterOn": "x",
-              "groupBy": "assessmentregistrationparticipationindicator",
-              "xAxisLabel": "assessmentregistrationparticipationindicator",
-              "xAxisValue": "assessmentregistrationparticipationindicator",
-              "yAxisLabel": "Child Count",
-              "yAxisValue": "assessmentcount"
-            },
-            "dataLabel": "Setting",
-            "descriptionTemplate": "There are {{REGPARTWOACC-total}} ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, {{REGPARTWACC-total}} ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, {{NPART-total}} ({{NPART-percentage}}) of children did not participate, {{PARTELP-total}} ({{PARTELP-percentage}}) of children participated in the English language proficiency assessment, and {{MEDEXEMPT-total}} ({{MEDEXEMPT-percentage}}) of children had medical exemption in the Reading/Language Arts assessment.",
-            "explainTemplate": "In the reported data, ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, and ({{NPART-percentage}}) of children did not participate in the Reading/Language Arts assessment.",
-            "filterDescription": "Choose a section range to see specific data and insights.",
-            "noDataDescription": "",
-            "prefix": "ages",
-            "title": "All Race/Ethnicity, and Grade Levels"
-          },
-          "sectionLabel": "Participation Chart"
-        }
-      ],
-      "title": "Reading/Language Arts"
-    },
-    {
-      "id": "mathematics",
-      "combined": true,
-      "description": "as of December 01, 2022:",
-      "name": "Mathematics",
-      "sections": [
-        {
-          "type": "quickSummary",
-          "content": {
-            "heading": {
-              "template": "In School Year {{dataView.fields.reportingYear}} there were {{total}} children with disabilities in your State registered to participate in the Mathematics assessment.",
-              "variables": {
-                "total": {
-                  "args": [
-                    "assessmentcount",
-                    {
-                      "field": "ReportCode",
-                      "value": "c185"
-                    },
-                    {
-                      "field": "CategorySetCode",
-                      "value": "CSJ"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "REGPARTWACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "sum"
-                }
-              }
-            },
+            "id": "mathematics",
+            "combined": true,
+            "description": "",
+            "name": "Mathematics",
             "sections": [
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} of children were proficient and {{var_2}} of children were not proficient in the Mathematics assessment.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "extra": ["assessmenttypeadministered"],
-                          "field": "proficiencystatus",
-                          "value": "PROFICIENT"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c175"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmenttypeadministered",
-                          "value": [
-                            "HSREGASMTIWOACC",
-                            "HSREGASMTIWACC",
-                            "REGASSWOACC",
-                            "REGASSWACC",
-                            "ALTASSALTACH"
-                          ]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_2": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "extra": ["assessmenttypeadministered"],
-                          "field": "proficiencystatus",
-                          "value": "NOTPROFICIENT"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c175"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmenttypeadministered",
-                          "value": [
-                            "HSREGASMTIWOACC",
-                            "HSREGASMTIWACC",
-                            "REGASSWOACC",
-                            "REGASSWACC",
-                            "ALTASSALTACH"
-                          ]
-                        }
-                      ],
-                      "function": "percentage"
-                    }
-                  }
-                },
-                "title": "Proficiency"
-              },
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} of children participated in the regular assessment without accommodations, {{var_2}} of children participated in the regular assessment with accommodations, and {{var_3}} of children did not participate in the Mathematics assessment.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "REGPARTWOACC"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c185"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_2": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "REGPARTWACC"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c185"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    },
-                    "var_3": {
-                      "args": [
-                        "assessmentcount",
-                        {
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": "NPART"
-                        },
-                        {
-                          "field": "ReportCode",
-                          "value": "c185"
-                        },
-                        {
-                          "field": "CategorySetCode",
-                          "value": "CSJ"
-                        },
-                        {
-                          "type": "string",
-                          "array": true,
-                          "field": "assessmentregistrationparticipationindicator",
-                          "value": ["REGPARTWOACC", "REGPARTWACC", "NPART"]
-                        }
-                      ],
-                      "function": "percentage"
-                    }
-                  }
-                },
-                "title": "Participation"
-              }
-            ]
-          },
-          "sectionLabel": "Quick Summary"
-        },
-        {
-          "type": "header",
-          "content": {
-            "body": "This section represents the number of children with disabilities grades 3 through high school who participated and received a valid score in the Mathematics assessment according to assessment type, race/ethnicity, and grade level.",
-            "level": "h2",
-            "text": "Proficiency"
-          },
-          "sectionLabel": "Proficiency"
-        },
-        {
-          "type": "barChartGrouped",
-          "content": {
-            "allMap": "birth through 3 or older",
-            "chart": {
-              "dataRetrievalOperations": [
                 {
-                  "id": "mathAchievementChartByAssessmentType",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
-                          "alias": "assessmenttypeadministered"
+                    "type": "quickSummary",
+                    "content": {
+                        "heading": {
+                            "template": "In School Year {{dataView.fields.reportingYear}} there were {{total}} children with disabilities in your State registered to participate in the Mathematics assessment.",
+                            "variables": {
+                                "total": {
+                                    "args": [
+                                        "assessmentcount",
+                                        {
+                                            "field": "ReportCode",
+                                            "value": "c185"
+                                        },
+                                        {
+                                            "field": "CategorySetCode",
+                                            "value": "CSJ"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "REGPARTWACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "sum"
+                                }
+                            }
                         },
-                        "proficiencystatus"
-                      ]
+                        "sections": [
+                            {
+                                "body": {
+                                    "template": "In the reported data, {{var_1}} of children were proficient and {{var_2}} of children were not proficient in the Mathematics assessment.",
+                                    "variables": {
+                                        "var_1": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "extra": [
+                                                        "assessmenttypeadministered"
+                                                    ],
+                                                    "field": "proficiencystatus",
+                                                    "value": "PROFICIENT"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c175"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmenttypeadministered",
+                                                    "value": [
+                                                        "HSREGASMTIWOACC",
+                                                        "HSREGASMTIWACC",
+                                                        "REGASSWOACC",
+                                                        "REGASSWACC",
+                                                        "ALTASSALTACH"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_2": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "extra": [
+                                                        "assessmenttypeadministered"
+                                                    ],
+                                                    "field": "proficiencystatus",
+                                                    "value": "NOTPROFICIENT"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c175"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmenttypeadministered",
+                                                    "value": [
+                                                        "HSREGASMTIWOACC",
+                                                        "HSREGASMTIWACC",
+                                                        "REGASSWOACC",
+                                                        "REGASSWACC",
+                                                        "ALTASSALTACH"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        }
+                                    }
+                                },
+                                "title": "Proficiency"
+                            },
+                            {
+                                "body": {
+                                    "template": "In the reported data, {{var_1}} of children participated in the regular assessment without accommodations, {{var_2}} of children participated in the regular assessment with accommodations, and {{var_3}} of children did not participate in the Mathematics assessment.",
+                                    "variables": {
+                                        "var_1": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "REGPARTWOACC"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c185"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_2": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "REGPARTWACC"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c185"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        },
+                                        "var_3": {
+                                            "args": [
+                                                "assessmentcount",
+                                                {
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": "NPART"
+                                                },
+                                                {
+                                                    "field": "ReportCode",
+                                                    "value": "c185"
+                                                },
+                                                {
+                                                    "field": "CategorySetCode",
+                                                    "value": "CSJ"
+                                                },
+                                                {
+                                                    "type": "string",
+                                                    "array": true,
+                                                    "field": "assessmentregistrationparticipationindicator",
+                                                    "value": [
+                                                        "REGPARTWOACC",
+                                                        "REGPARTWACC",
+                                                        "NPART"
+                                                    ]
+                                                }
+                                            ],
+                                            "function": "percentage"
+                                        }
+                                    }
+                                },
+                                "title": "Participation"
+                            }
+                        ]
                     },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
-                          "alias": "assessmenttypeadministered"
-                        },
-                        "proficiencystatus"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c175"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Assessment Type",
-                    "filterOptions": [
-                      "REGASSWOACC",
-                      "REGASSWACC",
-                      "ALTASSALTACH"
-                    ]
-                  }
+                    "sectionLabel": "Quick Summary"
                 },
                 {
-                  "id": "mathAchievementByRaceEthnicity",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
+                    "type": "header",
+                    "content": {
+                        "body": "This section represents the number of children with disabilities grades 3 through high school who participated and received a valid score in the Mathematics assessment according to assessment type, race/ethnicity, and grade level.",
+                        "level": "h2",
+                        "text": "Proficiency"
                     },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": ["race", "proficiencystatus"]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": ["race", "proficiencystatus"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c175"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Race/Ethnicity",
-                    "filterOptions": [
-                      "MA",
-                      "MAN",
-                      "MAP",
-                      "MB",
-                      "MF",
-                      "MHN",
-                      "MHL",
-                      "MM",
-                      "MNP",
-                      "MPR",
-                      "MW"
-                    ]
-                  }
+                    "sectionLabel": "Proficiency"
                 },
                 {
-                  "id": "mathAchievementByGradeLevel",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
+                    "type": "barChartGrouped",
+                    "content": {
+                        "allMap": "birth through 3 or older",
+                        "chart": {
+                            "dataRetrievalOperations": [
+                                {
+                                    "id": "mathAchievementChartByAssessmentType",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
+                                                    "alias": "assessmenttypeadministered"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmenttypeadministered IN ('HSREGASMTIWOACC') THEN 'REGASSWOACC' WHEN assessmenttypeadministered in ('HSREGASMTIWACC') THEN 'REGASSWACC' ELSE assessmenttypeadministered END",
+                                                    "alias": "assessmenttypeadministered"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c175"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Assessment Type",
+                                        "filterOptions": ["REGASSWOACC", "REGASSWACC", "ALTASSALTACH"]
+                                    }
+                                },
+                                {
+                                    "id": "mathAchievementByRaceEthnicity",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                "race",
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                "race",
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c175"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Race/Ethnicity",
+                                        "filterOptions": ["MA", "MAN", "MAP", "MB", "MF", "MHN", "MHL", "MM", "MNP", "MPR", "MW"]
+                                    }
+                                },
+                                {
+                                    "id": "mathAchievementByGradeLevel",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                "proficiencystatus"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c175"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmenttypeadministered",
+                                            "value": [
+                                                "HSREGASMTIWOACC",
+                                                "HSREGASMTIWACC",
+                                                "REGASSWOACC",
+                                                "REGASSWACC",
+                                                "ALTASSALTACH"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Grade Level",
+                                        "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
+                                    }
+                                }
+                            ],
+                            "filterBy": [
+                                "assessmenttypeadministered",
+                                "race",
+                                "gradelevel"
+                            ],
+                            "filterOn": "x",
+                            "groupBy": "proficiencystatus",
+                            "xAxisLabel": "proficiencystatus",
+                            "xAxisValue": "proficiencystatus",
+                            "yAxisLabel": "Child Count",
+                            "yAxisValue": "assessmentcount"
                         },
-                        "proficiencystatus"
-                      ]
+                        "dataLabel": "Setting",
+                        "descriptionTemplate": "There are {{proficient-total}} ({{proficient-percentage}}) of children who were proficient and {{notproficient-total}} ({{notproficient-percentage}}) of children who were not proficient in the Mathematics assessment.",
+                        "explainTemplate": "In the reported data, ({{proficient-percentage}}) of children were proficient and ({{notproficient-percentage}}) of children were not proficient in the Mathematics assessment.",
+                        "filterDescription": "Choose a section range to see specific data and insights.",
+                        "noDataDescription": "",
+                        "prefix": "ages",
+                        "title": "All Assessment Types, Race/Ethnicity, and Grade Levels"
                     },
-                    {
-                      "type": "number",
-                      "field": "limit"
+                    "sectionLabel": "Achievement Chart"
+                },
+                {
+                    "type": "header",
+                    "content": {
+                        "body": "This section represents the number of children with disabilities grades 3 through high school who were enrolled to participate in the Mathematics assessment according to race/ethnicity, and grade level.",
+                        "level": "h2",
+                        "text": "Participation"
                     },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
+                    "sectionLabel": "Participation"
+                },
+                {
+                    "type": "barChartGrouped",
+                    "content": {
+                        "allMap": "birth through 3 or older",
+                        "chart": {
+                            "dataRetrievalOperations": [
+                                {
+                                    "id": "mathParticipationByRaceEthnicity",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                "race",
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                "race",
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c185"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "REGPARTWACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Race/Ethnicity",
+                                        "filterOptions": ["MA", "MAN", "MAP", "MB", "MF", "MHN", "MHL", "MM", "MNP", "MPR", "MW"]
+                                    }
+                                },
+                                {
+                                    "id": "mathParticipationByGradeLevel",
+                                    "arguments": [
+                                        {
+                                            "type": "string",
+                                            "field": "func",
+                                            "value": "sum"
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "columns",
+                                            "value": [
+                                                "assessmentcount"
+                                            ]
+                                        },
+                                        {
+                                            "array": true,
+                                            "field": "selectColumns",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "number",
+                                            "field": "limit"
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "order",
+                                            "value": [
+                                                "assessmentcount desc"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "groupby",
+                                            "value": [
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
+                                                    "alias": "gradelevel"
+                                                },
+                                                {
+                                                    "sql": true,
+                                                    "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC'  ELSE assessmentregistrationparticipationindicator END",
+                                                    "alias": "assessmentregistrationparticipationindicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "ReportCode",
+                                            "value": [
+                                                "c185"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "CategorySetCode",
+                                            "value": [
+                                                "CSJ"
+                                            ]
+                                        },
+                                        {
+                                            "type": "string",
+                                            "array": true,
+                                            "field": "assessmentregistrationparticipationindicator",
+                                            "value": [
+                                                "REGPARTWOACC",
+                                                "PHSRGASMIWOACC",
+                                                "PHSRGASMIWACC",
+                                                "REGPARTWACC",
+                                                "ALTPARTALTACH",
+                                                "PARTELP",
+                                                "MEDEXEMPT",
+                                                "NPART"
+                                            ]
+                                        }
+                                    ],
+                                    "function": "GROUPBY",
+                                    "metadata": {
+                                        "sectionName": "Grade Level",
+                                        "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
+                                    }
+                                }
+                            ],
+                            "filterBy": [
+                                "race",
+                                "gradelevel"
+                            ],
+                            "filterOn": "x",
+                            "groupBy": "assessmentregistrationparticipationindicator",
+                            "xAxisLabel": "assessmentregistrationparticipationindicator",
+                            "xAxisValue": "assessmentregistrationparticipationindicator",
+                            "yAxisLabel": "Child Count",
+                            "yAxisValue": "assessmentcount"
                         },
-                        "proficiencystatus"
-                      ]
+                        "dataLabel": "Setting",
+                        "descriptionTemplate": "There are {{REGPARTWOACC-total}} ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, {{REGPARTWACC-total}} ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, {{NPART-total}} ({{NPART-percentage}}) of children did not participate, and {{MEDEXEMPT-total}} ({{MEDEXEMPT-percentage}}) of children had medical exemption in the Mathematics assessment.",
+                        "explainTemplate": "In the reported data, ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, and ({{NPART-percentage}}) of children did not participate in the Mathematics assessment.",
+                        "filterDescription": "Choose a section range to see specific data and insights.",
+                        "noDataDescription": "",
+                        "prefix": "ages",
+                        "title": "All Race/Ethnicity, and Grade Levels"
                     },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c175"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmenttypeadministered",
-                      "value": [
-                        "HSREGASMTIWOACC",
-                        "HSREGASMTIWACC",
-                        "REGASSWOACC",
-                        "REGASSWACC",
-                        "ALTASSALTACH"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Grade Level",
-                    "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
-                  }
+                    "sectionLabel": "Participation Chart"
                 }
-              ],
-              "filterBy": ["assessmenttypeadministered", "race", "gradelevel"],
-              "filterOn": "x",
-              "groupBy": "proficiencystatus",
-              "xAxisLabel": "proficiencystatus",
-              "xAxisValue": "proficiencystatus",
-              "yAxisLabel": "Child Count",
-              "yAxisValue": "assessmentcount"
-            },
-            "dataLabel": "Setting",
-            "descriptionTemplate": "There are {{proficient-total}} ({{proficient-percentage}}) of children who were proficient and {{notproficient-total}} ({{notproficient-percentage}}) of children who were not proficient in the Mathematics assessment.",
-            "explainTemplate": "In the reported data, ({{proficient-percentage}}) of children were proficient and ({{notproficient-percentage}}) of children were not proficient in the Mathematics assessment.",
-            "filterDescription": "Choose a section range to see specific data and insights.",
-            "noDataDescription": "",
-            "prefix": "ages",
-            "title": "All Assessment Types, Race/Ethnicity, and Grade Levels"
-          },
-          "sectionLabel": "Achievement Chart"
-        },
-        {
-          "type": "header",
-          "content": {
-            "body": "This section represents the number of children with disabilities grades 3 through high school who were enrolled to participate in the Mathematics assessment according to race/ethnicity, and grade level.",
-            "level": "h2",
-            "text": "Participation"
-          },
-          "sectionLabel": "Participation"
-        },
-        {
-          "type": "barChartGrouped",
-          "content": {
-            "allMap": "birth through 3 or older",
-            "chart": {
-              "dataRetrievalOperations": [
-                {
-                  "id": "mathParticipationByRaceEthnicity",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        "race",
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        "race",
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c185"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "REGPARTWACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Race/Ethnicity",
-                    "filterOptions": [
-                      "MA",
-                      "MAN",
-                      "MAP",
-                      "MB",
-                      "MF",
-                      "MHN",
-                      "MHL",
-                      "MM",
-                      "MNP",
-                      "MPR",
-                      "MW"
-                    ]
-                  }
-                },
-                {
-                  "id": "mathParticipationByGradeLevel",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["assessmentcount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
-                        },
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC' ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["assessmentcount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": [
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN gradelevel IN ('09', '10', '11', '12') THEN 'HS' ELSE gradelevel END",
-                          "alias": "gradelevel"
-                        },
-                        {
-                          "sql": true,
-                          "statement": "CASE WHEN assessmentregistrationparticipationindicator IN ('PHSRGASMIWOACC') THEN 'REGPARTWOACC' WHEN assessmentregistrationparticipationindicator in ('PHSRGASMIWACC') THEN 'REGPARTWACC'  ELSE assessmentregistrationparticipationindicator END",
-                          "alias": "assessmentregistrationparticipationindicator"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "ReportCode",
-                      "value": ["c185"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "CategorySetCode",
-                      "value": ["CSJ"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "assessmentregistrationparticipationindicator",
-                      "value": [
-                        "REGPARTWOACC",
-                        "PHSRGASMIWOACC",
-                        "PHSRGASMIWACC",
-                        "REGPARTWACC",
-                        "ALTPARTALTACH",
-                        "PARTELP",
-                        "MEDEXEMPT",
-                        "NPART"
-                      ]
-                    }
-                  ],
-                  "function": "GROUPBY",
-                  "metadata": {
-                    "sectionName": "Grade Level",
-                    "filterOptions": ["03", "04", "05", "06", "07", "08", "HS"]
-                  }
-                }
-              ],
-              "filterBy": ["race", "gradelevel"],
-              "filterOn": "x",
-              "groupBy": "assessmentregistrationparticipationindicator",
-              "xAxisLabel": "assessmentregistrationparticipationindicator",
-              "xAxisValue": "assessmentregistrationparticipationindicator",
-              "yAxisLabel": "Child Count",
-              "yAxisValue": "assessmentcount"
-            },
-            "dataLabel": "Setting",
-            "descriptionTemplate": "There are {{REGPARTWOACC-total}} ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, {{REGPARTWACC-total}} ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, {{NPART-total}} ({{NPART-percentage}}) of children did not participate, and {{MEDEXEMPT-total}} ({{MEDEXEMPT-percentage}}) of children had medical exemption in the Mathematics assessment.",
-            "explainTemplate": "In the reported data, ({{REGPARTWOACC-percentage}}) of children participated in the regular assessment without accommodations, ({{REGPARTWACC-percentage}}) of children participated in the regular assessment with accommodations, and ({{NPART-percentage}}) of children did not participate in the Mathematics assessment.",
-            "filterDescription": "Choose a section range to see specific data and insights.",
-            "noDataDescription": "",
-            "prefix": "ages",
-            "title": "All Race/Ethnicity, and Grade Levels"
-          },
-          "sectionLabel": "Participation Chart"
+            ],
+            "title": "Mathematics"
         }
-      ],
-      "title": "Mathematics"
+    ],
+    "suppression": {
+        "childOrganization": "CategorySetCode",
+        "frequencyColumns": [
+            "assessmentcount"
+        ],
+        "parentOrganization": "file",
+        "required": true,
+        "sensitiveColumns": [
+            "assessmenttypeadministered",
+            "proficiencystatus",
+            "race",
+            "gradelevel",
+            "assessmentregistrationparticipationindicator",
+            "sex"
+        ]
     }
-  ],
-  "suppression": {
-    "childOrganization": "CategorySetCode",
-    "frequencyColumns": ["assessmentcount"],
-    "parentOrganization": "file",
-    "required": true,
-    "sensitiveColumns": [
-      "assessmenttypeadministered",
-      "proficiencystatus",
-      "race",
-      "gradelevel",
-      "assessmentregistrationparticipationindicator",
-      "sex"
-    ]
-  }
 }

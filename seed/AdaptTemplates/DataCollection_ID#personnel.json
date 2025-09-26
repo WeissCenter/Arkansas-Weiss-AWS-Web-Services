@@ -1,165 +1,187 @@
 {
-  "type": "DataCollection",
-  "id": "ID#personnel",
-  "dataViewDescription": "This data view captures the number of full-time equivalent (FTE) special education teachers, related service personnel, and paraprofessionals that are employed or contracted to provide services to children with disabilities (IDEA) aged 3 through 21.",
-  "fields": [
-    {
+    "type": "DataCollection",
+    "id": "ID#personnel",
+    "dataViewDescription": "This data view captures the number of full-time equivalent (FTE) special education teachers, related service personnel, and paraprofessionals that are employed or contracted to provide services to children with disabilities (IDEA) aged 3 through 21.",
+    "fields": [
+     {
       "type": "select",
       "id": "reportingYear",
       "label": "For what reporting year?",
       "options": [
-        {
-          "label": "2023-2024",
-          "value": "2024"
-        }
+       {
+        "label": "2024-2025",
+        "value": "2025"
+       },
+       {
+        "label": "2023-2024",
+        "value": "2024"
+       }
       ],
       "required": true,
       "shortLabel": "School year"
-    },
-    {
+     },
+     {
       "type": "select",
       "id": "reportingLevel",
       "label": "For what reporting level?",
       "options": [
-        {
-          "label": "SEA (State Education Agency)",
-          "value": "SEA (State Education Agency)"
-        },
-        {
-          "label": "LEA (Local Education Agency)",
-          "value": "LEA (Local Education Agency)"
-        }
+       {
+        "label": "SEA (State Education Agency)",
+        "value": "SEA (State Education Agency)"
+       },
+       {
+        "label": "LEA (Local Education Agency)",
+        "value": "LEA (Local Education Agency)"
+       }
       ],
       "required": true,
       "shortLabel": "Reporting level"
-    }
-  ],
-  "files": [
-    {
+     }
+    ],
+    "files": [
+     {
       "id": "FS070",
       "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
+       "fieldAccept": ".csv",
+       "fileInputHint": "Only CSV files are accepted."
       },
       "category_conditions": {
-        "CSA": [
-          "specialeducationagegrouptaught",
-          "specialeducationteacherqualificationstatus"
-        ]
+       "CSA": [
+        "specialeducationagegrouptaught",
+        "specialeducationteacherqualificationstatus"
+       ]
       },
       "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "filler2",
-        "specialeducationteacherqualificationstatus",
-        "filler3",
-        "specialeducationagegrouptaught",
-        "TotalIndicator",
-        "explanation",
-        "stafffulltimeequivalency"
+       "fileRecordNumber",
+       "stateCode",
+       "stateAgencyNumber",
+       "leaIdentifier",
+       "filler1",
+       "tableName",
+       "filler2",
+       "specialeducationteacherqualificationstatus",
+       "filler3",
+       "specialeducationagegrouptaught",
+       "TotalIndicator",
+       "explanation",
+       "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c070' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+       "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c070' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) special education teachers employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
-      "included_in_all": [],
+      "included_in_all": [
+      ],
       "name": "FS070 - Special Education Teachers (FTE)",
       "report_code": "c070",
       "report_levels": {
-        "lea": "LEA SPECIAL EDUCATION TEACHER",
-        "sea": "SEA SPECIAL EDUCATION TEACHER"
+       "lea": "LEA SPECIAL EDUCATION TEACHER",
+       "sea": "SEA SPECIAL EDUCATION TEACHER"
       },
       "subtotal_columns": [
-        ["specialeducationagegrouptaught"],
-        ["specialeducationteacherqualificationstatus"]
+       [
+        "specialeducationagegrouptaught"
+       ],
+       [
+        "specialeducationteacherqualificationstatus"
+       ]
       ],
       "validation": "FS070"
-    },
-    {
+     },
+     {
       "id": "FS099",
       "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
+       "fieldAccept": ".csv",
+       "fileInputHint": "Only CSV files are accepted."
       },
       "category_conditions": {
-        "CSA": [
-          "specialeducationsupportservicescategory",
-          "edfactscertificationstatus"
-        ]
+       "CSA": [
+        "specialeducationsupportservicescategory",
+        "edfactscertificationstatus"
+       ]
       },
       "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "specialeducationsupportservicescategory",
-        "edfactscertificationstatus",
-        "filler",
-        "TotalIndicator",
-        "explanation",
-        "stafffulltimeequivalency"
+       "fileRecordNumber",
+       "stateCode",
+       "stateAgencyNumber",
+       "leaIdentifier",
+       "filler1",
+       "tableName",
+       "specialeducationsupportservicescategory",
+       "edfactscertificationstatus",
+       "filler",
+       "TotalIndicator",
+       "explanation",
+       "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c099' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+       "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c099' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) related services personnel employed or contracted to provide related services for children with disabilities (IDEA) who were ages 3 through 21.",
-      "included_in_all": [],
+      "included_in_all": [
+      ],
       "name": "FS099 - Special Education Related Services Personnel",
       "report_code": "c099",
       "report_levels": {
-        "lea": "LEA SPECIAL EDUCATION PERSONNEL",
-        "sea": "SEA SPECIAL EDUCATION PERSONNEL"
+       "lea": "LEA SPECIAL EDUCATION PERSONNEL",
+       "sea": "SEA SPECIAL EDUCATION PERSONNEL"
       },
-      "subtotal_columns": [["specialeducationsupportservicescategory"]],
+      "subtotal_columns": [
+       [
+        "specialeducationsupportservicescategory"
+       ]
+      ],
       "validation": "FS099"
-    },
-    {
+     },
+     {
       "id": "FS112",
       "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
+       "fieldAccept": ".csv",
+       "fileInputHint": "Only CSV files are accepted."
       },
       "category_conditions": {
-        "CSA": ["specialeducationagegrouptaught", "edfactscertificationstatus"]
+       "CSA": [
+        "specialeducationagegrouptaught",
+        "edfactscertificationstatus"
+       ]
       },
       "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "filler2",
-        "specialeducationagegrouptaught",
-        "edfactscertificationstatus",
-        "filler3",
-        "TotalIndicator",
-        "explanation",
-        "stafffulltimeequivalency"
+       "fileRecordNumber",
+       "stateCode",
+       "stateAgencyNumber",
+       "leaIdentifier",
+       "filler1",
+       "tableName",
+       "filler2",
+       "specialeducationagegrouptaught",
+       "edfactscertificationstatus",
+       "filler3",
+       "TotalIndicator",
+       "explanation",
+       "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c112' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+       "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c112' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) paraprofessionals employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
-      "included_in_all": [],
+      "included_in_all": [
+      ],
       "name": "FS112 - Special Education Paraprofessionals",
       "report_code": "c112",
       "report_levels": {
-        "lea": "LEA SPECIAL ED PARAPROFESSIONALS",
-        "sea": "SEA SPECIAL ED PARAPROFESSIONALS"
+       "lea": "LEA SPECIAL ED PARAPROFESSIONALS",
+       "sea": "SEA SPECIAL ED PARAPROFESSIONALS"
       },
       "subtotal_columns": [
-        ["specialeducationagegrouptaught"],
-        ["edfactscertificationstatus"]
+       [
+        "specialeducationagegrouptaught"
+       ],
+       [
+        "edfactscertificationstatus"
+       ]
       ],
       "validation": "FS112"
-    }
-  ],
-  "name": "Personnel for State Level"
-}
+     }
+    ],
+    "name": "Personnel for State Level"
+   }

@@ -1,13 +1,13 @@
 {
-  "type": "ReportTemplate",
-  "id": "ID#exitingPartC",
-  "description": "The unduplicated number of infants and toddlers who were under age three and had an active individualized family service plan (IFSP) in place at some point during the reporting period and at the end of the reporting period either were no longer receiving early intervention services under IDEA Part C or had reached their third birthday.",
-  "filters": {
-    "race": {
-      "type": "multiselect",
-      "code": "race",
-      "field": "racialethnic",
-      "condition": {
+ "type": "ReportTemplate",
+ "id": "ID#exitingPartC",
+ "description": "The unduplicated number of infants and toddlers who were under age three and had an active individualized family service plan (IFSP) in place at some point during the reporting period and at the end of the reporting period either were no longer receiving early intervention services under IDEA Part C or had reached their third birthday.",
+ "filters": {
+  "race": {
+   "type": "multiselect",
+   "code": "race",
+   "field": "racialethnic",
+   "condition": {
         "conditions": [
           {
             "parent": "filterGroup",
@@ -17,53 +17,53 @@
         "operator": "AND",
         "pages": ["reasons-for-exit"]
       },
-      "filter": {
-        "default": "all",
-        "options": [
-          {
-            "exclusive": true,
-            "label": "All",
-            "value": "all"
-          },
-          {
-            "label": "American Indian or Alaska Native",
-            "value": "AM7"
-          },
-          {
-            "label": "Asian",
-            "value": "AS7"
-          },
-          {
-            "label": "Black or African American",
-            "value": "BL7"
-          },
-          {
-            "label": "Hispanic/Latino",
-            "value": "HI7"
-          },
-          {
-            "label": "Native Hawaiian or Other Pacific Islander",
-            "value": "PI7"
-          },
-          {
-            "label": "Two or more races",
-            "value": "MU7"
-          },
-          {
-            "label": "White",
-            "value": "WH7"
-          }
-        ]
-      },
-      "label": "By Race/Ethnicity",
-      "order": 1
-    },
-    "sex": {
-      "type": "multiselect",
-      "code": "sex",
-      "dataType": "string",
-      "field": "sex",
-      "condition": {
+   "filter": {
+    "default": "all",
+    "options": [
+     {
+      "exclusive": true,
+      "label": "All",
+      "value": "all"
+     },
+     {
+      "label": "American Indian or Alaska Native",
+      "value": "AM7"
+     },
+     {
+      "label": "Asian",
+      "value": "AS7"
+     },
+     {
+      "label": "Black or African American",
+      "value": "BL7"
+     },
+     {
+      "label": "Hispanic/Latino",
+      "value": "HI7"
+     },
+     {
+      "label": "Native Hawaiian or Other Pacific Islander",
+      "value": "PI7"
+     },
+     {
+      "label": "Two or more races",
+      "value": "MU7"
+     },
+     {
+      "label": "White",
+      "value": "WH7"
+     }
+    ]
+   },
+   "label": "By Race/Ethnicity",
+   "order": 1
+  },
+  "sex": {
+   "type": "multiselect",
+   "code": "sex",
+   "dataType": "string",
+   "field": "sex",
+   "condition": {
         "conditions": [
           {
             "parent": "filterGroup",
@@ -73,36 +73,36 @@
         "operator": "AND",
         "pages": ["reasons-for-exit"]
       },
-      "filter": {
-        "options": [
-          {
-            "exclusive": true,
-            "label": "All",
-            "value": "all"
-          },
-          {
-            "label": "Male",
-            "value": "M"
-          },
-          {
-            "label": "Female",
-            "value": "F"
-          }
-        ]
-      },
-      "label": "By Sex",
-      "order": 2
-    },
-    "filterGroup": {
-      "type": "select",
-      "code": "filterGroup",
-      "dataType": "string",
-      "field": "CategorySetCode",
-      "condition": {
+   "filter": {
+    "options": [
+     {
+      "exclusive": true,
+      "label": "All",
+      "value": "all"
+     },
+     {
+      "label": "Male",
+      "value": "M"
+     },
+     {
+      "label": "Female",
+      "value": "F"
+     }
+    ]
+   },
+   "label": "By Sex",
+   "order": 2
+  },
+  "filterGroup": {
+    "type": "select",
+    "code": "filterGroup",
+    "dataType": "string",
+    "field": "CategorySetCode",
+    "condition": {
         "operator": "AND",
         "pages": ["reasons-for-exit"]
       },
-      "filter": {
+    "filter": {
         "default": "CSA",
         "options": [
           {
@@ -117,227 +117,248 @@
       },
       "label": "By Sex or Race",
       "order": 0
-    }
-  },
-  "metaTags": ["Part C", "Exiting"],
-  "multiFile": false,
-  "pages": [
+  }
+ },
+ "metaTags": [
+  "Part C",
+  "Exiting"
+ ],
+ "multiFile": false,
+ "pages": [
+  {
+   "id": "reasons-for-exit",
+   "combined": true,
+   "description": "",
+   "name": "Reason for exit",
+   "sections": [
     {
-      "id": "reasons-for-exit",
-      "combined": true,
-      "description": "as of December 01, 2022:",
-      "name": "Reason for exit",
-      "sections": [
-        {
-          "type": "quickSummary",
-          "content": {
-            "heading": {
-              "template": "In reporting year {{dataView.fields.reportingYear}}, there were {{total}} children who exited early intervention services in your State.",
-              "variables": {
-                "total": {
-                  "args": [
-                    "infantsAndToddlersCount",
-                    {
-                      "field": "ReportCode",
-                      "value": "c901"
-                    },
-                    {
-                      "field": "CategorySetCode",
-                      "value": "ST1"
-                    }
-                  ],
-                  "function": "sum"
-                }
-              }
-            },
-            "sections": [
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} ({{var_1.percentage}}) was the most common reason children exited early intervention services in your State.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        0,
-                        "infantsAndToddlersCount",
-                        {
-                          "field": "maxSelect",
-                          "value": "reasonfornolongerreceivingservices"
-                        },
-                        {
-                          "array": true,
-                          "field": "CategorySetCode",
-                          "value": ["ST1"]
-                        }
-                      ],
-                      "dependents": {
-                        "percentage": {
-                          "args": [
-                            "infantsAndToddlersCount",
-                            {
-                              "field": "reasonfornolongerreceivingservices",
-                              "parent": true
-                            },
-                            {
-                              "array": true,
-                              "field": "CategorySetCode",
-                              "value": ["ST1"]
-                            }
-                          ],
-                          "function": "percentage"
-                        }
-                      },
-                      "function": "max"
-                    }
-                  }
-                },
-                "title": "Most common reason for Exiting"
-              },
-              {
-                "body": {
-                  "template": "In the reported data, {{var_1}} ({{var_1.percentage}}) was the second most common reason children exited early intervention services in your State.",
-                  "variables": {
-                    "var_1": {
-                      "args": [
-                        1,
-                        "infantsAndToddlersCount",
-                        {
-                          "field": "maxSelect",
-                          "value": "reasonfornolongerreceivingservices"
-                        },
-                        {
-                          "array": true,
-                          "field": "CategorySetCode",
-                          "value": ["ST1"]
-                        }
-                      ],
-                      "dependents": {
-                        "percentage": {
-                          "args": [
-                            "infantsAndToddlersCount",
-                            {
-                              "field": "reasonfornolongerreceivingservices",
-                              "parent": true
-                            },
-                            {
-                              "array": true,
-                              "field": "CategorySetCode",
-                              "value": ["ST1"]
-                            }
-                          ],
-                          "function": "percentage"
-                        }
-                      },
-                      "function": "max"
-                    }
-                  }
-                },
-                "title": "Second most common reason for Exiting"
-              }
-            ]
+     "type": "quickSummary",
+     "content": {
+      "heading": {
+       "template": "In reporting year {{dataView.fields.reportingYear}}, there were {{total}} children who exited early intervention services in your State.",
+       "variables": {
+        "total": {
+         "args": [
+          "infantsAndToddlersCount",
+          {
+           "field": "ReportCode",
+           "value": "c901"
           },
-          "sectionLabel": "Quick Summary"
-        },
-        {
-          "type": "barChart",
-          "content": {
-            "chart": {
-              "dataRetrievalOperations": [
-                {
-                  "id": "childCountBarChart",
-                  "arguments": [
-                    {
-                      "type": "string",
-                      "field": "func",
-                      "value": "sum"
-                    },
-                    {
-                      "array": true,
-                      "field": "columns",
-                      "value": ["infantsandtoddlerscount"]
-                    },
-                    {
-                      "array": true,
-                      "field": "selectColumns",
-                      "value": ["reasonfornolongerreceivingservices"]
-                    },
-                    {
-                      "type": "number",
-                      "field": "limit"
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "order",
-                      "value": ["infantsandtoddlerscount desc"]
-                    },
-                    {
-                      "type": "string",
-                      "array": true,
-                      "field": "groupby",
-                      "value": ["reasonfornolongerreceivingservices"]
-                    },
-                    {
-                      "type": "string",
-                      "field": "ReportCode",
-                      "value": "c901"
-                    }
-                  ],
-                  "function": "GROUPBY"
-                }
-              ],
-              "filterOn": "x",
-              "total": {
-                "id": "totalBarChart",
-                "arguments": [
-                  {
-                    "field": "infantsandtoddlerscount"
-                  },
-                  {
-                    "field": "ReportCode",
-                    "value": "c901"
-                  }
-                ],
-                "function": "SUM"
-              },
-              "xAxisLabel": "reasonfornolongerreceivingservices",
-              "xAxisValue": "reasonfornolongerreceivingservices",
-              "yAxisLabel": "Child Count",
-              "yAxisValue": "infantsandtoddlerscount"
-            },
-            "description": {
-              "template": "The following represents infants and toddlers, ages birth to three years old, in your State who exited early intervention services for various reasons.",
-              "variables": {
-                "var_1": {
-                  "args": [
-                    "infantsandtoddlerscount",
-                    {
-                      "field": "ReportCode",
-                      "value": "c901"
-                    }
-                  ],
-                  "function": "sum"
-                }
-              }
-            },
-            "explainTemplate": "In the reported data, the top three reasons for exiting early intervention services in your State are, {{first}}, {{second}}, and {{third}}.",
-            "title": "Reason for Exit"
-          },
-          "sectionLabel": "Reason for exit"
+          {
+           "field": "CategorySetCode",
+           "value": "ST1"
+          }
+         ],
+         "function": "sum"
         }
-      ],
-      "title": "Reason for exit"
+       }
+      },
+      "sections": [
+       {
+        "body": {
+         "template": "In the reported data, {{var_1}} ({{var_1.percentage}}) was the most common reason children exited early intervention services in your State.",
+         "variables": {
+          "var_1": {
+           "args": [
+            0,
+            "infantsAndToddlersCount",
+            {
+             "field": "maxSelect",
+             "value": "reasonfornolongerreceivingservices"
+            },
+            {
+             "array": true,
+             "field": "CategorySetCode",
+             "value": [
+              "ST1"
+             ]
+            }
+           ],
+           "dependents": {
+            "percentage": {
+             "args": [
+              "infantsAndToddlersCount",
+              {
+               "field": "reasonfornolongerreceivingservices",
+               "parent": true
+              },
+              {
+               "array": true,
+               "field": "CategorySetCode",
+               "value": [
+                "ST1"
+               ]
+              }
+             ],
+             "function": "percentage"
+            }
+           },
+           "function": "max"
+          }
+         }
+        },
+        "title": "Most common reason for Exiting"
+       },
+       {
+        "body": {
+         "template": "In the reported data, {{var_1}} ({{var_1.percentage}}) was the second most common reason children exited early intervention services in your State.",
+         "variables": {
+          "var_1": {
+           "args": [
+            1,
+            "infantsAndToddlersCount",
+            {
+             "field": "maxSelect",
+             "value": "reasonfornolongerreceivingservices"
+            },
+            {
+             "array": true,
+             "field": "CategorySetCode",
+             "value": [
+              "ST1"
+             ]
+            }
+           ],
+           "dependents": {
+            "percentage": {
+             "args": [
+              "infantsAndToddlersCount",
+              {
+               "field": "reasonfornolongerreceivingservices",
+               "parent": true
+              },
+              {
+               "array": true,
+               "field": "CategorySetCode",
+               "value": [
+                "ST1"
+               ]
+              }
+             ],
+             "function": "percentage"
+            }
+           },
+           "function": "max"
+          }
+         }
+        },
+        "title": "Second most common reason for Exiting"
+       }
+      ]
+     },
+     "sectionLabel": "Quick Summary"
+    },
+    {
+     "type": "barChart",
+     "content": {
+      "chart": {
+       "dataRetrievalOperations": [
+        {
+         "id": "childCountBarChart",
+         "arguments": [
+          {
+           "type": "string",
+           "field": "func",
+           "value": "sum"
+          },
+          {
+           "array": true,
+           "field": "columns",
+           "value": [
+            "infantsandtoddlerscount"
+           ]
+          },
+          {
+           "array": true,
+           "field": "selectColumns",
+           "value": [
+            "reasonfornolongerreceivingservices"
+           ]
+          },
+          {
+           "type": "number",
+           "field": "limit"
+          },
+          {
+           "type": "string",
+           "array": true,
+           "field": "order",
+           "value": [
+            "infantsandtoddlerscount desc"
+           ]
+          },
+          {
+           "type": "string",
+           "array": true,
+           "field": "groupby",
+           "value": [
+            "reasonfornolongerreceivingservices"
+           ]
+          },
+          {
+           "type": "string",
+           "field": "ReportCode",
+           "value": "c901"
+          }
+         ],
+         "function": "GROUPBY"
+        }
+       ],
+       "filterOn": "x",
+       "total": {
+        "id": "totalBarChart",
+        "arguments": [
+         {
+          "field": "infantsandtoddlerscount"
+         },
+         {
+          "field": "ReportCode",
+          "value": "c901"
+         }
+        ],
+        "function": "SUM"
+       },
+       "xAxisLabel": "reasonfornolongerreceivingservices",
+       "xAxisValue": "reasonfornolongerreceivingservices",
+       "yAxisLabel": "Child Count",
+       "yAxisValue": "infantsandtoddlerscount"
+      },
+      "description": {
+       "template": "The following represents infants and toddlers, ages birth to three years old, in your State who exited early intervention services for various reasons.",
+       "variables": {
+        "var_1": {
+         "args": [
+          "infantsandtoddlerscount",
+          {
+           "field": "ReportCode",
+           "value": "c901"
+          }
+         ],
+         "function": "sum"
+        }
+       }
+      },
+      "explainTemplate": "In the reported data, the top three reasons for exiting early intervention services in your State are, {{first}}, {{second}}, and {{third}}.",
+      "title": "Reason for Exit"
+     },
+     "sectionLabel": "Reason for exit"
     }
+   ],
+   "title": "Reason for exit"
+  }
+ ],
+ "suppression": {
+  "childOrganization": "CategorySetCode",
+  "frequencyColumns": [
+   "infantsandtoddlerscount"
   ],
-  "suppression": {
-    "childOrganization": "CategorySetCode",
-    "frequencyColumns": ["infantsandtoddlerscount"],
-    "parentOrganization": "file",
-    "required": true,
-    "sensitiveColumns": [
-      "reasonfornolongerreceivingservices",
-      "racialEthnic",
-      "sex"
-    ]
-  },
-  "title": "Infants and Toddlers with Disabilities (IDEA Part C) Exiting"
+  "parentOrganization": "file",
+  "required": true,
+  "sensitiveColumns": [
+   "reasonfornolongerreceivingservices",
+   "racialEthnic",
+   "sex"
+  ]
+ },
+ "title": "Infants and Toddlers with Disabilities (IDEA Part C) Exiting"
 }
