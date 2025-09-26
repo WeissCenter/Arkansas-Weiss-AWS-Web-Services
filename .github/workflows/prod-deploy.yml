@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: us-east-1
   STAGE: ade-prod
-  AWS_ACCOUNT_NO: 035261963768
+  AWS_ACCOUNT_NO: ${{ secrets.AWS_ACCOUNT_NO }}
   HOSTED_ZONE: adaptdata.org
   ADMIN_SUB_DOMAIN: ade-admin
   VIEWER_SUB_DOMAIN: ade-viewer
