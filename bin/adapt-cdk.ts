@@ -109,9 +109,9 @@ const staticSite = new AdaptStaticSite(app, `${STAGE}-AdaptStaticSiteStack`, {
   stage: STAGE,
 });
 
-const viewerSite = new AdaptViewerSite(app, `${STAGE}-ViewerSiteStack`, {
-  stage: STAGE,
-  hostedZone: HOSTED_ZONE,
-  subDomain: VIEWER_SUB_DOMAIN,
-  env: { account: AWS_ACCOUNT, region: AWS_DEFAULT_REGION },
-});
+// const viewerSite = new AdaptViewerSite(app, `${STAGE}-ViewerSiteStack`, {
+//   stage: STAGE,
+//   hostedZone: HOSTED_ZONE,
+//   subDomain: VIEWER_SUB_DOMAIN,
+//   env: { account: AWS_ACCOUNT, region: AWS_DEFAULT_REGION },
+// });

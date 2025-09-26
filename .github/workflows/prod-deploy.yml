@@ -1,0 +1,65 @@
+name: Weiss AWS Web Services Deploy
+run-name: ${{ github.actor }} pushed an update.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+env:
+  AWS_REGION: us-east-1
+  STAGE: ade-prod
+  AWS_ACCOUNT_NO: 035261963768
+  HOSTED_ZONE: adaptdata.org
+  ADMIN_SUB_DOMAIN: ade-admin
+  VIEWER_SUB_DOMAIN: ade-viewer
+
+jobs:
+  cdk-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Zip Python Library
+        run: |
+          cd ${{ github.workspace }}/libs
+          zip -vqr ./adapt-data-pull-lib.zip ./data
+      - name: Cache Suppression Layer
+        id: cache-suppression-layer
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-suppression-layer
+        with:
+          path: ${{ github.workspace }}/lib/layers/suppress-layer/lib.zip
+          key: ${{ runner.os }}-suppression-layer-${{ env.cache-name }}-${{ hashFiles('**/lib/layers/suppress-layer/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-suppression-layer-${{ env.cache-name }}-
+            ${{ runner.os }}-suppression-layer-
+            ${{ runner.os }}-
+      - name: Build Suppression Layer
+        run: |
+          cd ${{ github.workspace }}/lib/layers/suppress-layer
+          mkdir -p python/lib/python3.10/site-packages
+          pip install --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.10 --implementation cp --upgrade  --target=./python -r requirements.txt
+          zip -vqr ./lib.zip ./python
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install && npm run build
+      - name: cdk deploy
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: "deploy"
+          cdk_stack: "*"
+          cdk_args: "--require-approval never"
+          actions_comment: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          AWS_ACCOUNT: ${{ env.AWS_ACCOUNT_NO }}
+          STAGE: ${{ env.STAGE }}
+          HOSTED_ZONE: ${{ env.HOSTED_ZONE }}
+          VIEWER_SUB_DOMAIN: ${{ env.VIEWER_SUB_DOMAIN }}
+          PUBLIC_VAPID_KEY: ${{ secrets.PUBLIC_VAPID_KEY }}
+          PRIVATE_VAPID_KEY: ${{ secrets.PRIVATE_VAPID_KEY }}
+      - run: echo "This job's status is ${{ job.status }}."

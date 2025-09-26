@@ -1,0 +1,31 @@
+name: Adapt Backend Seeding
+run-name: ${{ github.actor }} pushed an update.
+on:
+  workflow_dispatch:
+  push:
+    paths: "seed/**"
+    branches: ["main"]
+
+env:
+  AWS_REGION: us-east-1
+  ENVIRONMENT: ade-prod
+
+jobs:
+  dynamodb-seeding:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install && npm run build
+      - name: Run Seeding script
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          ENVIRONMENT: ${{ env.ENVIRONMENT }}
+        run: node ./seed/seed.js
+
+      - run: echo "This job's status is ${{ job.status }}."
