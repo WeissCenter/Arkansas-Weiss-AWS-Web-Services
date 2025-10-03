@@ -10,7 +10,7 @@ env:
   STAGE: ade-prod
   AWS_ACCOUNT_NO: ${{ secrets.AWS_ACCOUNT_NO }}
   HOSTED_ZONE: adaptdata.org
-  ADMIN_SUB_DOMAIN: ade-admin
+  ADMIN_SUB_DOMAIN: ose-admin
   VIEWER_SUB_DOMAIN: ade-viewer
 
 jobs:
