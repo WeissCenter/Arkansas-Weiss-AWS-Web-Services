@@ -274,16 +274,13 @@
     }
   },
   "metaTags": ["Part B", "Discipline"],
-  "reportingLevels": [
-    "SEA (State Education Agency)",
-    "LEA (Local Education Agency)"
-  ],
+  "reportingLevels": ["SEA (State Education Agency)", "LEA (Local Education Agency)"],
   "multiFile": false,
   "pages": [
     {
       "id": "suspensions-expulsions",
       "combined": true,
-      "description": "as of December 01, 2022:",
+      "description": "",
       "name": "Suspensions/Expulsions",
       "sections": [
         {
@@ -525,7 +522,7 @@
     {
       "id": "disciplinary-removals",
       "combined": true,
-      "description": "as of December 01, 2022:",
+      "description": "",
       "name": "Disciplinary Removals",
       "sections": [
         {
@@ -755,7 +752,7 @@
     {
       "id": "unilateral-removals",
       "combined": true,
-      "description": "as of December 01, 2022:",
+      "description": "",
       "name": "Unilateral Removals",
       "sections": [
         {
@@ -975,7 +972,7 @@
     {
       "id": "services-during-expulsion",
       "combined": true,
-      "description": "as of December 01, 2022:",
+      "description": "",
       "name": "Services During Expulsion",
       "sections": [
         {

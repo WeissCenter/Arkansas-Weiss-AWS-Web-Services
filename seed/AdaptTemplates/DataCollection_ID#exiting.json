@@ -1,100 +1,127 @@
 {
-  "type": "DataCollection",
+    "type": "DataCollection",
   "id": "ID#exiting",
   "name": "Children with Disabilities (IDEA) Exiting for State Level",
   "dataViewDescription": "IDEA Part B Exiting provides the unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
   "fields": [
-    {
-      "type": "select",
-      "id": "reportingYear",
-      "label": "For what reporting year?",
-      "options": [
-        {
-          "label": "2023-2024",
-          "value": "2024"
-        }
-      ],
-      "required": true,
-      "shortLabel": "School year"
-    },
-    {
+   {
+    "type": "select",
+    "id": "reportingYear",
+    "label": "For what reporting year?",
+    "options": [
+     {
+        "label": "2024-2025",
+        "value": "2025"
+      },
+      {
+        "label": "2023-2024",
+        "value": "2024"
+      }
+    ],
+    "required": true,
+    "shortLabel": "School year"
+   },
+     {
       "type": "select",
       "id": "reportingLevel",
       "label": "For what reporting level?",
       "options": [
-        {
-          "label": "SEA (State Education Agency)",
-          "value": "SEA (State Education Agency)"
-        },
-        {
-          "label": "LEA (Local Education Agency)",
-          "value": "LEA (Local Education Agency)"
-        }
+       {
+        "label": "SEA (State Education Agency)",
+        "value": "SEA (State Education Agency)"
+       },
+       {
+        "label": "LEA (Local Education Agency)",
+        "value": "LEA (Local Education Agency)"
+       }
       ],
       "required": true,
       "shortLabel": "Reporting level"
-    }
+     }
   ],
   "files": [
-    {
-      "id": "FS009",
-      "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
-      },
-      "category_conditions": {
-        "CSA": ["age", "ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishlearnerstatus"]
-      },
-      "columns": [
-        "File Record Number",
-        "State Code",
-        "State Agency Number",
-        "LEA Identifier",
-        "Filler",
-        "Table Name",
-        "Filler",
-        "race",
-        "sex",
-        "Filler",
-        "Filler",
-        "Filler",
-        "Filler",
-        "Filler",
-        "Filler",
-        "ideadisabilitytype",
-        "age",
-        "englishlearnerstatus",
-        "Filler",
-        "Filler",
-        "Filler",
-        "specialeducationexitreason",
-        "TotalIndicator",
-        "Explanation",
-        "StudentCount"
-      ],
-      "database": {
-        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = 'c009' and LOWER(ReportLevel) = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "description": "The unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
-      "included_in_all": ["specialeducationexitreason"],
-      "name": "FS009 - Children with Disabilities (IDEA) Exiting Special Education",
-      "report_code": "c009",
-      "report_levels": {
-        "lea": "LEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED",
-        "sea": "SEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED"
-      },
-      "subtotal_columns": [
-        ["specialeducationexitreason"],
-        ["age"],
-        ["race"],
-        ["sex"],
-        ["englishlearnerstatus"],
-        ["ideadisabilitytype"]
-      ],
-      "validation": "FS009"
-    }
+   {
+    "id": "FS009",
+    "acceptedFileFormats": {
+     "fieldAccept": ".csv",
+     "fileInputHint": "Only CSV files are accepted."
+    },
+    "category_conditions": {
+     "CSA": [
+      "age",
+      "ideadisabilitytype"
+     ],
+     "CSB": [
+      "race"
+     ],
+     "CSC": [
+      "sex"
+     ],
+     "CSD": [
+      "englishlearnerstatus"
+     ]
+    },
+    "columns": [
+     "File Record Number",
+     "State Code",
+     "State Agency Number",
+     "LEA Identifier",
+     "Filler",
+     "Table Name",
+     "Filler",
+     "race",
+     "sex",
+     "Filler",
+     "Filler",
+     "Filler",
+     "Filler",
+     "Filler",
+     "Filler",
+     "ideadisabilitytype",
+     "age",
+     "englishlearnerstatus",
+     "Filler",
+     "Filler",
+     "Filler",
+     "specialeducationexitreason",
+     "TotalIndicator",
+     "Explanation",
+     "StudentCount"
+    ],
+    "database": {
+     "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = 'c009' and LOWER(ReportLevel) = 'sea' and ReportYear = ${reportingYear}"
+    },
+    "description": "The unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
+    "included_in_all": [
+     "specialeducationexitreason"
+    ],
+    "name": "FS009 - Children with Disabilities (IDEA) Exiting Special Education",
+    "report_code": "c009",
+    "report_levels": {
+     "lea": "LEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED",
+     "sea": "SEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED"
+    },
+    "subtotal_columns": [
+     [
+      "specialeducationexitreason"
+     ],
+     [
+      "age"
+     ],
+     [
+      "race"
+     ],
+     [
+      "sex"
+     ],
+     [
+      "englishlearnerstatus"
+     ],
+     [
+      "ideadisabilitytype"
+     ]
+    ],
+    "validation": "FS009"
+   }
   ]
-}
+ }

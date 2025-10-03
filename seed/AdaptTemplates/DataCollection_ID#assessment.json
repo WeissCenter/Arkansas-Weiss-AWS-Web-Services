@@ -1,380 +1,486 @@
 {
-  "type": "DataCollection",
-  "id": "ID#assessment",
-  "dataViewDescription": "This data view captures student participation and performance data in state assessments for specific grade levels.",
-  "fields": [
+ "type": "DataCollection",
+ "id": "ID#assessment",
+ "dataViewDescription": "This data view captures student participation and performance data in state assessments for specific grade levels.",
+ "fields": [
+  {
+   "type": "select",
+   "id": "reportingYear",
+   "label": "For what reporting year?",
+   "options": [
     {
-      "type": "select",
-      "id": "reportingYear",
-      "label": "For what reporting year?",
-      "options": [
-        {
-          "label": "2023-2024",
-          "value": "2024"
-        },
-        {
-          "label": "2024-2025",
-          "value": "2025"
-        }
-      ],
-      "required": true,
-      "shortLabel": "School year"
+      "label": "2024-2025",
+      "value": "2025"
     },
+    {
+      "label": "2023-2024",
+      "value": "2024"
+    }
+   ],
+   "required": true,
+   "shortLabel": "School year"
+  },
     {
       "type": "select",
       "id": "reportingLevel",
       "label": "For what reporting level?",
       "options": [
-        {
-          "label": "SEA (State Education Agency)",
-          "value": "SEA (State Education Agency)"
-        },
-        {
-          "label": "LEA (Local Education Agency)",
-          "value": "LEA (Local Education Agency)"
-        },
-        {
-          "label": "SCH (School)",
-          "value": "SCH (School)"
-        }
+       {
+        "label": "SEA (State Education Agency)",
+        "value": "SEA (State Education Agency)"
+       },
+       {
+        "label": "LEA (Local Education Agency)",
+        "value": "LEA (Local Education Agency)"
+       },
+       {
+        "label": "SCH (School)",
+        "value": "SCH (School)"
+       }
       ],
       "required": true,
       "shortLabel": "Reporting level"
     }
-  ],
-  "files": [
+ ],
+ "files": [
+  {
+   "id": "FS175",
+   "acceptedFileFormats": {
+    "fieldAccept": ".csv",
+    "fileInputHint": "Only CSV files are accepted."
+   },
+   "category_conditions": {
+    "CSA": [
+     "race"
+    ],
+    "CSB": [
+     "sex"
+    ],
+    "CSC": [
+     "ideadisabilitytype"
+    ],
+    "CSD": [
+     "englishlearnerstatus"
+    ],
+    "CSE": [
+     "economicdisadvantagestatus"
+    ],
+    "CSF": [
+     "migrantstatus"
+    ],
+    "CSG": [
+     "homelessnessstatus"
+    ],
+    "CSH": [
+     "programparticipationfostercare"
+    ],
+    "CSI": [
+     "militaryconnectedstudentindicator"
+    ],
+    "CSJ": [
+     "ideadisabilitytype",
+     "race"
+    ],
+    "ST1": [
+     "gradelevel",
+     "proficiencystatus",
+     "assessmenttypeadministered"
+    ]
+   },
+   "columns": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier",
+    "school_identifier",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "assessmenttypeadministered",
+    "filler",
+    "proficiencystatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "conditions": [
     {
-      "id": "FS175",
-      "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
-      },
-      "category_conditions": {
-        "CSA": ["race"],
-        "CSB": ["sex"],
-        "CSC": ["ideadisabilitytype"],
-        "CSD": ["englishlearnerstatus"],
-        "CSE": ["economicdisadvantagestatus"],
-        "CSF": ["migrantstatus"],
-        "CSG": ["homelessnessstatus"],
-        "CSH": ["programparticipationfostercare"],
-        "CSI": ["militaryconnectedstudentindicator"],
-        "CSJ": ["ideadisabilitytype", "race"],
-        "ST1": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"]
-      },
-      "columns": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier",
-        "school_identifier",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "assessmenttypeadministered",
-        "filler",
-        "proficiencystatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "conditions": [
-        {
-          "field": "scopeLevel",
-          "operation": "neq",
-          "value": "SCH"
-        }
-      ],
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c175' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in mathematics and received a valid score.",
-      "included_in_all": [
-        "gradelevel",
-        "proficiencystatus",
-        "assessmenttypeadministered"
-      ],
-      "name": "FS175 - Academic Achievement in Mathematics",
-      "report_code": "c175",
-      "report_levels": {
-        "lea": "LEA STUDENT PERFORMANCE MATH",
-        "sch": "SCHOOL STUDENT PERFORMANCE MATH",
-        "sea": "SEA STUDENT PERFORMANCE MATH"
-      },
-      "subtotal_columns": [
-        ["gradelevel", "proficiencystatus", "assessmenttypeadministered"]
-      ],
-      "validation": "FS175"
-    },
-    {
-      "id": "FS178",
-      "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
-      },
-      "category_conditions": {
-        "CSA": ["race"],
-        "CSB": ["sex"],
-        "CSC": ["ideadisabilitytype"],
-        "CSD": ["englishlearnerstatus"],
-        "CSE": ["economicdisadvantagestatus"],
-        "CSF": ["migrantstatus"],
-        "CSG": ["homelessnessstatus"],
-        "CSH": ["programparticipationfostercare"],
-        "CSI": ["militaryconnectedstudentindicator"],
-        "CSJ": ["ideadisabilitytype", "race"],
-        "ST1": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"]
-      },
-      "columns": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier",
-        "school_identifier",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "assessmenttypeadministered",
-        "filler",
-        "proficiencystatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "conditions": [
-        {
-          "field": "scopeLevel",
-          "operation": "neq",
-          "value": "SCH"
-        }
-      ],
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c178' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in reading/language arts and received a valid score.",
-      "included_in_all": [
-        "gradelevel",
-        "proficiencystatus",
-        "assessmenttypeadministered"
-      ],
-      "name": "FS178 - Academic Achievement in Reading/Language Arts",
-      "report_code": "c178",
-      "report_levels": {
-        "lea": "LEA STUDENT PERFORMANCE READING LANGUAGE ARTS",
-        "sch": "SCHOOL STUDENT PERFORMANCE READING LANGUAGE ARTS",
-        "sea": "SEA STUDENT PERFORMANCE READING LANGUAGE ARTS"
-      },
-      "subtotal_columns": [
-        ["gradelevel", "proficiencystatus", "assessmenttypeadministered"]
-      ],
-      "validation": "FS178"
-    },
-    {
-      "id": "FS185",
-      "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
-      },
-      "category_conditions": {
-        "CSA": ["race"],
-        "CSB": ["sex"],
-        "CSC": ["ideadisabilitytype"],
-        "CSD": ["englishlearnerstatus"],
-        "CSE": ["economicdisadvantagestatus"],
-        "CSF": ["migrantstatus"],
-        "CSG": ["homelessnessstatus"],
-        "CSH": ["programparticipationfostercare"],
-        "CSI": ["militaryconnectedstudentindicator"],
-        "CSJ": ["ideadisabilitytype", "race"]
-      },
-      "columns": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier_state",
-        "school_identifier_state",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "filler",
-        "filler",
-        "filler",
-        "assessmentregistrationparticipationindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "conditions": [
-        {
-          "field": "scopeLevel",
-          "operation": "neq",
-          "value": "SCH"
-        }
-      ],
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c185' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in mathematics.",
-      "included_in_all": [
-        "assessmentregistrationparticipationindicator",
-        "gradelevel"
-      ],
-      "name": "FS185 - Assessment Participation in Mathematics",
-      "previewHeaders": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier_state",
-        "school_identifier_state",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "filler",
-        "filler",
-        "filler",
-        "assessmentregistrationparticipationindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "report_code": "c185",
-      "report_levels": {
-        "lea": "LEA MATH ASSESSMENT PARTICIPATION",
-        "sch": "SCHOOL MATH ASSESSMENT PARTICIPATION",
-        "sea": "SEA MATH ASSESSMENT PARTICIPATION"
-      },
-      "subtotal_columns": [
-        ["gradelevel", "assessmentregistrationparticipationindicator"]
-      ],
-      "validation": "FS185"
-    },
-    {
-      "id": "FS188",
-      "acceptedFileFormats": {
-        "fieldAccept": ".csv",
-        "fileInputHint": "Only CSV files are accepted."
-      },
-      "category_conditions": {
-        "CSA": ["race"],
-        "CSB": ["sex"],
-        "CSC": ["ideadisabilitytype"],
-        "CSD": ["englishlearnerstatus"],
-        "CSE": ["economicdisadvantagestatus"],
-        "CSF": ["migrantstatus"],
-        "CSG": ["homelessnessstatus"],
-        "CSH": ["programparticipationfostercare"],
-        "CSI": ["militaryconnectedstudentindicator"],
-        "CSJ": ["ideadisabilitytype", "race"]
-      },
-      "columns": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier_state",
-        "school_identifier_state",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "filler",
-        "filler",
-        "filler",
-        "assessmentregistrationparticipationindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "conditions": [
-        {
-          "field": "scopeLevel",
-          "operation": "neq",
-          "value": "SCH"
-        }
-      ],
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c188' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in reading/language arts.",
-      "included_in_all": [
-        "gradelevel",
-        "assessmentregistrationparticipationindicator"
-      ],
-      "name": "FS188 - Assessment Participation in Reading/Language Arts",
-      "previewHeaders": [
-        "file_record_number",
-        "state_code",
-        "state_agency_number",
-        "lea_identifier_state",
-        "school_identifier_state",
-        "table_name",
-        "gradelevel",
-        "race",
-        "sex",
-        "ideadisabilitytype",
-        "englishlearnerstatus",
-        "migrantstatus",
-        "economicdisadvantagestatus",
-        "homelessnessstatus",
-        "programparticipationfostercare",
-        "militaryconnectedstudentindicator",
-        "filler",
-        "filler",
-        "filler",
-        "assessmentregistrationparticipationindicator",
-        "TotalIndicator",
-        "explanation",
-        "assessmentcount"
-      ],
-      "report_code": "c188",
-      "report_levels": {
-        "lea": "LEA RLA ASSESSMENT PARTICIPATION",
-        "sch": "SCHOOL RLA ASSESSMENT PARTICIPATION",
-        "sea": "SEA RLA ASSESSMENT PARTICIPATION"
-      },
-      "subtotal_columns": [
-        ["gradelevel", "assessmentregistrationparticipationindicator"]
-      ],
-      "validation": "FS188"
+     "field": "scopeLevel",
+     "operation": "neq",
+     "value": "SCH"
     }
-  ],
-  "name": "Assessment for State Level"
+   ],
+   "database": {
+    "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c175' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+   },
+   "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in mathematics and received a valid score.",
+   "included_in_all": [
+    "gradelevel",
+    "proficiencystatus",
+    "assessmenttypeadministered"
+   ],
+   "name": "FS175 - Academic Achievement in Mathematics",
+   "report_code": "c175",
+   "report_levels": {
+    "lea": "LEA STUDENT PERFORMANCE MATH",
+    "sch": "SCHOOL STUDENT PERFORMANCE MATH",
+    "sea": "SEA STUDENT PERFORMANCE MATH"
+   },
+   "subtotal_columns": [
+    [
+     "gradelevel",
+     "proficiencystatus",
+     "assessmenttypeadministered"
+    ]
+   ],
+   "validation": "FS175"
+  },
+  {
+   "id": "FS178",
+   "acceptedFileFormats": {
+    "fieldAccept": ".csv",
+    "fileInputHint": "Only CSV files are accepted."
+   },
+   "category_conditions": {
+    "CSA": [
+     "race"
+    ],
+    "CSB": [
+     "sex"
+    ],
+    "CSC": [
+     "ideadisabilitytype"
+    ],
+    "CSD": [
+     "englishlearnerstatus"
+    ],
+    "CSE": [
+     "economicdisadvantagestatus"
+    ],
+    "CSF": [
+     "migrantstatus"
+    ],
+    "CSG": [
+     "homelessnessstatus"
+    ],
+    "CSH": [
+     "programparticipationfostercare"
+    ],
+    "CSI": [
+     "militaryconnectedstudentindicator"
+    ],
+    "CSJ": [
+     "ideadisabilitytype",
+     "race"
+    ],
+    "ST1": [
+     "gradelevel",
+     "proficiencystatus",
+     "assessmenttypeadministered"
+    ]
+   },
+   "columns": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier",
+    "school_identifier",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "assessmenttypeadministered",
+    "filler",
+    "proficiencystatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "conditions": [
+    {
+     "field": "scopeLevel",
+     "operation": "neq",
+     "value": "SCH"
+    }
+   ],
+   "database": {
+    "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c178' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+   },
+   "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in reading/language arts and received a valid score.",
+   "included_in_all": [
+    "gradelevel",
+    "proficiencystatus",
+    "assessmenttypeadministered"
+   ],
+   "name": "FS178 - Academic Achievement in Reading/Language Arts",
+   "report_code": "c178",
+   "report_levels": {
+    "lea": "LEA STUDENT PERFORMANCE READING LANGUAGE ARTS",
+    "sch": "SCHOOL STUDENT PERFORMANCE READING LANGUAGE ARTS",
+    "sea": "SEA STUDENT PERFORMANCE READING LANGUAGE ARTS"
+   },
+   "subtotal_columns": [
+    [
+     "gradelevel",
+     "proficiencystatus",
+     "assessmenttypeadministered"
+    ]
+   ],
+   "validation": "FS178"
+  },
+  {
+   "id": "FS185",
+   "acceptedFileFormats": {
+    "fieldAccept": ".csv",
+    "fileInputHint": "Only CSV files are accepted."
+   },
+   "category_conditions": {
+    "CSA": [
+     "race"
+    ],
+    "CSB": [
+     "sex"
+    ],
+    "CSC": [
+     "ideadisabilitytype"
+    ],
+    "CSD": [
+     "englishlearnerstatus"
+    ],
+    "CSE": [
+     "economicdisadvantagestatus"
+    ],
+    "CSF": [
+     "migrantstatus"
+    ],
+    "CSG": [
+     "homelessnessstatus"
+    ],
+    "CSH": [
+     "programparticipationfostercare"
+    ],
+    "CSI": [
+     "militaryconnectedstudentindicator"
+    ],
+    "CSJ": [
+     "ideadisabilitytype",
+     "race"
+    ]
+   },
+   "columns": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier_state",
+    "school_identifier_state",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "filler",
+    "filler",
+    "filler",
+    "assessmentregistrationparticipationindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "conditions": [
+    {
+     "field": "scopeLevel",
+     "operation": "neq",
+     "value": "SCH"
+    }
+   ],
+   "database": {
+    "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c185' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+   },
+   "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in mathematics.",
+   "included_in_all": [
+    "assessmentregistrationparticipationindicator",
+    "gradelevel"
+   ],
+   "name": "FS185 - Assessment Participation in Mathematics",
+   "previewHeaders": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier_state",
+    "school_identifier_state",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "filler",
+    "filler",
+    "filler",
+    "assessmentregistrationparticipationindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "report_code": "c185",
+   "report_levels": {
+    "lea": "LEA MATH ASSESSMENT PARTICIPATION",
+    "sch": "SCHOOL MATH ASSESSMENT PARTICIPATION",
+    "sea": "SEA MATH ASSESSMENT PARTICIPATION"
+   },
+   "subtotal_columns": [
+    [
+     "gradelevel",
+     "assessmentregistrationparticipationindicator"
+    ]
+   ],
+   "validation": "FS185"
+  },
+  {
+   "id": "FS188",
+   "acceptedFileFormats": {
+    "fieldAccept": ".csv",
+    "fileInputHint": "Only CSV files are accepted."
+   },
+   "category_conditions": {
+    "CSA": [
+     "race"
+    ],
+    "CSB": [
+     "sex"
+    ],
+    "CSC": [
+     "ideadisabilitytype"
+    ],
+    "CSD": [
+     "englishlearnerstatus"
+    ],
+    "CSE": [
+     "economicdisadvantagestatus"
+    ],
+    "CSF": [
+     "migrantstatus"
+    ],
+    "CSG": [
+     "homelessnessstatus"
+    ],
+    "CSH": [
+     "programparticipationfostercare"
+    ],
+    "CSI": [
+     "militaryconnectedstudentindicator"
+    ],
+    "CSJ": [
+     "ideadisabilitytype",
+     "race"
+    ]
+   },
+   "columns": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier_state",
+    "school_identifier_state",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "filler",
+    "filler",
+    "filler",
+    "assessmentregistrationparticipationindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "conditions": [
+    {
+     "field": "scopeLevel",
+     "operation": "neq",
+     "value": "SCH"
+    }
+   ],
+   "database": {
+    "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c188' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+   },
+   "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in reading/language arts.",
+   "included_in_all": [
+    "gradelevel",
+    "assessmentregistrationparticipationindicator"
+   ],
+   "name": "FS188 - Assessment Participation in Reading/Language Arts",
+   "previewHeaders": [
+    "file_record_number",
+    "state_code",
+    "state_agency_number",
+    "lea_identifier_state",
+    "school_identifier_state",
+    "table_name",
+    "gradelevel",
+    "race",
+    "sex",
+    "ideadisabilitytype",
+    "englishlearnerstatus",
+    "migrantstatus",
+    "economicdisadvantagestatus",
+    "homelessnessstatus",
+    "programparticipationfostercare",
+    "militaryconnectedstudentindicator",
+    "filler",
+    "filler",
+    "filler",
+    "assessmentregistrationparticipationindicator",
+    "TotalIndicator",
+    "explanation",
+    "assessmentcount"
+   ],
+   "report_code": "c188",
+   "report_levels": {
+    "lea": "LEA RLA ASSESSMENT PARTICIPATION",
+    "sch": "SCHOOL RLA ASSESSMENT PARTICIPATION",
+    "sea": "SEA RLA ASSESSMENT PARTICIPATION"
+   },
+   "subtotal_columns": [
+    [
+     "gradelevel",
+     "assessmentregistrationparticipationindicator"
+    ]
+   ],
+   "validation": "FS188"
+  }
+ ],
+ "name": "Assessment for State Level"
 }

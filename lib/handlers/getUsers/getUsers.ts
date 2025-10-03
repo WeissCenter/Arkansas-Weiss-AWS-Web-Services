@@ -8,6 +8,7 @@ import {
 import {
   AdminListGroupsForUserCommand,
   CognitoIdentityProviderClient,
+  GroupType,
   ListUsersCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 
@@ -52,19 +53,21 @@ export const handler: Handler = async (
           ROLE_NAMES.has(grp?.GroupName),
         );
 
-        if (!validGroups.length) return [];
-
-        const mostSeniorRole = validGroups
-          .filter((group) => group.hasOwnProperty("Precedence"))
-          .reduce(
-            (lowest, group) =>
-              group.Precedence < lowest.Precedence ? group : lowest,
-            validGroups[0],
-          );
+        // if(!validGroups.length) return [];
+        let mostSeniorRole: GroupType | null = null;
+        if (validGroups.length >= 1) {
+          mostSeniorRole = validGroups
+            .filter((group) => group.hasOwnProperty("Precedence"))
+            .reduce(
+              (lowest, group) =>
+                group.Precedence < lowest.Precedence ? group : lowest,
+              validGroups[0],
+            );
+        }
 
         return {
           active: user.Enabled || false,
-          role: mostSeniorRole?.GroupName,
+          role: mostSeniorRole?.GroupName || '',
           username: user.Username,
           lastLogin: user.UserLastModifiedDate.getTime(),
           attributes,

@@ -1,6 +1,6 @@
 {
   "type": "DataCollection",
-  "id": "ID#exitingPartC",
+    "id": "ID#exitingPartC",
   "name": "Infants and Toddlers with Disabilities (IDEA Part C) Exiting",
   "dataViewDescription": "The unduplicated number of infants and toddlers who were under age three and had an active individualized family service plan (IFSP) in place at some point during the reporting period and at the end of the reporting period either were no longer receiving early intervention services under IDEA Part C or had reached their third birthday.",
   "fields": [
@@ -11,6 +11,10 @@
       "required": true,
       "type": "select",
       "options": [
+        {
+          "label": "2024-2025",
+          "value": "2025"
+        },
         {
           "label": "2023-2024",
           "value": "2024"
@@ -46,7 +50,9 @@
         "infantsAndToddlersCount"
       ],
       "report_code": "c901",
-      "included_in_all": ["reasonForNoLongerReceivingServices"],
+      "included_in_all": [
+        "reasonForNoLongerReceivingServices"
+      ],
       "category_conditions": {
         "CSA": ["racialEthnic"],
         "CSB": ["sex"]

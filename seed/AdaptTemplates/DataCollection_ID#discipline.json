@@ -1,313 +1,381 @@
 {
-  "type": "DataCollection",
-  "id": "ID#discipline",
-  "name": "Children with Disabilities (IDEA) Discipline for State Level",
-  "dataViewDescription": "This data view captures the count of children ages 3 through 21 who were subject to disciplinary removals, including suspensions, expulsions, placements in interim alternative educational settings, and removals due to violations such as drug or weapon offenses, serious bodily injury, and violations of the Gun-Free Schools Act (GFSA).",
-  "fields": [
-    {
-      "id": "reportingYear",
-      "label": "For what reporting year?",
-      "shortLabel": "School year",
-      "required": true,
-      "type": "select",
-      "options": [
+    "type": "DataCollection",
+    "id": "ID#discipline",
+    "name": "Children with Disabilities (IDEA) Discipline for State Level",
+    "dataViewDescription": "This data view captures the count of children ages 3 through 21 who were subject to disciplinary removals, including suspensions, expulsions, placements in interim alternative educational settings, and removals due to violations such as drug or weapon offenses, serious bodily injury, and violations of the Gun-Free Schools Act (GFSA).",
+    "fields": [
         {
-          "label": "2023-2024",
-          "value": "2024"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "reportingLevel",
-      "label": "For what reporting level?",
-      "options": [
-        {
-          "label": "SEA (State Education Agency)",
-          "value": "SEA (State Education Agency)"
+            "id": "reportingYear",
+            "label": "For what reporting year?",
+            "shortLabel": "School year",
+            "required": true,
+            "type": "select",
+            "options": [
+                {
+                    "label": "2024-2025",
+                    "value": "2025"
+                },
+                {
+                    "label": "2023-2024",
+                    "value": "2024"
+                }
+            ]
         },
         {
-          "label": "LEA (Local Education Agency)",
-          "value": "LEA (Local Education Agency)"
+        "type": "select",
+        "id": "reportingLevel",
+        "label": "For what reporting level?",
+        "options": [
+        {
+            "label": "SEA (State Education Agency)",
+            "value": "SEA (State Education Agency)"
+        },
+        {
+            "label": "LEA (Local Education Agency)",
+            "value": "LEA (Local Education Agency)"
         }
-      ],
-      "required": true,
-      "shortLabel": "Reporting level"
-    }
-  ],
-  "files": [
-    {
-      "id": "FS005",
-      "name": "FS005 - Children with Disabilities (IDEA) Removal to Interim Alternative Educational Setting",
-      "description": "The number of children with disabilities (IDEA) who are ages 3 through 21 as of the child count date and removed to an interim alternative educational setting either unilaterally by school personnel (not the IEP team) or by a hearing officer.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c005' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "SEA CHILDREN WITH DISAB (IDEA) DISCIPLINE",
-        "lea": "LEA CHILDREN WITH DISAB (IDEA) DISCIPLINE"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler",
-        "tableName",
-        "sex",
-        "race",
-        "englishLearnerStatus",
-        "filler",
-        "filler",
-        "filler",
-        "filler",
-        "filler",
-        "filler",
-        "ideadisabilitytype",
-        "filler",
-        "ideainterimremoval",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c005",
-      "included_in_all": ["ideainterimremoval"],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishLearnerStatus"]
-      },
-      "subtotal_columns": [["ideainterimremoval"]],
-      "validation": "FS005"
-    },
-    {
-      "id": "FS006",
-      "name": "FS006 - Children with Disabilities (IDEA) Suspensions/Expulsions",
-      "description": "The number of children with disabilities (IDEA) who are ages 3 through 21 and suspended or expelled for disciplinary reasons.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c006' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
-        "lea": "SEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "removallength",
-        "race",
-        "sex",
-        "filler3",
-        "filler4",
-        "filler5",
-        "filler6",
-        "filler7",
-        "filler8",
-        "ideadisabilitytype",
-        "englishLearnerStatus",
-        "disciplinemethodofchildrenwithdisabilities",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c006",
-      "included_in_all": [
-        "disciplinemethodofchildrenwithdisabilities",
-        "removallength"
-      ],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishLearnerStatus"]
-      },
-      "subtotal_columns": [
-        ["disciplinemethodofchildrenwithdisabilities", "removallength"]
-      ],
-      "validation": "FS006"
-    },
-    {
-      "id": "FS007",
-      "name": "FS007 - Children with Disabilities (IDEA) Reasons for Unilateral Removal",
-      "description": "The number of times children with disabilities (IDEA) who were ages 3 through 21 and unilaterally removed by school personnel (not the IEP team) from their current educational placement to an interim alternative educational setting (determined by the IEP team) due to drug or weapon offenses or serious bodily injury.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c007' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "SEA CHILDREN WITH DISAB (IDEA) REMOVAL",
-        "lea": "LEA CHILDREN WITH DISAB (IDEA) REMOVAL"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "filler2",
-        "race",
-        "sex",
-        "filler3",
-        "filler4",
-        "filler5",
-        "filler6",
-        "filler7",
-        "filler8",
-        "ideadisabilitytype",
-        "englishLearnerStatus",
-        "ideainterimremovalreason",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c007",
-      "included_in_all": ["ideainterimremovalreason"],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishLearnerStatus"]
-      },
-      "subtotal_columns": [["ideainterimremovalreason"]],
-      "validation": "FS007"
-    },
-    {
-      "id": "FS088",
-      "name": "FS088 - Children with Disabilities (IDEA) Disciplinary Removals ",
-      "description": "Unduplicated counts of children with disabilities (IDEA), ages 3 through 21, who were subject to disciplinary removals during the school year. Includes removals of 1 day or less, 2 through 10 days, and greater than 10 days.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c088' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "SEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT",
-        "lea": "LEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "sex",
-        "race",
-        "removallength",
-        "ideadisabilitytype",
-        "englishLearnerStatus",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c088",
-      "included_in_all": ["removallength"],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishLearnerStatus"]
-      },
-      "subtotal_columns": [["removallength"]],
-      "validation": "FS088"
-    },
-    {
-      "id": "FS143",
-      "name": "FS143 - Children with Disabilities (IDEA) Total Disciplinary Removals",
-      "description": "The number of times children with disabilities (IDEA), ages 3 through 21, were subject to any kind of disciplinary removal, including expulsions.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c143' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL",
-        "lea": "LEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "sex",
-        "race",
-        "englishLearnerStatus",
-        "ideadisabilitytype",
-        "filler2",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c143",
-      "included_in_all": [],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype"],
-        "CSB": ["race"],
-        "CSC": ["sex"],
-        "CSD": ["englishLearnerStatus"]
-      },
-      "subtotal_columns": [],
-      "validation": "FS143"
-    },
-    {
-      "id": "FS144",
-      "name": "FS144 - Educational Services During Expulsion ",
-      "description": "The unduplicated number of children (students) who were removed for disciplinary reasons from their regular school program for the remainder of the school year or longer, including all removals resulting from violations of the Gun-Free Schools Act (GFSA) of 1994.",
-      "acceptedFileFormats": {
-        "fileInputHint": "Only CSV files are accepted.",
-        "fieldAccept": ".csv"
-      },
-      "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c144' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
-      },
-      "report_levels": {
-        "sea": "SEA EDUCATIONAL SERVICES",
-        "lea": "LEA EDUCATIONAL SERVICES"
-      },
-      "columns": [
-        "fileRecordNumber",
-        "stateCode",
-        "stateAgencyNumber",
-        "leaIdentifier",
-        "filler1",
-        "tableName",
-        "ideadisabilitytype",
-        "educationalservicesafterremoval",
-        "filler2",
-        "TotalIndicator",
-        "explanation",
-        "disciplinecount"
-      ],
-      "report_code": "c144",
-      "included_in_all": [],
-      "category_conditions": {
-        "CSA": ["ideadisabilitytype", "educationalservicesafterremoval"]
-      },
-      "subtotal_columns": [],
-      "validation": "FS144"
-    }
-  ]
+        ],
+        "required": true,
+        "shortLabel": "Reporting level"
+        }
+    ],
+    "files": [
+        {
+            "id": "FS005",
+            "name": "FS005 - Children with Disabilities (IDEA) Removal to Interim Alternative Educational Setting",
+            "description": "The number of children with disabilities (IDEA) who are ages 3 through 21 as of the child count date and removed to an interim alternative educational setting either unilaterally by school personnel (not the IEP team) or by a hearing officer.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c005' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "SEA CHILDREN WITH DISAB (IDEA) DISCIPLINE",
+                "lea": "LEA CHILDREN WITH DISAB (IDEA) DISCIPLINE"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler",
+                "tableName",
+                "sex",
+                "race",
+                "englishLearnerStatus",
+                "filler",
+                "filler",
+                "filler",
+                "filler",
+                "filler",
+                "filler",
+                "ideadisabilitytype",
+                "filler",
+                "ideainterimremoval",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c005",
+            "included_in_all": [
+                "ideainterimremoval"
+            ],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype"
+                ],
+                "CSB": [
+                    "race"
+                ],
+                "CSC": [
+                    "sex"
+                ],
+                "CSD": [
+                    "englishLearnerStatus"
+                ]
+            },
+            "subtotal_columns": [
+                [
+                    "ideainterimremoval"
+                ]
+            ],
+            "validation": "FS005"
+        },
+        {
+            "id": "FS006",
+            "name": "FS006 - Children with Disabilities (IDEA) Suspensions/Expulsions",
+            "description": "The number of children with disabilities (IDEA) who are ages 3 through 21 and suspended or expelled for disciplinary reasons.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c006' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
+                "lea": "SEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler1",
+                "tableName",
+                "removallength",
+                "race",
+                "sex",
+                "filler3",
+                "filler4",
+                "filler5",
+                "filler6",
+                "filler7",
+                "filler8",
+                "ideadisabilitytype",
+                "englishLearnerStatus",
+                "disciplinemethodofchildrenwithdisabilities",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c006",
+            "included_in_all": [
+                "disciplinemethodofchildrenwithdisabilities",
+                "removallength"
+            ],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype"
+                ],
+                "CSB": [
+                    "race"
+                ],
+                "CSC": [
+                    "sex"
+                ],
+                "CSD": [
+                    "englishLearnerStatus"
+                ]
+            },
+            "subtotal_columns": [
+                [
+                    "disciplinemethodofchildrenwithdisabilities",
+                    "removallength"
+                ]
+            ],
+            "validation": "FS006"
+        },
+        {
+            "id": "FS007",
+            "name": "FS007 - Children with Disabilities (IDEA) Reasons for Unilateral Removal",
+            "description": "The number of times children with disabilities (IDEA) who were ages 3 through 21 and unilaterally removed by school personnel (not the IEP team) from their current educational placement to an interim alternative educational setting (determined by the IEP team) due to drug or weapon offenses or serious bodily injury.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c007' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "SEA CHILDREN WITH DISAB (IDEA) REMOVAL",
+                "lea": "LEA CHILDREN WITH DISAB (IDEA) REMOVAL"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler1",
+                "tableName",
+                "filler2",
+                "race",
+                "sex",
+                "filler3",
+                "filler4",
+                "filler5",
+                "filler6",
+                "filler7",
+                "filler8",
+                "ideadisabilitytype",
+                "englishLearnerStatus",
+                "ideainterimremovalreason",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c007",
+            "included_in_all": [
+                "ideainterimremovalreason"
+            ],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype"
+                ],
+                "CSB": [
+                    "race"
+                ],
+                "CSC": [
+                    "sex"
+                ],
+                "CSD": [
+                    "englishLearnerStatus"
+                ]
+            },
+            "subtotal_columns": [
+                [
+                    "ideainterimremovalreason"
+                ]
+            ],
+            "validation": "FS007"
+        },
+        {
+            "id": "FS088",
+            "name": "FS088 - Children with Disabilities (IDEA) Disciplinary Removals ",
+            "description": "Unduplicated counts of children with disabilities (IDEA), ages 3 through 21, who were subject to disciplinary removals during the school year. Includes removals of 1 day or less, 2 through 10 days, and greater than 10 days.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c088' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "SEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT",
+                "lea": "LEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler1",
+                "tableName",
+                "sex",
+                "race",
+                "removallength",
+                "ideadisabilitytype",
+                "englishLearnerStatus",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c088",
+            "included_in_all": [
+                "removallength"
+            ],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype"
+                ],
+                "CSB": [
+                    "race"
+                ],
+                "CSC": [
+                    "sex"
+                ],
+                "CSD": [
+                    "englishLearnerStatus"
+                ]
+            },
+            "subtotal_columns": [
+                [
+                    "removallength"
+                ]
+            ],
+            "validation": "FS088"
+        },
+        {
+            "id": "FS143",
+            "name": "FS143 - Children with Disabilities (IDEA) Total Disciplinary Removals",
+            "description": "The number of times children with disabilities (IDEA), ages 3 through 21, were subject to any kind of disciplinary removal, including expulsions.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c143' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL",
+                "lea": "LEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler1",
+                "tableName",
+                "sex",
+                "race",
+                "englishLearnerStatus",
+                "ideadisabilitytype",
+                "filler2",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c143",
+            "included_in_all": [],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype"
+                ],
+                "CSB": [
+                    "race"
+                ],
+                "CSC": [
+                    "sex"
+                ],
+                "CSD": [
+                    "englishLearnerStatus"
+                ]
+            },
+            "subtotal_columns": [],
+            "validation": "FS143"
+        },
+        {
+            "id": "FS144",
+            "name": "FS144 - Educational Services During Expulsion ",
+            "description": "The unduplicated number of children (students) who were removed for disciplinary reasons from their regular school program for the remainder of the school year or longer, including all removals resulting from violations of the Gun-Free Schools Act (GFSA) of 1994.",
+            "acceptedFileFormats": {
+                "fileInputHint": "Only CSV files are accepted.",
+                "fieldAccept": ".csv"
+            },
+            "database": {
+                "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c144' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+            },
+            "report_levels": {
+                "sea": "SEA EDUCATIONAL SERVICES",
+                "lea": "LEA EDUCATIONAL SERVICES"
+            },
+            "columns": [
+                "fileRecordNumber",
+                "stateCode",
+                "stateAgencyNumber",
+                "leaIdentifier",
+                "filler1",
+                "tableName",
+                "ideadisabilitytype",
+                "educationalservicesafterremoval",
+                "filler2",
+                "TotalIndicator",
+                "explanation",
+                "disciplinecount"
+            ],
+            "report_code": "c144",
+            "included_in_all": [],
+            "category_conditions": {
+                "CSA": [
+                    "ideadisabilitytype",
+                    "educationalservicesafterremoval"
+                ]
+            },
+            "subtotal_columns": [],
+            "validation": "FS144"
+        }
+    ]
 }
