@@ -20,7 +20,7 @@ export class AdaptNodeLambda extends nodejs.NodejsFunction {
     super(scope, id, {
       // Set overridable defaults
       memorySize: 512,
-      timeout: Duration.seconds(3),
+      timeout: Duration.seconds(29),
       // End overridable defaults
       ...props,
       // Set non-overridable defaults (these must be last and defined in the omit props list)
