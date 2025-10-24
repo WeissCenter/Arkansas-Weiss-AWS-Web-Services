@@ -1,39 +1,12 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 
-import {
-  AthenaClient,
-  Datum,
-  ResultSet,
-  GetQueryResultsCommand,
-  StartQueryExecutionCommand,
-  GetQueryExecutionCommand,
-  QueryExecutionState,
-} from "@aws-sdk/client-athena";
+import { AthenaClient, Datum, ResultSet, GetQueryResultsCommand, StartQueryExecutionCommand, GetQueryExecutionCommand, QueryExecutionState } from "@aws-sdk/client-athena";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { LambdaClient, InvokeCommand, LogType } from "@aws-sdk/client-lambda";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import crypto from "node:crypto";
-import {
-  CreateSessionCommand,
-  DeleteObjectCommand,
-  DeleteObjectCommandOutput,
-  GetObjectCommand,
-  ListObjectsCommand,
-  NoSuchKey,
-  PutObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
-import {
-  CreateBackendErrorResponse,
-  getReportFromDynamo,
-  getDataView,
-  CreateBackendResponse,
-  ITemplate,
-  ReportVersion,
-  IReport,
-  ICondition,
-  IFilter,
-} from "../../../libs/types/src";
+import { CreateSessionCommand, DeleteObjectCommand, DeleteObjectCommandOutput, GetObjectCommand, ListObjectsCommand, NoSuchKey, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { CreateBackendErrorResponse, getReportFromDynamo, getDataView, CreateBackendResponse, ITemplate, ReportVersion, IReport, ICondition, IFilter } from "../../../libs/types/src";
 import { translateJSON } from "../../../scripts/translate";
 
 // Define Environment Variables
@@ -52,10 +25,7 @@ const lambdaClient = new LambdaClient({ region: "us-east-1" });
 const athenaClient = new AthenaClient({ region: "us-east-1" });
 const s3Client = new S3Client({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   try {
     if (!event?.body) {
       return CreateBackendErrorResponse(400, "Missing body");
@@ -66,27 +36,14 @@ export const handler: Handler = async (
       return CreateBackendErrorResponse(400, "Missing slug");
     }
 
-    const version =
-      event?.queryStringParameters?.["version"] ?? ReportVersion.DRAFT;
+    const version = event?.queryStringParameters?.["version"] ?? ReportVersion.DRAFT;
     const suppressed = event?.queryStringParameters?.["suppressed"] === "true";
     const lang = event?.queryStringParameters?.["lang"] || "en";
     const pageId = event?.queryStringParameters?.["pageId"] || undefined;
 
     let [baseReport, report] = await Promise.all([
-      getReportFromDynamo(
-        db,
-        TABLE_NAME,
-        reportId,
-        (version as ReportVersion) || ReportVersion.DRAFT,
-        "en",
-      ),
-      getReportFromDynamo(
-        db,
-        TABLE_NAME,
-        reportId,
-        (version as ReportVersion) || ReportVersion.DRAFT,
-        lang,
-      ),
+      getReportFromDynamo(db, TABLE_NAME, reportId, (version as ReportVersion) || ReportVersion.DRAFT, "en"),
+      getReportFromDynamo(db, TABLE_NAME, reportId, (version as ReportVersion) || ReportVersion.DRAFT, lang)
     ]);
 
     if (!baseReport && !report) {
@@ -99,32 +56,27 @@ export const handler: Handler = async (
 
       if (!translated?.Items?.length)
         // create the translated version?
-        translatedTemplate = await translateJSON(
-          "en",
-          lang,
-          (baseReport as IReport).template,
-          [
-            "suppression",
-            "type",
-            "dataType",
-            "condition",
-            "default",
-            "code",
-            "order",
-            "field",
-            "sortableCategories",
-            "id",
-            "variables",
-            "yAxisLabel",
-            "xAxisLabel",
-            "xAxisValue",
-            "yAxisValue",
-            "dataRetrievalOperations",
-            "filterOn",
-            "chart",
-            "conditions",
-          ],
-        );
+        translatedTemplate = await translateJSON("en", lang, (baseReport as IReport).template, [
+          "suppression",
+          "type",
+          "dataType",
+          "condition",
+          "default",
+          "code",
+          "order",
+          "field",
+          "sortableCategories",
+          "id",
+          "variables",
+          "yAxisLabel",
+          "xAxisLabel",
+          "xAxisValue",
+          "yAxisValue",
+          "dataRetrievalOperations",
+          "filterOn",
+          "chart",
+          "conditions"
+        ]);
       else translatedTemplate = translated.Items[0];
 
       const reportClone = structuredClone(baseReport) as any;
@@ -138,7 +90,7 @@ export const handler: Handler = async (
 
       const putParams = {
         TableName: TABLE_NAME,
-        Item: reportClone,
+        Item: reportClone
       };
 
       await db.put(putParams);
@@ -159,15 +111,8 @@ export const handler: Handler = async (
     const baseReportTemplate = baseReport.template as ITemplate;
     for (const [key, value] of Object.entries(filters)) {
       console.log(`Validating filter: ${key} = ${value}`);
-      const isValidFilterCondition = validateFilterCondition(
-        key,
-        pageId,
-        filters,
-        baseReportTemplate,
-      );
-      console.log(
-        `Filter ${key} condition is ${isValidFilterCondition ? "valid" : "invalid"}`,
-      );
+      const isValidFilterCondition = validateFilterCondition(key, pageId, filters, baseReportTemplate);
+      console.log(`Filter ${key} condition is ${isValidFilterCondition ? "valid" : "invalid"}`);
       if (!isValidFilterCondition) {
         console.warn(`Filter ${key} does not meet the condition requirements`);
         continue; // skip filters that do not meet the condition requirements
@@ -180,13 +125,7 @@ export const handler: Handler = async (
 
     // try to see if we have a cached template
 
-    const cached = await getCachedTemplate(
-      reportId,
-      version,
-      suppressed,
-      validatedFilters,
-      lang,
-    );
+    const cached = await getCachedTemplate(reportId, version, suppressed, validatedFilters, lang);
 
     if (!cached) {
       // load and cache if needed from service function
@@ -198,41 +137,26 @@ export const handler: Handler = async (
           filters: validatedFilters,
           suppress: suppressed,
           version,
-          lang,
+          lang
         }),
-        LogType: LogType.Tail,
+        LogType: LogType.Tail
       });
 
       const { Payload } = await lambdaClient.send(command);
 
       const payloadString = Payload?.transformToString();
 
-      if (!payloadString)
-        return CreateBackendErrorResponse(
-          404,
-          "template could not be found / rendered",
-        );
+      if (!payloadString) return CreateBackendErrorResponse(404, "template could not be found / rendered");
 
       const payloadResponse = JSON.parse(payloadString);
       // add the filters that were validated and used to the payload response
       payloadResponse["filtersUsed"] = validatedFilters;
       payloadResponse["suppressed"] = suppressed;
-      if (
-        ("statusCode" in payloadResponse &&
-          payloadResponse["statusCode"] !== 200) ||
-        "errorType" in payloadResponse
-      ) {
+      if (("statusCode" in payloadResponse && payloadResponse["statusCode"] !== 200) || "errorType" in payloadResponse) {
         throw new EvalError("failed to render the template");
       }
 
-      await uploadCachedTemplate(
-        reportId,
-        version,
-        suppressed,
-        validatedFilters,
-        payloadResponse,
-        lang,
-      ); //TODO: make another async function to reduce run time?
+      await uploadCachedTemplate(reportId, version, suppressed, validatedFilters, payloadResponse, lang); //TODO: make another async function to reduce run time?
 
       return CreateBackendResponse(200, payloadResponse);
     }
@@ -244,21 +168,14 @@ export const handler: Handler = async (
   }
 };
 
-async function uploadCachedTemplate(
-  reportId: string,
-  version: string,
-  suppressed = false,
-  filters: Record<string, any>,
-  template: ITemplate,
-  lang = "en",
-) {
+async function uploadCachedTemplate(reportId: string, version: string, suppressed = false, filters: Record<string, any>, template: ITemplate, lang = "en") {
   // generate hash
 
   const hash = getHashForTemplate(filters, lang);
   const putObjectCommand = new PutObjectCommand({
     Bucket: CACHE_BUCKET,
     Key: `${reportId}/${version}/${lang}${suppressed ? "/suppressed" : ""}/${hash}.json`,
-    Body: JSON.stringify(template),
+    Body: JSON.stringify(template)
   });
 
   return await s3Client.send(putObjectCommand);
@@ -276,20 +193,14 @@ function getHashForTemplate(filters: Record<string, any>, lang = "en") {
   return crypto.createHash("sha256").update(hashableString).digest("hex");
 }
 
-async function getCachedTemplate(
-  reportId: string,
-  version: string,
-  suppressed = false,
-  filters: Record<string, any>,
-  lang = "en",
-) {
+async function getCachedTemplate(reportId: string, version: string, suppressed = false, filters: Record<string, any>, lang = "en") {
   // generate hash
   try {
     const hash = getHashForTemplate(filters, lang);
 
     const getItemCommand = new GetObjectCommand({
       Bucket: CACHE_BUCKET,
-      Key: `${reportId}/${version}/${lang}${suppressed ? "/suppressed" : ""}/${hash}.json`,
+      Key: `${reportId}/${version}/${lang}${suppressed ? "/suppressed" : ""}/${hash}.json`
     });
 
     const getObject = await s3Client.send(getItemCommand);
@@ -306,32 +217,23 @@ async function getCachedTemplate(
   }
 }
 
-async function getTemplate(
-  db: DynamoDBDocument,
-  templateID: string,
-  lang: string,
-) {
+async function getTemplate(db: DynamoDBDocument, templateID: string, lang: string) {
   const params = {
     TableName: process.env.TEMPLATE_TABLE,
     KeyConditionExpression: "#type = :type AND id = :id",
     ExpressionAttributeNames: {
-      "#type": "type",
+      "#type": "type"
     },
     ExpressionAttributeValues: {
       ":type": "ReportTemplate",
-      ":id": `${templateID}#LANG#${lang}`,
-    },
+      ":id": `${templateID}#LANG#${lang}`
+    }
   };
 
   return await db.query(params);
 }
 
-function validateFilterCondition(
-  filterKey: string,
-  pageId: string | undefined,
-  filters: any,
-  reportTemplate: ITemplate,
-): boolean {
+function validateFilterCondition(filterKey: string, pageId: string | undefined, filters: any, reportTemplate: ITemplate): boolean {
   const reportFilter = reportTemplate.filters[filterKey] as IFilter<unknown>;
   if (!reportFilter?.condition) return true;
   const { pages, conditions, operator } = reportFilter.condition;

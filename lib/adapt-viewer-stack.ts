@@ -28,38 +28,30 @@ export class AdaptViewerStack extends cdk.Stack {
     const loggingStatement = new PolicyStatement({
       effect: Effect.ALLOW,
       actions: ["logs:*"],
-      resources: [props.logGroup.logGroupArn],
+      resources: [props.logGroup.logGroupArn]
     });
 
-    const createShareLinkHandler = new AdaptNodeLambda(
-      this,
-      "createShareLinkHandler",
-      {
-        prefix: props.stage,
-        handler: "handler",
-        entry: path.join(
-          __dirname,
-          ".",
-          "./handlers/viewer/createShareLink/createShareLink.ts",
-        ),
-        attachPolicies: [
-          new Policy(this, "createShareLink", {
-            statements: [
-              loggingStatement,
-              new PolicyStatement({
-                effect: Effect.ALLOW,
-                actions: ["dynamodb:GetItem", "dynamodb:PutItem"],
-                resources: [props.dynamoTables["shareTable"].tableArn],
-              }),
-            ],
-          }),
-        ],
-        environment: {
-          TABLE_NAME: props.dynamoTables["shareTable"].tableName,
-          LOG_GROUP: props.logGroup.logGroupName,
-        },
-      },
-    );
+    const createShareLinkHandler = new AdaptNodeLambda(this, "createShareLinkHandler", {
+      prefix: props.stage,
+      handler: "handler",
+      entry: path.join(__dirname, ".", "./handlers/viewer/createShareLink/createShareLink.ts"),
+      attachPolicies: [
+        new Policy(this, "createShareLink", {
+          statements: [
+            loggingStatement,
+            new PolicyStatement({
+              effect: Effect.ALLOW,
+              actions: ["dynamodb:GetItem", "dynamodb:PutItem"],
+              resources: [props.dynamoTables["shareTable"].tableArn]
+            })
+          ]
+        })
+      ],
+      environment: {
+        TABLE_NAME: props.dynamoTables["shareTable"].tableName,
+        LOG_GROUP: props.logGroup.logGroupName
+      }
+    });
 
     const restApi = new AdaptRestApi(this, `${props.stage}-AdaptViewerApi`, {
       stage: props.stage,
@@ -71,27 +63,23 @@ export class AdaptViewerStack extends cdk.Stack {
             handler: new AdaptNodeLambda(this, "getViewerSettingsHandler", {
               prefix: props.stage,
               handler: "handler",
-              entry: path.join(
-                __dirname,
-                ".",
-                "./handlers/viewer/getSettings/getSettings.ts",
-              ),
+              entry: path.join(__dirname, ".", "./handlers/viewer/getSettings/getSettings.ts"),
               attachPolicies: [
                 new Policy(this, "getSettings", {
                   statements: [
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:GetItem"],
-                      resources: [props.dynamoTables["settingsTable"].tableArn],
-                    }),
-                  ],
-                }),
+                      resources: [props.dynamoTables["settingsTable"].tableArn]
+                    })
+                  ]
+                })
               ],
               environment: {
-                SETTINGS_TABLE: props.dynamoTables["settingsTable"].tableName,
-              },
-            }),
-          },
+                SETTINGS_TABLE: props.dynamoTables["settingsTable"].tableName
+              }
+            })
+          }
         },
 
         "/settings/glossary": {
@@ -100,26 +88,22 @@ export class AdaptViewerStack extends cdk.Stack {
               prefix: props.stage,
               handler: "handler",
               environment: {
-                SETTINGS_TABLE: props.dynamoTables["settingsTable"].tableName,
+                SETTINGS_TABLE: props.dynamoTables["settingsTable"].tableName
               },
-              entry: path.join(
-                __dirname,
-                ".",
-                "./handlers/viewer/getGlossary/getGlossary.ts",
-              ),
+              entry: path.join(__dirname, ".", "./handlers/viewer/getGlossary/getGlossary.ts"),
               attachPolicies: [
                 new Policy(this, "viewerGetGlossaryPolicy", {
                   statements: [
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:GetItem"],
-                      resources: [props.dynamoTables["settingsTable"].tableArn],
-                    }),
-                  ],
-                }),
-              ],
-            }),
-          },
+                      resources: [props.dynamoTables["settingsTable"].tableArn]
+                    })
+                  ]
+                })
+              ]
+            })
+          }
         },
         "/reports": {
           GET: {
@@ -127,27 +111,23 @@ export class AdaptViewerStack extends cdk.Stack {
               prefix: props.stage,
               handler: "handler",
               environment: {
-                REPORT_TABLE: props.dynamoTables["reportTable"].tableName,
+                REPORT_TABLE: props.dynamoTables["reportTable"].tableName
               },
-              entry: path.join(
-                __dirname,
-                ".",
-                "./handlers/viewer/getReports/getReports.ts",
-              ),
+              entry: path.join(__dirname, ".", "./handlers/viewer/getReports/getReports.ts"),
               attachPolicies: [
                 new Policy(this, "viewerGetReportsPolicy", {
                   statements: [
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:Query", "dynamodb:Scan"],
-                      resources: [props.dynamoTables["reportTable"].tableArn],
-                    }),
-                  ],
-                }),
-              ],
+                      resources: [props.dynamoTables["reportTable"].tableArn]
+                    })
+                  ]
+                })
+              ]
             }),
-            cache: { enabled: true, ttl: Duration.minutes(5) },
-          },
+            //cache: { enabled: true, ttl: Duration.minutes(5) }
+          }
         },
         "/reports/{slug}": {
           GET: {
@@ -155,35 +135,28 @@ export class AdaptViewerStack extends cdk.Stack {
               prefix: props.stage,
               handler: "handler",
               environment: {
-                REPORT_TABLE: props.dynamoTables["reportTable"].tableName,
+                REPORT_TABLE: props.dynamoTables["reportTable"].tableName
               },
-              entry: path.join(
-                __dirname,
-                ".",
-                "./handlers/viewer/getReports/getReports.ts",
-              ),
+              entry: path.join(__dirname, ".", "./handlers/viewer/getReports/getReports.ts"),
               attachPolicies: [
                 new Policy(this, "viewerGetReportBySlugPolicy", {
                   statements: [
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:Query"],
-                      resources: [
-                        props.dynamoTables["reportTable"].tableArn,
-                        `${props.dynamoTables["reportTable"].tableArn}/index/report-slug-query`,
-                      ],
-                    }),
-                  ],
-                }),
-              ],
-            }),
-          },
+                      resources: [props.dynamoTables["reportTable"].tableArn, `${props.dynamoTables["reportTable"].tableArn}/index/report-slug-query`]
+                    })
+                  ]
+                })
+              ]
+            })
+          }
         },
         "/reports/share": {
-          POST: { handler: createShareLinkHandler },
+          POST: { handler: createShareLinkHandler }
         },
         "/reports/share/{slug}": {
-          GET: { handler: createShareLinkHandler },
+          GET: { handler: createShareLinkHandler }
         },
         "/reports/{slug}/data": {
           POST: {
@@ -198,60 +171,46 @@ export class AdaptViewerStack extends cdk.Stack {
                 CACHE_BUCKET: props.reportCache.bucketName!,
                 TEMPLATE_TABLE: props.dynamoTables["templatesTable"].tableName,
                 CATALOG: props.dataCatalog.databaseName,
-                RENDER_TEMPLATE_FUNCTION:
-                  props.renderTemplateServiceFunction.functionName,
-                ATHENA_QUERY_RATE: "1000",
+                RENDER_TEMPLATE_FUNCTION: props.renderTemplateServiceFunction.functionName,
+                ATHENA_QUERY_RATE: "1000"
               },
               nodeModules: ["kysely"],
-              entry: path.join(
-                __dirname,
-                ".",
-                "./handlers/viewer/getData/getData.ts",
-              ),
+              entry: path.join(__dirname, ".", "./handlers/viewer/getData/getData.ts"),
               attachPolicies: [
                 new Policy(this, "viewerGetDataForReportBySlugPolicy", {
                   statements: [
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:Query", "dynamodb:PutItem"],
-                      resources: [
-                        props.dynamoTables["reportTable"].tableArn,
-                        props.dynamoTables["templatesTable"].tableArn,
-                        `${props.dynamoTables["reportTable"].tableArn}/index/report-slug-query`,
-                      ],
+                      resources: [props.dynamoTables["reportTable"].tableArn, props.dynamoTables["templatesTable"].tableArn, `${props.dynamoTables["reportTable"].tableArn}/index/report-slug-query`]
                     }),
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:PutItem"],
-                      resources: [props.dynamoTables["reportTable"].tableArn],
+                      resources: [props.dynamoTables["reportTable"].tableArn]
                     }),
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["s3:*", "s3express:*"], // TODO: restrict
-                      resources: [
-                        props.reportCache.attrArn,
-                        `${props.reportCache.attrArn}/*`,
-                      ],
+                      resources: [props.reportCache.attrArn, `${props.reportCache.attrArn}/*`]
                     }),
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["dynamodb:GetItem"],
-                      resources: [
-                        props.dynamoTables["dataSourceTable"].tableArn,
-                      ],
+                      resources: [props.dynamoTables["dataSourceTable"].tableArn]
                     }),
                     new PolicyStatement({
                       effect: Effect.ALLOW,
                       actions: ["lambda:InvokeFunction"],
-                      resources: ["*"], // TODO: restrict to suppression service
-                    }),
-                  ],
-                }),
-              ],
-            }),
-          },
-        },
-      },
+                      resources: ["*"] // TODO: restrict to suppression service
+                    })
+                  ]
+                })
+              ]
+            })
+          }
+        }
+      }
     });
   }
 }

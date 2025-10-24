@@ -7,9 +7,8 @@ export function CreateBackendResponse<T>(statusCode: number, data?: T) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-      "Access-Control-Allow-Headers":
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-    },
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    }
   };
 }
 
@@ -17,32 +16,19 @@ export function deleteIfPresent(settings: any, propertyName: string) {
   settings[propertyName] && delete settings[propertyName];
 }
 
-export function createUpdateItemFromObject(
-  obj: any,
-  ignoreFields: string[] = [],
-) {
+export function createUpdateItemFromObject(obj: any, ignoreFields: string[] = []) {
   const keys = Object.keys(obj).filter((key) => !ignoreFields.includes(key));
 
-  const UpdateExpression = keys.reduce(
-    (accum, key, idx) =>
-      idx === 0 ? `${accum} #${key} = :${key}` : `${accum}, #${key} = :${key}`,
-    "SET ",
-  );
+  const UpdateExpression = keys.reduce((accum, key, idx) => (idx === 0 ? `${accum} #${key} = :${key}` : `${accum}, #${key} = :${key}`), "SET ");
 
-  const ExpressionAttributeNames = keys.reduce(
-    (accum, key) => Object.assign(accum, { [`#${key}`]: key }),
-    {},
-  );
+  const ExpressionAttributeNames = keys.reduce((accum, key) => Object.assign(accum, { [`#${key}`]: key }), {});
 
-  const ExpressionAttributeValues = keys.reduce(
-    (accum, key) => Object.assign(accum, { [`:${key}`]: obj[key] }),
-    {},
-  );
+  const ExpressionAttributeValues = keys.reduce((accum, key) => Object.assign(accum, { [`:${key}`]: obj[key] }), {});
 
   return {
     UpdateExpression,
     ExpressionAttributeNames,
-    ExpressionAttributeValues,
+    ExpressionAttributeValues
   };
 }
 
@@ -54,9 +40,8 @@ export function CreateBackendErrorResponse(statusCode: number, err: any) {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
-      "Access-Control-Allow-Headers":
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-    },
+      "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    }
   };
 }
 
@@ -89,7 +74,7 @@ export function getUserDataFromEvent(event: any) {
     givenName,
     familyName,
     fullName: `${givenName} ${familyName}`,
-    email,
+    email
   };
 }
 
@@ -105,7 +90,7 @@ export function jsonToParquetSchema(json: any) {
       case "number": {
         accum[key] = {
           type: isInt(value) ? "INT32" : "DOUBLE",
-          optional: true,
+          optional: true
         };
         break;
       }
@@ -199,15 +184,11 @@ export function cleanObject(obj: any): any {
       }
 
       return true;
-    }),
+    })
   );
 }
 
-export function clearOtherControls(
-  form: any,
-  changedField: string,
-  value?: string,
-) {
+export function clearOtherControls(form: any, changedField: string, value?: string) {
   Object.keys(form.controls).forEach((field) => {
     if (field !== changedField) {
       form.get(field)?.setValue(value, { emitEvent: false });
@@ -242,8 +223,7 @@ function clamp_range(range: any) {
   return range;
 }
 
-const crefregex =
-  /(^|[^._A-Z0-9])([$]?)([A-Z]{1,2}|[A-W][A-Z]{2}|X[A-E][A-Z]|XF[A-D])([$]?)([1-9]\d{0,5}|10[0-3]\d{4}|104[0-7]\d{3}|1048[0-4]\d{2}|10485[0-6]\d|104857[0-6])(?![_.\(A-Za-z0-9])/g;
+const crefregex = /(^|[^._A-Z0-9])([$]?)([A-Z]{1,2}|[A-W][A-Z]{2}|X[A-E][A-Z]|XF[A-D])([$]?)([1-9]\d{0,5}|10[0-3]\d{4}|104[0-7]\d{3}|1048[0-4]\d{2}|10485[0-6]\d|104857[0-6])(?![_.\(A-Za-z0-9])/g;
 
 /*
 	deletes `nrows` rows STARTING WITH `start_row`
@@ -263,25 +243,14 @@ export function xlsx_delete_row(ws: any, start_row: number, nrows = 1) {
   let R = 0,
     C = 0;
 
-  const formula_cb = function (
-    $0: any,
-    $1: any,
-    $2: any,
-    $3: any,
-    $4: any,
-    $5: any,
-  ) {
+  const formula_cb = function ($0: any, $1: any, $2: any, $3: any, $4: any, $5: any) {
     let _R = xlsx.utils.decode_row($5),
       _C = xlsx.utils.decode_col($3);
     if (_R >= start_row) {
       _R -= nrows;
       if (_R < start_row) return "#REF!";
     }
-    return (
-      $1 +
-      ($2 == "$" ? $2 + $3 : xlsx.utils.encode_col(_C)) +
-      ($4 == "$" ? $4 + $5 : xlsx.utils.encode_row(_R))
-    );
+    return $1 + ($2 == "$" ? $2 + $3 : xlsx.utils.encode_col(_C)) + ($4 == "$" ? $4 + $5 : xlsx.utils.encode_row(_R));
   };
 
   let addr, naddr;
@@ -323,8 +292,7 @@ export function xlsx_delete_row(ws: any, start_row: number, nrows = 1) {
     for (R = 0; R < start_row; ++R) {
       for (C = range.s.c; C <= range.e.c; ++C) {
         addr = xlsx.utils.encode_cell({ r: R, c: C });
-        if (ws[addr] && ws[addr].f)
-          ws[addr].f = ws[addr].f.replace(crefregex, formula_cb);
+        if (ws[addr] && ws[addr].f) ws[addr].f = ws[addr].f.replace(crefregex, formula_cb);
       }
     }
   }
@@ -354,8 +322,7 @@ export function xlsx_delete_row(ws: any, start_row: number, nrows = 1) {
           delete ws["!merges"][idx];
           return;
         }
-      } else if (mergerange.e.r >= start_row)
-        mergerange.e.r = Math.max(mergerange.e.r - nrows, start_row);
+      } else if (mergerange.e.r >= start_row) mergerange.e.r = Math.max(mergerange.e.r - nrows, start_row);
       clamp_range(mergerange);
       ws["!merges"][idx] = mergerange;
     });
@@ -368,10 +335,7 @@ export function xlsx_delete_row(ws: any, start_row: number, nrows = 1) {
   if (ws["!rows"]) ws["!rows"].splice(start_row, nrows);
 }
 
-export function chartExplainTemplateParse(
-  explainTemplate?: string,
-  plainLanguageItems: string[] = [],
-) {
+export function chartExplainTemplateParse(explainTemplate?: string, plainLanguageItems: string[] = []) {
   if (explainTemplate) {
     const select = ["first", "second", "third"];
 

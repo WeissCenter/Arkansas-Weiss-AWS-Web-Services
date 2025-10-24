@@ -246,9 +246,7 @@
                               {
                                 "array": true,
                                 "field": "selectColumns",
-                                "value": [
-                                  "specialeducationteacherqualificationstatus"
-                                ]
+                                "value": ["specialeducationteacherqualificationstatus"]
                               },
                               {
                                 "type": "number",
@@ -264,9 +262,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "groupby",
-                                "value": [
-                                  "specialeducationteacherqualificationstatus"
-                                ]
+                                "value": ["specialeducationteacherqualificationstatus"]
                               },
                               {
                                 "type": "string",
@@ -307,7 +303,7 @@
                       "chart": {
                         "dataRetrievalOperations": [
                           {
-                            "id": "specialEducationTeachers",
+                            "id": "paraprofessionals",
                             "arguments": [
                               {
                                 "type": "string",
@@ -411,19 +407,7 @@
                         {
                           "field": "specialeducationsupportservicescategory",
                           "array": true,
-                          "value": [
-                            "AUDIO",
-                            "COUNSELOR",
-                            "INTERPRET",
-                            "MEDNURSE",
-                            "OCCTHERAP",
-                            "ORIENTMOBIL",
-                            "PEANDREC",
-                            "PHYSTHERAP",
-                            "PSYCH",
-                            "SOCIALWORK",
-                            "SPEECHPATH"
-                          ]
+                          "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                         }
                       ],
                       "dependents": {
@@ -438,19 +422,7 @@
                             {
                               "field": "specialeducationsupportservicescategory",
                               "array": true,
-                              "value": [
-                                "AUDIO",
-                                "COUNSELOR",
-                                "INTERPRET",
-                                "MEDNURSE",
-                                "OCCTHERAP",
-                                "ORIENTMOBIL",
-                                "PEANDREC",
-                                "PHYSTHERAP",
-                                "PSYCH",
-                                "SOCIALWORK",
-                                "SPEECHPATH"
-                              ]
+                              "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                             },
                             {
                               "field": "totalindicator",
@@ -478,19 +450,7 @@
                         {
                           "field": "specialeducationsupportservicescategory",
                           "array": true,
-                          "value": [
-                            "AUDIO",
-                            "COUNSELOR",
-                            "INTERPRET",
-                            "MEDNURSE",
-                            "OCCTHERAP",
-                            "ORIENTMOBIL",
-                            "PEANDREC",
-                            "PHYSTHERAP",
-                            "PSYCH",
-                            "SOCIALWORK",
-                            "SPEECHPATH"
-                          ]
+                          "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                         }
                       ],
                       "dependents": {
@@ -505,19 +465,7 @@
                             {
                               "field": "specialeducationsupportservicescategory",
                               "array": true,
-                              "value": [
-                                "AUDIO",
-                                "COUNSELOR",
-                                "INTERPRET",
-                                "MEDNURSE",
-                                "OCCTHERAP",
-                                "ORIENTMOBIL",
-                                "PEANDREC",
-                                "PHYSTHERAP",
-                                "PSYCH",
-                                "SOCIALWORK",
-                                "SPEECHPATH"
-                              ]
+                              "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                             },
                             {
                               "field": "totalindicator",
@@ -545,19 +493,7 @@
                         {
                           "field": "specialeducationsupportservicescategory",
                           "array": true,
-                          "value": [
-                            "AUDIO",
-                            "COUNSELOR",
-                            "INTERPRET",
-                            "MEDNURSE",
-                            "OCCTHERAP",
-                            "ORIENTMOBIL",
-                            "PEANDREC",
-                            "PHYSTHERAP",
-                            "PSYCH",
-                            "SOCIALWORK",
-                            "SPEECHPATH"
-                          ]
+                          "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                         }
                       ],
                       "dependents": {
@@ -572,19 +508,7 @@
                             {
                               "field": "specialeducationsupportservicescategory",
                               "array": true,
-                              "value": [
-                                "AUDIO",
-                                "COUNSELOR",
-                                "INTERPRET",
-                                "MEDNURSE",
-                                "OCCTHERAP",
-                                "ORIENTMOBIL",
-                                "PEANDREC",
-                                "PHYSTHERAP",
-                                "PSYCH",
-                                "SOCIALWORK",
-                                "SPEECHPATH"
-                              ]
+                              "value": ["AUDIO", "COUNSELOR", "INTERPRET", "MEDNURSE", "OCCTHERAP", "ORIENTMOBIL", "PEANDREC", "PHYSTHERAP", "PSYCH", "SOCIALWORK", "SPEECHPATH"]
                             },
                             {
                               "field": "totalindicator",

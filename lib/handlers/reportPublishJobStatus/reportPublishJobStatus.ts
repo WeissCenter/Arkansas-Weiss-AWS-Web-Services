@@ -11,7 +11,7 @@ import {
   getSubscription,
   ITemplate,
   ReportVersion,
-  updateReportVersion,
+  updateReportVersion
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -40,16 +40,9 @@ const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 const lambdaClient = new LambdaClient({ region: "us-east-1" });
 const s3Client = new S3Client({ region: "us-east-1" });
-webpush.setVapidDetails(
-  "https://weissta.org/",
-  PUBLIC_VAPID_KEY,
-  PRIVATE_VAPID_KEY,
-);
+webpush.setVapidDetails("https://weissta.org/", PUBLIC_VAPID_KEY, PRIVATE_VAPID_KEY);
 
-export const handler: Handler = async (
-  event: EventBridgeEvent<string, any>,
-  context: Context,
-) => {
+export const handler: Handler = async (event: EventBridgeEvent<string, any>, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
 
@@ -58,7 +51,7 @@ export const handler: Handler = async (
 
     const getRunCommand = new GetJobRunCommand({
       JobName: detail["jobName"],
-      RunId: detail.jobRunId,
+      RunId: detail.jobRunId
     });
 
     const result = await glueClient.send(getRunCommand);
@@ -69,43 +62,19 @@ export const handler: Handler = async (
     const user = args?.["--user"];
     const report = args?.["--report-id"];
 
-    const dynamoReport = await getReportFromDynamo(
-      db,
-      TABLE_NAME,
-      report,
-      ReportVersion.DRAFT,
-      "en",
-    );
+    const dynamoReport = await getReportFromDynamo(db, TABLE_NAME, report, ReportVersion.DRAFT, "en");
 
     switch (state) {
       case "SUCCEEDED": {
-        await aws_LogEvent(
-          cloudwatch,
-          LOG_GROUP,
-          logStream,
-          user,
-          EventType.SUCCESS,
-          `Report publish for ${report} succeeded`,
-        );
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.SUCCESS, `Report publish for ${report} succeeded`);
 
         // pre generate templates and make sure language versions are created
 
-        const settings = await getAdaptSettings(
-          db,
-          SETTINGS_TABLE_NAME,
-          "current",
-        );
+        const settings = await getAdaptSettings(db, SETTINGS_TABLE_NAME, "current");
 
         const supportedLangs = settings?.supportedLanguages || ["en"];
 
-        const langReports = await Promise.all(
-          supportedLangs.map((lang) =>
-            createLanguageVersion(
-              { ...dynamoReport, published: `${Date.now()}` },
-              lang,
-            ),
-          ),
-        );
+        const langReports = await Promise.all(supportedLangs.map((lang) => createLanguageVersion({ ...dynamoReport, published: `${Date.now()}` }, lang)));
 
         // await updateReportVersion(
         //   db,
@@ -115,44 +84,19 @@ export const handler: Handler = async (
         // );
         // pre generate template
 
-        await Promise.all(
-          supportedLangs.map((lang, idx) =>
-            generateInitialTemplate(langReports[idx].slug!, lang),
-          ),
-        );
+        await Promise.all(supportedLangs.map((lang, idx) => generateInitialTemplate(langReports[idx].slug!, lang)));
 
         //  await generateInitialTemplate(dynamoReport.slug!, lang)
 
-        await sendPushMessage(
-          `Report publish for ${dynamoReport.name} succeeded`,
-          user,
-          db,
-        );
+        await sendPushMessage(`Report publish for ${dynamoReport.name} succeeded`, user, db);
         break;
       }
       case "FAILED":
       case "ERROR": {
-        await aws_LogEvent(
-          cloudwatch,
-          LOG_GROUP,
-          logStream,
-          user,
-          EventType.ERROR,
-          `Report publish ${report} failed`,
-        );
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.ERROR, `Report publish ${report} failed`);
 
-        await updateReportVersion(
-          db,
-          TABLE_NAME,
-          dynamoReport,
-          ReportVersion.PUBLISH_FAILED,
-        );
-        await sendPushMessage(
-          `Report publish for ${dynamoReport.name} failed`,
-          user,
-          db,
-          false,
-        );
+        await updateReportVersion(db, TABLE_NAME, dynamoReport, ReportVersion.PUBLISH_FAILED);
+        await sendPushMessage(`Report publish for ${dynamoReport.name} failed`, user, db, false);
         break;
       }
       // case 'STOPPED':{
@@ -168,19 +112,11 @@ export const handler: Handler = async (
   }
 };
 
-async function sendPushMessage(
-  message: string,
-  id: string,
-  db: DynamoDBDocument,
-  success = true,
-) {
+async function sendPushMessage(message: string, id: string, db: DynamoDBDocument, success = true) {
   const sub = await getSubscription(db, NOTIFICATION_TABLE_NAME, id);
 
   if (sub?.Item) {
-    await webpush.sendNotification(
-      sub?.Item.subscription,
-      JSON.stringify({ success, message }),
-    );
+    await webpush.sendNotification(sub?.Item.subscription, JSON.stringify({ success, message }));
     // notify the user
   }
 }
@@ -191,32 +127,27 @@ async function createLanguageVersion(report: IReport, lang: string) {
 
   if (!translated?.Items?.length)
     // create the translated version?
-    translatedTemplate = await translateJSON(
-      "en",
-      lang,
-      (report as IReport).template,
-      [
-        "suppression",
-        "type",
-        "dataType",
-        "condition",
-        "default",
-        "code",
-        "order",
-        "field",
-        "sortableCategories",
-        "id",
-        "variables",
-        "yAxisLabel",
-        "xAxisLabel",
-        "xAxisValue",
-        "yAxisValue",
-        "dataRetrievalOperations",
-        "filterOn",
-        "chart",
-        "conditions",
-      ],
-    );
+    translatedTemplate = await translateJSON("en", lang, (report as IReport).template, [
+      "suppression",
+      "type",
+      "dataType",
+      "condition",
+      "default",
+      "code",
+      "order",
+      "field",
+      "sortableCategories",
+      "id",
+      "variables",
+      "yAxisLabel",
+      "xAxisLabel",
+      "xAxisValue",
+      "yAxisValue",
+      "dataRetrievalOperations",
+      "filterOn",
+      "chart",
+      "conditions"
+    ]);
   else translatedTemplate = translated.Items[0];
 
   report.template = translatedTemplate;
@@ -227,14 +158,14 @@ async function createLanguageVersion(report: IReport, lang: string) {
   report.slug = slugify(report.name, {
     strict: true,
     lower: true,
-    trim: true,
+    trim: true
   });
 
   // save the translated report template
 
   const putParams = {
     TableName: TABLE_NAME,
-    Item: report,
+    Item: report
   };
 
   await db.put(putParams);
@@ -252,27 +183,20 @@ export async function generateInitialTemplate(slug: string, lang = "en") {
       report: slug,
       filters: {},
       lang,
-      version: "finalized",
+      version: "finalized"
     }),
-    LogType: LogType.Tail,
+    LogType: LogType.Tail
   });
 
   const { Payload } = await lambdaClient.send(command);
 
   const payloadString = Payload?.transformToString();
 
-  if (!payloadString)
-    return CreateBackendErrorResponse(
-      404,
-      "template could not be found / rendered",
-    );
+  if (!payloadString) return CreateBackendErrorResponse(404, "template could not be found / rendered");
 
   const payloadResponse = JSON.parse(payloadString);
 
-  if (
-    "statusCode" in payloadResponse &&
-    payloadResponse["statusCode"] !== 200
-  ) {
+  if ("statusCode" in payloadResponse && payloadResponse["statusCode"] !== 200) {
     throw new EvalError("failed to render the template");
   }
 
@@ -289,38 +213,30 @@ function getHashForTemplate(filters: Record<string, any>) {
   return crypto.createHash("sha256").update(hashableString).digest("hex");
 }
 
-async function uploadCachedTemplate(
-  slug: string,
-  filters: Record<string, any>,
-  template: ITemplate,
-) {
+async function uploadCachedTemplate(slug: string, filters: Record<string, any>, template: ITemplate) {
   // generate hash
 
   const hash = getHashForTemplate(filters);
   const putObjectCommand = new PutObjectCommand({
     Bucket: VIEWER_REPORT_CACHE,
     Key: `${slug}/${hash}.json`,
-    Body: JSON.stringify(template),
+    Body: JSON.stringify(template)
   });
 
   return await s3Client.send(putObjectCommand);
 }
 
-async function getTemplate(
-  db: DynamoDBDocument,
-  templateID: string,
-  lang: string,
-) {
+async function getTemplate(db: DynamoDBDocument, templateID: string, lang: string) {
   const params = {
     TableName: process.env.TEMPLATE_TABLE,
     KeyConditionExpression: "#type = :type AND id = :id",
     ExpressionAttributeNames: {
-      "#type": "type",
+      "#type": "type"
     },
     ExpressionAttributeValues: {
       ":type": "ReportTemplate",
-      ":id": `${templateID}#LANG#${lang}`,
-    },
+      ":id": `${templateID}#LANG#${lang}`
+    }
   };
 
   return await db.query(params);

@@ -7,7 +7,7 @@ type PolicyTypes = "READ" | "WRITE";
 export class AdaptDynamoTable extends dynamodb.Table {
   policies: { [key in PolicyTypes]: Policy } = {
     READ: {} as Policy,
-    WRITE: {} as Policy,
+    WRITE: {} as Policy
   };
 
   constructor(scope: Construct, id: string, props: dynamodb.TableProps) {
@@ -17,7 +17,7 @@ export class AdaptDynamoTable extends dynamodb.Table {
       ...props,
 
       // Set non-overridable defaults
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST
       // End non-overridable defaults
     });
   }

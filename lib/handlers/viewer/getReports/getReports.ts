@@ -1,13 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  cleanDBFields,
-  IReport,
-  ReportVersion,
-  getReportBySlug,
-  ITemplatePage,
-} from "../../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, cleanDBFields, IReport, ReportVersion, getReportBySlug, ITemplatePage } from "../../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument, QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 
@@ -18,10 +10,7 @@ const REPORT_TABLE = process.env.REPORT_TABLE || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   try {
     const lang = event.queryStringParameters?.["lang"] || "en";
 
@@ -32,14 +21,13 @@ export const handler: Handler = async (
         REPORT_TABLE,
         "#name, published, slug, template.title, template.metaTags, template.filters, template.description, template.pages",
         { "#name": "name" },
-        lang,
+        lang
       );
 
-      if (!report)
-        return CreateBackendErrorResponse(404, "report does not exist");
+      if (!report) return CreateBackendErrorResponse(404, "report does not exist");
 
       report.template.pages = (report.template.pages as any)?.map((page) => ({
-        id: page.id,
+        id: page.id
       }));
 
       return CreateBackendResponse(200, report);
@@ -62,16 +50,15 @@ async function getReports(lang = "en") {
     ExpressionAttributeValues: {
       ":type": "Report",
       ":finalized": "finalized",
-      ":lang": lang,
+      ":lang": lang
     },
     ExpressionAttributeNames: {
       "#type": "type",
       "#version": "version",
       "#name": "name",
-      "#lang": "lang",
+      "#lang": "lang"
     },
-    ProjectionExpression:
-      "#name, published, slug, template.title, template.metaTags, template.description",
+    ProjectionExpression: "#name, published, slug, template.title, template.metaTags, template.description"
   };
 
   let result, lastKey;

@@ -1,11 +1,5 @@
 import { APIGatewayEvent, Context, Handler, S3CreateEvent } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  DataView,
-  getDataCollectionTemplate,
-  getDataView,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, DataView, getDataCollectionTemplate, getDataView } from "../../../libs/types/src";
 import { validate } from "../../../libs/validation/src/index";
 import { ValidationTemplate } from "../../../libs/validation/src/lib/types/ValidationTemplate";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -23,10 +17,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const s3Client = new S3Client({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent | S3CreateEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, context: Context) => {
   console.log(event);
   if ((event as S3CreateEvent).Records) {
     const s3Event = event as S3CreateEvent;
@@ -43,17 +34,10 @@ export const handler: Handler = async (
       }
 
       if (item.dataViewType !== "collection") {
-        return CreateBackendErrorResponse(
-          400,
-          "data view type is not supported by validation",
-        );
+        return CreateBackendErrorResponse(400, "data view type is not supported by validation");
       }
 
-      const collection = await getDataCollectionTemplate(
-        db,
-        TEMPLATE_TABLE,
-        item.data.id,
-      );
+      const collection = await getDataCollectionTemplate(db, TEMPLATE_TABLE, item.data.id);
 
       if (!collection) {
         return CreateBackendErrorResponse(404, "collection not found");
@@ -62,10 +46,7 @@ export const handler: Handler = async (
       if (item.data.files.length !== collection.files.length) {
         console.log("data view and collection mismatch");
         await updateDataView(dataView, item, false, db);
-        return CreateBackendErrorResponse(
-          400,
-          "data view and collection mismatch",
-        );
+        return CreateBackendErrorResponse(400, "data view and collection mismatch");
       }
 
       let valid = true;
@@ -74,15 +55,14 @@ export const handler: Handler = async (
         for (const [index, file] of item.data.files.entries()) {
           console.log("file", file);
 
-          if (!file.location?.length || !collection.files[index].validation)
-            continue;
+          if (!file.location?.length || !collection.files[index].validation) continue;
 
           const getValidationParams = {
             TableName: TEMPLATE_TABLE,
             Key: {
               type: "ValidationTemplate",
-              id: `ID#${collection.files[index].validation}`,
-            },
+              id: `ID#${collection.files[index].validation}`
+            }
           };
 
           const validationResult = await db.get(getValidationParams);
@@ -91,7 +71,7 @@ export const handler: Handler = async (
 
           const getObjectCommand = new GetObjectCommand({
             Bucket: STAGING_BUCKET,
-            Key: `${item.dataViewID}/${file.id}/${file.location}`,
+            Key: `${item.dataViewID}/${file.id}/${file.location}`
           });
 
           const s3File = await s3Client.send(getObjectCommand);
@@ -147,9 +127,7 @@ export const handler: Handler = async (
         return CreateBackendErrorResponse(400, "dataViewID is missing");
       }
 
-      const originFile = (event as APIGatewayEvent)?.queryStringParameters?.[
-        "originFile"
-      ];
+      const originFile = (event as APIGatewayEvent)?.queryStringParameters?.["originFile"];
 
       console.log("originFile", originFile);
 
@@ -160,10 +138,7 @@ export const handler: Handler = async (
       }
 
       if (item.dataViewType !== "collection") {
-        return CreateBackendErrorResponse(
-          400,
-          "data view type is not supported by validation",
-        );
+        return CreateBackendErrorResponse(400, "data view type is not supported by validation");
       }
 
       const idx = item.data.files.findIndex((file) => file.id === originFile);
@@ -171,10 +146,7 @@ export const handler: Handler = async (
       const file = item.data.files[idx];
 
       if (item.valid === undefined || item.valid === null) {
-        return CreateBackendResponse(
-          202,
-          `data file ${originFile} is still being validated`,
-        );
+        return CreateBackendResponse(202, `data file ${originFile} is still being validated`);
       }
 
       if (!item.valid) {
@@ -191,28 +163,23 @@ export const handler: Handler = async (
   return CreateBackendErrorResponse(400, "invalid input");
 };
 
-async function updateDataView(
-  dataView: string,
-  item: DataView,
-  valid: boolean,
-  db: DynamoDBDocument,
-) {
+async function updateDataView(dataView: string, item: DataView, valid: boolean, db: DynamoDBDocument) {
   const updateParams = {
     TableName: DATA_SOURCE_TABLE,
     Key: {
       type: "DataView",
-      id: `ID#${dataView}`,
+      id: `ID#${dataView}`
     },
     UpdateExpression: "SET #data.#files = :files, #valid = :valid",
     ExpressionAttributeNames: {
       "#data": "data",
       "#files": "files",
-      "#valid": "valid",
+      "#valid": "valid"
     },
     ExpressionAttributeValues: {
       ":files": item.data.files,
-      ":valid": valid,
-    },
+      ":valid": valid
+    }
   };
 
   await db.update(updateParams);

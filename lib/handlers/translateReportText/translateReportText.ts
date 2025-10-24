@@ -10,7 +10,7 @@ import {
   aws_LogEvent,
   aws_generateDailyLogStreamID,
   getUserDataFromEvent,
-  EventType,
+  EventType
 } from "../../../libs/types/src";
 import * as sql from "mssql";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -28,10 +28,7 @@ const LOG_GROUP = process.env.LOG_GROUP || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   try {
     const report = event.pathParameters?.["reportId"];
     const logStream = aws_generateDailyLogStreamID();
@@ -59,14 +56,7 @@ export const handler: Handler = async (
 
     // get list of supported langs from the settings and return all translations
 
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      username,
-      EventType.CREATE,
-      `Generating translations for report ${report}`,
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `Generating translations for report ${report}`);
 
     if (!lang) {
       const settings = await getAdaptSettings(db, SETTINGS_TABLE, "current");
@@ -79,15 +69,9 @@ export const handler: Handler = async (
 
       const validLangs = supportedLangs.filter((lang) => lang !== "en");
 
-      const resultList = await Promise.all(
-        validLangs.map((lang) => translateJSON("en", lang, translatableFields)),
-      );
+      const resultList = await Promise.all(validLangs.map((lang) => translateJSON("en", lang, translatableFields)));
 
-      const resultObject = validLangs.reduce(
-        (accum, val, index) =>
-          Object.assign(accum, { [val]: resultList[index] }),
-        {},
-      );
+      const resultObject = validLangs.reduce((accum, val, index) => Object.assign(accum, { [val]: resultList[index] }), {});
 
       return CreateBackendResponse(200, resultObject);
     }

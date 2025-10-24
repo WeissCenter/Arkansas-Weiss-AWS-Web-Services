@@ -16,7 +16,7 @@ export class AdaptCognitoStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AdaptCognitoStackProps) {
     super(scope, id, props);
     const userPool = new UserPool(this, "AdaptUserPool", {
-      userPoolName: `${props.stage}-AdaptUserPool`,
+      userPoolName: `${props.stage}-AdaptUserPool`
     });
     this.userPoolId = userPool.userPoolId;
 
@@ -32,25 +32,24 @@ export class AdaptCognitoStack extends cdk.Stack {
     //   }
     // );
 
-    const localCallbackUrl = props.includeLocalCallbackUrl
-      ? ["http://localhost:4200/auth/redirect"]
-      : [];
+    const localCallbackUrl = props.includeLocalCallbackUrl ? ["http://localhost:4200/auth/redirect"] : [];
 
     const userPoolClient = userPool.addClient("AdaptUserPoolClient", {
       userPoolClientName: `${props.stage}-AdaptUserPoolClient`,
       authFlows: {
-        userPassword: true,
+        userPassword: true
       },
       oAuth: {
-        callbackUrls: [...localCallbackUrl, ...props.callbackUrls],
+        callbackUrls: [...localCallbackUrl, ...props.callbackUrls]
       },
+      accessTokenValidity: cdk.Duration.hours(8)
     });
     this.clientId = userPoolClient.userPoolClientId;
 
     userPool.addDomain("CognitoDomain", {
       cognitoDomain: {
-        domainPrefix: props.domainPrefix.toLowerCase(),
-      },
+        domainPrefix: props.domainPrefix.toLowerCase()
+      }
     });
   }
 }

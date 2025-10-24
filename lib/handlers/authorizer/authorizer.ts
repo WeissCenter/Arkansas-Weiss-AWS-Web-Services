@@ -1,18 +1,10 @@
-import {
-  IAMClient,
-  ListRolePoliciesCommand,
-  GetRolePolicyCommand,
-} from "@aws-sdk/client-iam";
+import { IAMClient, ListRolePoliciesCommand, GetRolePolicyCommand } from "@aws-sdk/client-iam";
 import { AuthorizerAPIGatewayLambda } from "../../../function-interfaces/api-gateway";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { JwtExpiredError } from "aws-jwt-verify/error";
 import { APIGatewayAuthorizerResult } from "aws-lambda";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
-import {
-  aws_generateDailyLogStreamID,
-  aws_LogEvent,
-  EventType,
-} from "../../../libs/types/src";
+import { aws_generateDailyLogStreamID, aws_LogEvent, EventType } from "../../../libs/types/src";
 
 const USER_POOL_ID = process.env.USER_POOL_ID || "";
 const CLIENT_ID = process.env.CLIENT_ID || "";
@@ -24,16 +16,11 @@ const iam_client = new IAMClient();
 const verifier = CognitoJwtVerifier.create({
   userPoolId: USER_POOL_ID,
   tokenUse: "id",
-  clientId: CLIENT_ID,
+  clientId: CLIENT_ID
   // groups: ["Admin", "Manager", "Editor", "Reader"] // TODO: determine if we want to check groups as well
 });
 
-const ERROR_TYPES = [
-  "Unauthorized",
-  "TokenNotFound",
-  "TokenInvalid",
-  "JWTExpired",
-] as const;
+const ERROR_TYPES = ["Unauthorized", "TokenNotFound", "TokenInvalid", "JWTExpired"] as const;
 type ErrorType = (typeof ERROR_TYPES)[number];
 
 const INVALID_TOKEN_RESPONSE: APIGatewayAuthorizerResult = {
@@ -44,10 +31,10 @@ const INVALID_TOKEN_RESPONSE: APIGatewayAuthorizerResult = {
       {
         Action: "execute-api:Invoke",
         Effect: "Deny",
-        Resource: "*",
-      },
-    ],
-  },
+        Resource: "*"
+      }
+    ]
+  }
 };
 
 async function verifyToken(verifier, token: string) {
@@ -68,24 +55,13 @@ async function verifyToken(verifier, token: string) {
 async function getPolicyDocumentStatementForRole(iam_client, role: string) {
   const response: any[] = [];
   const roleName = role.split("/")[1];
-  const listRolePoliciesResponse = await iam_client.send(
-    new ListRolePoliciesCommand({ RoleName: roleName }),
-  );
+  const listRolePoliciesResponse = await iam_client.send(new ListRolePoliciesCommand({ RoleName: roleName }));
   for (const policy of listRolePoliciesResponse["PolicyNames"]) {
-    const getPolicyResponse = await iam_client.send(
-      new GetRolePolicyCommand({ RoleName: roleName, PolicyName: policy }),
-    );
-    const policyDocumentStatements = JSON.parse(
-      decodeURIComponent(getPolicyResponse.PolicyDocument),
-    )["Statement"];
+    const getPolicyResponse = await iam_client.send(new GetRolePolicyCommand({ RoleName: roleName, PolicyName: policy }));
+    const policyDocumentStatements = JSON.parse(decodeURIComponent(getPolicyResponse.PolicyDocument))["Statement"];
     for (const statement of policyDocumentStatements) {
       if ("Effect" in statement && statement["Effect"] === "Allow") {
-        if (
-          "Action" in statement &&
-          (statement["Action"] === "execute-api:Invoke" ||
-            (statement["Action"] instanceof Array &&
-              statement["Action"].includes("execute-api:Invoke")))
-        ) {
+        if ("Action" in statement && (statement["Action"] === "execute-api:Invoke" || (statement["Action"] instanceof Array && statement["Action"].includes("execute-api:Invoke")))) {
           response.push(statement);
         }
       }
@@ -108,10 +84,7 @@ async function authorizer(authToken): Promise<APIGatewayAuthorizerResult> {
   if ("cognito:roles" in payload && payload["cognito:roles"] instanceof Array) {
     for (const role of payload["cognito:roles"]) {
       console.log("Role: ", role);
-      const statements = await getPolicyDocumentStatementForRole(
-        iam_client,
-        role,
-      );
+      const statements = await getPolicyDocumentStatementForRole(iam_client, role);
       console.log("Statements: ", statements);
       policyDocumentStatements.push(...statements);
     }
@@ -121,14 +94,14 @@ async function authorizer(authToken): Promise<APIGatewayAuthorizerResult> {
     principalId: "user",
     policyDocument: {
       Version: "2012-10-17",
-      Statement: policyDocumentStatements,
+      Statement: policyDocumentStatements
     },
     context: {
       username: payload["cognito:username"],
       givenName: payload["given_name"],
       familyName: payload["family_name"],
-      email: payload["email"],
-    },
+      email: payload["email"]
+    }
   };
   return response;
 }
@@ -148,23 +121,12 @@ export const handler: AuthorizerAPIGatewayLambda = async (event) => {
 
   const methodArn = event.methodArn;
 
-  if (
-    !(response.policyDocument.Statement[0] as any).Resource.includes(
-      methodArn,
-    ) &&
-    response?.context?.username
-  ) {
+  if (!(response.policyDocument.Statement[0] as any).Resource.includes(methodArn) && response?.context?.username) {
     const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
     const logStream = aws_generateDailyLogStreamID();
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      response.context!.username as string,
-      EventType.CREATE,
-      `User tried to access a resource they were not authorized for`,
-      [{ label: "method", value: methodArn }],
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, response.context!.username as string, EventType.CREATE, `User tried to access a resource they were not authorized for`, [
+      { label: "method", value: methodArn }
+    ]);
   }
 
   console.debug("Authorizer response: ", JSON.stringify(response));

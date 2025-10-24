@@ -9,5 +9,5 @@ export enum EventType {
   USER = "user",
   ERROR = "error",
   SUCCESS = "success",
-  VIEWER_SHARE = "share",
+  VIEWER_SHARE = "share"
 }

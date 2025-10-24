@@ -1,21 +1,30 @@
 name: Weiss AWS Web Services Deploy
-run-name: ${{ github.actor }} pushed an update.
+run-name: ${{ github.actor }} pushed an update for env ${{ github.ref_name }}
 on:
   workflow_dispatch:
   push:
-    branches: ["main"]
+    paths-ignore: ".github/**"
+    branches:
+      - "dev"
+      - "qa"
+      - "uat"
+      - "main" # prod
 
 env:
-  AWS_REGION: us-east-1
-  STAGE: ade-prod
-  AWS_ACCOUNT_NO: ${{ secrets.AWS_ACCOUNT_NO }}
-  HOSTED_ZONE: adaptdata.org
-  ADMIN_SUB_DOMAIN: ose-admin
-  VIEWER_SUB_DOMAIN: ade-viewer
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_RESOURCE_UNIQUE_ID: ${{ vars.AWS_RESOURCE_UNIQUE_ID }}
+  AWS_ACCOUNT_NO: ${{ vars.AWS_ACCOUNT_NO }}
+  HOSTED_ZONE: ${{ vars.HOSTED_ZONE }}
+  HOSTED_ZONE_CERT_ARN: ${{ vars.HOSTED_ZONE_CERT_ARN }}
+  ADMIN_SUB_DOMAIN: ${{ vars.ADMIN_SUB_DOMAIN }}
+  VIEWER_SUB_DOMAIN: ${{ vars.VIEWER_SUB_DOMAIN }}
 
 jobs:
   cdk-deploy:
     runs-on: ubuntu-latest
+    # can use this: ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/qa' && 'qa' || 'default' }}
+    # or github.ref_name, but it requires that the github environment has to be exactly the same as the given branch
+    environment: ${{ github.ref_name }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -45,7 +54,7 @@ jobs:
         with:
           node-version: "20"
       - run: npm install && npm run build
-      - name: cdk deploy
+      - name: cdk deploy # will execute the file adapt-cdk.ts in the bin folder
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: "deploy"
@@ -57,9 +66,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
           AWS_ACCOUNT: ${{ env.AWS_ACCOUNT_NO }}
-          STAGE: ${{ env.STAGE }}
           HOSTED_ZONE: ${{ env.HOSTED_ZONE }}
+          ADMIN_SUB_DOMAIN: ${{ env.ADMIN_SUB_DOMAIN }}
           VIEWER_SUB_DOMAIN: ${{ env.VIEWER_SUB_DOMAIN }}
+          #See the adapt-cdk.ts file in the bin folder for default values
+          CALLBACK_URL: "https://${{ env.ADMIN_SUB_DOMAIN }}.${{ env.HOSTED_ZONE }}/auth/redirect"
           PUBLIC_VAPID_KEY: ${{ secrets.PUBLIC_VAPID_KEY }}
           PRIVATE_VAPID_KEY: ${{ secrets.PRIVATE_VAPID_KEY }}
       - run: echo "This job's status is ${{ job.status }}."

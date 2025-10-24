@@ -7,15 +7,7 @@ export type AppRole = string;
 // export type AppRole = typeof roles[number];
 
 // List the objects that can be accessed in the application
-export type PermissionObject =
-  | "Data Sources"
-  | "Data Views"
-  | "Report Templates"
-  | "Reports"
-  | "Glossary"
-  | "Users"
-  | "Tool Settings"
-  | "Default";
+export type PermissionObject = "Data Sources" | "Data Views" | "Report Templates" | "Reports" | "Glossary" | "Users" | "Tool Settings" | "Default";
 
 // List the actions that can be performed on the objects
 export type PermissionAction = "Read" | "Write" | "Approve";
@@ -51,9 +43,9 @@ export const appRolePermissions: AppRolePermissions = {
       Reports: ["Read"],
       Glossary: ["Read"],
       "Tool Settings": ["Read"],
-      Default: ["Read", "Write"],
+      Default: ["Read", "Write"]
     },
-    precedence: 4,
+    precedence: 4
   },
   Editor: {
     description: "Adapt Editor",
@@ -64,9 +56,9 @@ export const appRolePermissions: AppRolePermissions = {
       Reports: ["Read", "Write"],
       Glossary: ["Read", "Write"],
       "Tool Settings": ["Read"],
-      Default: ["Read", "Write"],
+      Default: ["Read", "Write"]
     },
-    precedence: 3,
+    precedence: 3
   },
   Manager: {
     description: "Adapt Manager",
@@ -78,9 +70,9 @@ export const appRolePermissions: AppRolePermissions = {
       Glossary: ["Read", "Write", "Approve"],
       Users: ["Read"],
       "Tool Settings": ["Read", "Write"],
-      Default: ["Read", "Write"],
+      Default: ["Read", "Write"]
     },
-    precedence: 2,
+    precedence: 2
   },
   Admin: {
     description: "Adapt Admin",
@@ -92,9 +84,9 @@ export const appRolePermissions: AppRolePermissions = {
       Glossary: ["Read", "Write"],
       Users: ["Read", "Write"],
       "Tool Settings": ["Read", "Write"],
-      Default: ["Read", "Write"],
+      Default: ["Read", "Write"]
     },
-    precedence: 1,
+    precedence: 1
   },
   SuperAdmin: {
     description: "Adapt Super Admin",
@@ -106,8 +98,8 @@ export const appRolePermissions: AppRolePermissions = {
       Glossary: ["Read", "Write", "Approve"],
       Users: ["Read", "Write"],
       "Tool Settings": ["Read", "Write"],
-      Default: ["Read", "Write"],
+      Default: ["Read", "Write"]
     },
-    precedence: 0,
-  },
+    precedence: 0
+  }
 };

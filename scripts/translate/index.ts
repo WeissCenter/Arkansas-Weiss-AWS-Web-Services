@@ -1,7 +1,4 @@
-import {
-  TranslateClient,
-  TranslateTextCommand,
-} from "@aws-sdk/client-translate";
+import { TranslateClient, TranslateTextCommand } from "@aws-sdk/client-translate";
 import { program } from "commander";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -9,11 +6,7 @@ import { join } from "path";
 const client = new TranslateClient({ region: "us-east-1" });
 
 program
-  .requiredOption(
-    "-sl, --sourceLang [sourceLang]",
-    "specify source language",
-    "en",
-  )
+  .requiredOption("-sl, --sourceLang [sourceLang]", "specify source language", "en")
   .requiredOption("-f, --file [file]", "specify file")
   .requiredOption("-l, --langs [languages...]", "specify languages")
   .option("-i, --ignore-keys [keys...]", "object keys to skip translating");
@@ -30,12 +23,7 @@ if (require.main === module) {
     const originalLoadedJSON = JSON.parse(loadedJSONStr);
 
     for (const lang of langs) {
-      const result = await translateJSON(
-        sourceLang,
-        lang,
-        originalLoadedJSON,
-        ignoreKeys,
-      );
+      const result = await translateJSON(sourceLang, lang, originalLoadedJSON, ignoreKeys);
 
       const outputPath = join(process.cwd(), "translated", lang);
 
@@ -46,20 +34,10 @@ if (require.main === module) {
   })();
 }
 
-export async function translateJSON(
-  sourceLang: string,
-  lang: string,
-  originalLoadedJSON: any,
-  ignoreKeys: string[] = [],
-) {
+export async function translateJSON(sourceLang: string, lang: string, originalLoadedJSON: any, ignoreKeys: string[] = []) {
   let stack: any[] = [];
 
-  const handleValue = async (
-    value: any,
-    lang: string,
-    root?: any,
-    key?: any,
-  ) => {
+  const handleValue = async (value: any, lang: string, root?: any, key?: any) => {
     switch (typeof value) {
       case "number":
       case "bigint":
@@ -69,7 +47,7 @@ export async function translateJSON(
         const translateCommand = new TranslateTextCommand({
           Text: `${value}`,
           SourceLanguageCode: sourceLang,
-          TargetLanguageCode: lang,
+          TargetLanguageCode: lang
         });
         const result = await client.send(translateCommand);
         root[key] = result.TranslatedText;

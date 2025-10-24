@@ -8,7 +8,7 @@ import {
   getDataView,
   getReportFromDynamo,
   getUserDataFromEvent,
-  UserActivity,
+  UserActivity
 } from "../../../libs/types/src";
 import { DynamoDBClient, ReturnValue } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
@@ -21,10 +21,7 @@ const DATA_TABLE = process.env.DATA_TABLE || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     const username = getUserDataFromEvent(event).username;
@@ -32,8 +29,8 @@ export const handler: Handler = async (
     const userActivityUpdate = {
       TableName: USER_TABLE,
       Key: {
-        username,
-      },
+        username
+      }
     };
 
     const result = await db.get(userActivityUpdate);
@@ -42,8 +39,7 @@ export const handler: Handler = async (
 
     // do a check on the cache expiry and if an item updated or not
 
-    if (userActivity.cache && userActivity.cache.action === "EDIT")
-      userActivity = await handleCacheUpdates(db, username, userActivity);
+    if (userActivity.cache && userActivity.cache.action === "EDIT") userActivity = await handleCacheUpdates(db, username, userActivity);
 
     return CreateBackendResponse(200, result.Item);
   } catch (err) {
@@ -52,11 +48,7 @@ export const handler: Handler = async (
   }
 };
 
-async function handleCacheUpdates(
-  db: DynamoDBDocument,
-  username: string,
-  userActivity: UserActivity,
-) {
+async function handleCacheUpdates(db: DynamoDBDocument, username: string, userActivity: UserActivity) {
   const cache = userActivity.cache;
 
   // if expired just remove
@@ -64,10 +56,10 @@ async function handleCacheUpdates(
     const userActivityUpdate = {
       TableName: USER_TABLE,
       Key: {
-        username,
+        username
       },
       ReturnValues: ReturnValue.ALL_NEW,
-      ...createUpdateItemFromObject({ cache: null }),
+      ...createUpdateItemFromObject({ cache: null })
     };
 
     const userActivityUpdateResult = await db.update(userActivityUpdate);
@@ -79,12 +71,7 @@ async function handleCacheUpdates(
 
   switch (cache.type) {
     case "Report": {
-      const report = await getReportFromDynamo(
-        db,
-        REPORT_TABLE,
-        cache.body.reportID,
-        cache.body.version,
-      );
+      const report = await getReportFromDynamo(db, REPORT_TABLE, cache.body.reportID, cache.body.version);
       // was updated
       if (report && Number(report.updated) > cache.added) {
         userActivity.cache.dirty = true;
@@ -92,11 +79,7 @@ async function handleCacheUpdates(
       break;
     }
     case "DataSource": {
-      const dataSource = await getDatasourceMetadata(
-        db,
-        DATA_TABLE,
-        cache.body.dataSourceID,
-      );
+      const dataSource = await getDatasourceMetadata(db, DATA_TABLE, cache.body.dataSourceID);
       // was updated
       if (dataSource && Number(dataSource!.updated) > cache.added) {
         userActivity.cache.dirty = true;

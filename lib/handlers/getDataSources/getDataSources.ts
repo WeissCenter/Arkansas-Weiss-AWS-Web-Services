@@ -1,26 +1,15 @@
-import {
-  DynamoDBClient,
-  QueryInput,
-  ScanInput,
-} from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, QueryInput, ScanInput } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import {
-  DataSource,
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-} from "../../../libs/types/src";
+import { DataSource, CreateBackendResponse, CreateBackendErrorResponse } from "../../../libs/types/src";
 
 const TABLE_NAME = process.env.TABLE_NAME;
 
 const client = new DynamoDBClient();
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     const dataSources = await getDataSources();
@@ -43,11 +32,11 @@ async function getDataSources() {
     TableName: TABLE_NAME,
     KeyConditionExpression: "#type = :type",
     ExpressionAttributeValues: {
-      ":type": "DataSource",
+      ":type": "DataSource"
     },
     ExpressionAttributeNames: {
-      "#type": "type",
-    },
+      "#type": "type"
+    }
   };
 
   let result, lastKey;

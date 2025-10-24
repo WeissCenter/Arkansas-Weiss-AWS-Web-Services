@@ -23,7 +23,7 @@ export interface DataSource {
 
 export enum DataSourceFileType {
   CSV = "csv",
-  EXCEL = "excel",
+  EXCEL = "excel"
 }
 
 export type DataSourceConnectionInfo = {

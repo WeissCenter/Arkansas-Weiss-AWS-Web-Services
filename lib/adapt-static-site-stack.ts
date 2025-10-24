@@ -19,13 +19,9 @@ export class AdaptStaticSite extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AdaptStaticSiteProps) {
     super(scope, id, props);
 
-    const cloudfrontOAI = new cloudfront.OriginAccessIdentity(
-      this,
-      "cloudfront-OAI",
-      {
-        comment: `OAI for ${props.stage} static site`,
-      },
-    );
+    const cloudfrontOAI = new cloudfront.OriginAccessIdentity(this, "cloudfront-OAI", {
+      comment: `OAI for ${props.stage} static site`
+    });
 
     // Content bucket
     const siteBucket = new s3.Bucket(this, "SiteBucket", {
@@ -44,7 +40,7 @@ export class AdaptStaticSite extends cdk.Stack {
        * For sample purposes only, if you create an S3 bucket then populate it, stack destruction fails.  This
        * setting will enable full cleanup of the stack.
        */
-      autoDeleteObjects: true, // NOT recommended for production code
+      autoDeleteObjects: true // NOT recommended for production code
     });
 
     // Grant access to cloudfront
@@ -52,12 +48,8 @@ export class AdaptStaticSite extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["s3:GetObject"],
         resources: [siteBucket.arnForObjects("*")],
-        principals: [
-          new iam.CanonicalUserPrincipal(
-            cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId,
-          ),
-        ],
-      }),
+        principals: [new iam.CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)]
+      })
     );
     new CfnOutput(this, "Bucket", { value: siteBucket.bucketName });
 
@@ -69,32 +61,32 @@ export class AdaptStaticSite extends cdk.Stack {
           httpStatus: 400,
           responseHttpStatus: 200,
           responsePagePath: "/index.html",
-          ttl: Duration.minutes(5),
+          ttl: Duration.minutes(5)
         },
         {
           httpStatus: 403,
           responseHttpStatus: 200,
           responsePagePath: "/index.html",
-          ttl: Duration.minutes(5),
+          ttl: Duration.minutes(5)
         },
         {
           httpStatus: 404,
           responseHttpStatus: 200,
           responsePagePath: "/index.html",
-          ttl: Duration.minutes(5),
-        },
+          ttl: Duration.minutes(5)
+        }
       ],
       defaultBehavior: {
         origin: new cloudfront_origins.S3Origin(siteBucket, {
-          originAccessIdentity: cloudfrontOAI,
+          originAccessIdentity: cloudfrontOAI
         }),
         compress: true,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-      },
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+      }
     });
     new CfnOutput(this, "DistributionId", {
-      value: distribution.distributionId,
+      value: distribution.distributionId
     });
   }
 }

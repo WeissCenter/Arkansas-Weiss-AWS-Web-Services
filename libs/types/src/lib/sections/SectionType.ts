@@ -5,5 +5,5 @@ export enum SectionType {
   CountBreakdown = "countBreakdown",
   Header = "header",
   Comment = "comment",
-  BarChartGrouped = "barChartGrouped",
+  BarChartGrouped = "barChartGrouped"
 }

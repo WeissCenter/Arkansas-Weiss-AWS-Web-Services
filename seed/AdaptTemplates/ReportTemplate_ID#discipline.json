@@ -8,11 +8,7 @@
       "code": "suspensionsExpulsionsSection",
       "condition": {
         "operator": "AND",
-        "pages": [
-          "suspensions-expulsions",
-          "disciplinary-removals",
-          "unilateral-removals"
-        ]
+        "pages": ["suspensions-expulsions", "disciplinary-removals", "unilateral-removals"]
       },
       "dataType": "string",
       "field": "categorysetcode",
@@ -45,11 +41,7 @@
       "label": "Select a Disability",
       "field": "IDEADISABILITYTYPE",
       "condition": {
-        "pages": [
-          "suspensions-expulsions",
-          "disciplinary-removals",
-          "unilateral-removals"
-        ],
+        "pages": ["suspensions-expulsions", "disciplinary-removals", "unilateral-removals"],
         "operator": "OR",
         "conditions": [
           {
@@ -132,11 +124,7 @@
       "field": "RACE",
       "type": "multiselect",
       "condition": {
-        "pages": [
-          "suspensions-expulsions",
-          "disciplinary-removals",
-          "unilateral-removals"
-        ],
+        "pages": ["suspensions-expulsions", "disciplinary-removals", "unilateral-removals"],
         "operator": "OR",
         "conditions": [
           {
@@ -194,11 +182,7 @@
       "field": "SEX",
       "type": "multiselect",
       "condition": {
-        "pages": [
-          "suspensions-expulsions",
-          "disciplinary-removals",
-          "unilateral-removals"
-        ],
+        "pages": ["suspensions-expulsions", "disciplinary-removals", "unilateral-removals"],
         "operator": "OR",
         "conditions": [
           {
@@ -236,11 +220,7 @@
       "field": "ENGLISHLEARNERSTATUS",
       "type": "multiselect",
       "condition": {
-        "pages": [
-          "suspensions-expulsions",
-          "disciplinary-removals",
-          "unilateral-removals"
-        ],
+        "pages": ["suspensions-expulsions", "disciplinary-removals", "unilateral-removals"],
         "operator": "OR",
         "conditions": [
           {

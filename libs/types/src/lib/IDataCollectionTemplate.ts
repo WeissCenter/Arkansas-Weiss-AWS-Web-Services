@@ -18,7 +18,7 @@ export interface DataCollectionFieldDefinition {
 
 export enum DataCollectionFieldType {
   SELECT = "select",
-  TEXT = "text",
+  TEXT = "text"
 }
 
 export interface DataCollectionFileCondition {

@@ -4,5 +4,5 @@ export enum ValidatorType {
   HeaderHTML = "headerHTML",
   RowCount = "rowCount",
   typeFieldCheckHTML = "typeFieldCheckHTML",
-  typeFieldCheck = "typeFieldCheck",
+  typeFieldCheck = "typeFieldCheck"
 }

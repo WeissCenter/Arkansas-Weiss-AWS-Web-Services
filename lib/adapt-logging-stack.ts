@@ -11,7 +11,7 @@ export class AdaptLoggingStack extends cdk.Stack {
 
     const adaptLogging = new LogGroup(this, "AdaptLogging", {
       logGroupName: `${props.stage}-AdaptLoggingGroup`, // TODO: rename this to AdaptLogging once AWS naming conflicts are resolved
-      retention: RetentionDays.INFINITE,
+      retention: RetentionDays.INFINITE
     });
     this.logGroup = adaptLogging;
   }

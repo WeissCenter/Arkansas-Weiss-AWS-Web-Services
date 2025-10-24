@@ -1,12 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  aws_generateDailyLogStreamID,
-  aws_LogEvent,
-  EventType,
-  getUserDataFromEvent,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, aws_generateDailyLogStreamID, aws_LogEvent, EventType, getUserDataFromEvent } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 
 // Define Environment Variables
@@ -15,10 +8,7 @@ const LOG_GROUP = process.env.LOG_GROUP || "";
 // AWS SDK Clients
 const client = new CloudWatchLogsClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   const username = getUserDataFromEvent(event).username;
   try {
@@ -33,15 +23,7 @@ export const handler: Handler = async (
 
     const logStreamName = aws_generateDailyLogStreamID();
 
-    await aws_LogEvent(
-      client,
-      LOG_GROUP,
-      logStreamName,
-      username,
-      EventType.USER,
-      userEvent,
-      extraMeta,
-    );
+    await aws_LogEvent(client, LOG_GROUP, logStreamName, username, EventType.USER, userEvent, extraMeta);
 
     return CreateBackendResponse(200, "event recorded");
   } catch (err) {

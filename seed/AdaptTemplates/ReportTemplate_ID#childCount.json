@@ -580,10 +580,7 @@
     }
   },
   "metaTags": ["Part B", "618", "Child Count"],
-  "reportingLevels": [
-    "SEA (State Education Agency)",
-    "LEA (Local Education Agency)"
-  ],
+  "reportingLevels": ["SEA (State Education Agency)", "LEA (Local Education Agency)"],
   "pages": [
     {
       "id": "allAges",
@@ -1311,9 +1308,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "selectColumns",
-                                "value": [
-                                  "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD"
-                                ]
+                                "value": ["IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD"]
                               },
                               {
                                 "type": "number",
@@ -1782,9 +1777,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "selectColumns",
-                                "value": [
-                                  "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"
-                                ]
+                                "value": ["IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"]
                               },
                               {
                                 "type": "number",
@@ -1841,40 +1834,16 @@
     "categories": {
       "FS002": {
         "CSA": ["RACE", "SEX", "IDEADISABILITYTYPE"],
-        "CSB": [
-          "IDEADISABILITYTYPE",
-          "AGE",
-          "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"
-        ],
+        "CSB": ["IDEADISABILITYTYPE", "AGE", "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"],
         "CSC": ["RACE", "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"],
-        "CSD": [
-          "SEX",
-          "IDEADISABILITYTYPE",
-          "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"
-        ],
-        "CSE": [
-          "SEX",
-          "IDEADISABILITYTYPE",
-          "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE",
-          "ENGLISHLEARNERSTATUS"
-        ]
+        "CSD": ["SEX", "IDEADISABILITYTYPE", "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE"],
+        "CSE": ["SEX", "IDEADISABILITYTYPE", "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE", "ENGLISHLEARNERSTATUS"]
       },
       "FS089": {
-        "CSA": [
-          "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD",
-          "IDEADISABILITYTYPE",
-          "AGE"
-        ],
-        "CSB": [
-          "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD",
-          "IDEADISABILITYTYPE",
-          "RACE"
-        ],
+        "CSA": ["IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD", "IDEADISABILITYTYPE", "AGE"],
+        "CSB": ["IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD", "IDEADISABILITYTYPE", "RACE"],
         "CSC": ["IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD", "SEX"],
-        "CSD": [
-          "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD",
-          "ENGLISHLEARNERSTATUS"
-        ]
+        "CSD": ["IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD", "ENGLISHLEARNERSTATUS"]
       }
     },
     "categoryField": "CategorySetCode"
@@ -1884,15 +1853,7 @@
     "required": true,
     "parentOrganization": "file",
     "childOrganization": "ReportCode",
-    "sensitiveColumns": [
-      "RACE",
-      "SEX",
-      "IDEADISABILITYTYPE",
-      "ENGLISHLEARNERSTATUS",
-      "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE",
-      "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD",
-      "AGE"
-    ]
+    "sensitiveColumns": ["RACE", "SEX", "IDEADISABILITYTYPE", "ENGLISHLEARNERSTATUS", "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE", "IDEAEDUCATIONALENVIRONMENTFOREARLYCHILDHOOD", "AGE"]
   },
   "title": "IDEA Child Count and Educational Environments"
 }

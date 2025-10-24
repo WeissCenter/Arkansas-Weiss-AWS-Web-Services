@@ -90,15 +90,24 @@ class fS002Transformer(fileTransformer):
             pysparkDF = pysparkDF.withColumn("CategorySetCode", when(expr(condition_expr), lit(category)).otherwise(col("CategorySetCode")))
 
         # Define subtotal columns
-        subtotal_columns = ['SEX', 'AGE', 'IDEADISABILITYTYPE', 'RACE', 'ENGLISHLEARNERSTATUS', 'IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE']
+        subtotal_columns = ['SEX', 'AGE', 'IDEADISABILITYTYPE', 'RACE', 'ENGLISHLEARNERSTATUS', 'IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE', ['AGE', 'IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE']]
 
         # Apply subtotal conditions
         for i, column in enumerate(subtotal_columns, start=1):
-            condition = (col(column).isNotNull() & (col(column) != "")) & (col('TotalIndicator') == 'Y')
+            if isinstance(column, list):
+                condition_expr = ' AND '.join([f"({col} IS NOT NULL AND {col} != '')" for col in column])
+                condition = expr(condition_expr) & (col('TotalIndicator') == 'Y')
+            else:
+                condition = (col(column).isNotNull() & (col(column) != "")) & (col('TotalIndicator') == 'Y')
+            
+            # make sure all other subtotal columns are null or empty
+            nullable_columns = [col for col in subtotal_columns if col != column] if not isinstance(column, list) else [col for col in subtotal_columns if not isinstance(col, list) and col not in column]
+            condition_expr = ' AND '.join([f"(`{col}` IS NULL OR `{col}` == '')" for col in nullable_columns]) if nullable_columns else ''
+            
             pysparkDF = pysparkDF.withColumn("CategorySetCode", when(condition, lit(f"ST{i}")).otherwise(col("CategorySetCode")))
 
         # Apply final condition for "TOT"
-        final_condition_expr = ' AND '.join([f"(`{col}` IS NULL OR `{col}` == '')" for col in subtotal_columns]) + " AND `TotalIndicator` == 'Y'"
+        final_condition_expr = ' AND '.join([f"(`{col}` IS NULL OR `{col}` == '')" for col in subtotal_columns if not isinstance(col, list)]) + " AND `TotalIndicator` == 'Y'"
         pysparkDF = pysparkDF.withColumn("CategorySetCode", when(expr(final_condition_expr), lit("TOT")).otherwise(col("CategorySetCode")))
 
 

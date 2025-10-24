@@ -18,10 +18,7 @@
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/validation/**/*.ts",
-          "libs/validation/package.json"
-        ]
+        "lintFilePatterns": ["libs/validation/**/*.ts", "libs/validation/package.json"]
       }
     }
   },

@@ -1,8 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
@@ -13,10 +10,7 @@ const TABLE_NAME = process.env.TABLE_NAME || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     const templateType = event.pathParameters?.["templateType"];
@@ -26,14 +20,9 @@ export const handler: Handler = async (
       return CreateBackendErrorResponse(400, "Template type is required");
     }
 
-    const validTemplates = [
-      "DataCollection",
-      "ValidationTemplate",
-      "ReportTemplate",
-    ];
+    const validTemplates = ["DataCollection", "ValidationTemplate", "ReportTemplate"];
 
-    if (!validTemplates.includes(templateType))
-      return CreateBackendErrorResponse(400, "Invalid template type");
+    if (!validTemplates.includes(templateType)) return CreateBackendErrorResponse(400, "Invalid template type");
 
     if (!templateID) {
       return getTemplates(db, templateType);
@@ -43,17 +32,13 @@ export const handler: Handler = async (
       TableName: TABLE_NAME,
       Key: {
         type: templateType,
-        id: `ID#${templateID}`,
-      },
+        id: `ID#${templateID}`
+      }
     };
 
     const template = await db.get(params);
 
-    if (!template.Item)
-      return CreateBackendErrorResponse(
-        404,
-        "requested template does not exist",
-      );
+    if (!template.Item) return CreateBackendErrorResponse(404, "requested template does not exist");
 
     return CreateBackendResponse(200, template.Item);
   } catch (err) {
@@ -62,20 +47,16 @@ export const handler: Handler = async (
   }
 };
 
-async function getTemplates(
-  db: DynamoDBDocument,
-  templateType: string,
-  withLanguages = false,
-) {
+async function getTemplates(db: DynamoDBDocument, templateType: string, withLanguages = false) {
   const params = {
     TableName: TABLE_NAME,
     KeyConditionExpression: "#type = :type",
     ExpressionAttributeNames: {
-      "#type": "type",
+      "#type": "type"
     },
     ExpressionAttributeValues: {
-      ":type": templateType,
-    },
+      ":type": templateType
+    }
   };
 
   let result, lastKey;

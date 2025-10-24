@@ -1,24 +1,9 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  aws_generateDailyLogStreamID,
-  aws_LogEvent,
-  createUpdateItemFromObject,
-  EventType,
-  getUserDataFromEvent,
-  IReport,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, aws_generateDailyLogStreamID, aws_LogEvent, createUpdateItemFromObject, EventType, getUserDataFromEvent, IReport } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import {
-  S3Client,
-  DeleteObjectCommandOutput,
-  ListObjectsCommand,
-  DeleteObjectCommand,
-  ListObjectsV2Command,
-} from "@aws-sdk/client-s3";
+import { S3Client, DeleteObjectCommandOutput, ListObjectsCommand, DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 
 // Define Environment Variables
 const REPORT_TABLE = process.env.REPORT_TABLE || "";
@@ -30,10 +15,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 const s3 = new S3Client({ region: "us-east-1" });
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
   const username = getUserDataFromEvent(event).username;
@@ -46,24 +28,19 @@ export const handler: Handler = async (
 
     const body = JSON.parse(event?.body);
 
-    if (!("justification" in body))
-      return CreateBackendErrorResponse(400, "missing justification");
+    if (!("justification" in body)) return CreateBackendErrorResponse(400, "missing justification");
 
     const getParams = {
       TableName: REPORT_TABLE,
       Key: {
         type: "Report",
-        id: `ID#${id}#Version#finalized#Lang#en`,
-      },
+        id: `ID#${id}#Version#finalized#Lang#en`
+      }
     };
 
     const result = await db.get(getParams);
 
-    if (!result?.Item)
-      return CreateBackendErrorResponse(
-        404,
-        "Report does not exist or has not been published",
-      );
+    if (!result?.Item) return CreateBackendErrorResponse(404, "Report does not exist or has not been published");
 
     const report = result.Item as IReport;
 
@@ -73,12 +50,9 @@ export const handler: Handler = async (
       TableName: REPORT_TABLE,
       Key: {
         type: "Report",
-        id: `ID#${report.reportID}#Version#finalized-${date}`,
+        id: `ID#${report.reportID}#Version#finalized-${date}`
       },
-      ...createUpdateItemFromObject({ ...report, version: date }, [
-        "id",
-        "type",
-      ]),
+      ...createUpdateItemFromObject({ ...report, version: date }, ["id", "type"])
     };
 
     // clear s3 express caches
@@ -87,24 +61,13 @@ export const handler: Handler = async (
       TableName: REPORT_TABLE,
       Key: {
         type: "Report",
-        id: `ID#${report.reportID}#Version#finalized#Lang#en`,
-      },
+        id: `ID#${report.reportID}#Version#finalized#Lang#en`
+      }
     };
 
-    await Promise.all([
-      db.update(updateAuditReport),
-      db.delete(deleteOldFinalized),
-      deleteFolder(s3, report.slug!, VIEWER_REPORT_CACHE),
-    ]);
+    await Promise.all([db.update(updateAuditReport), db.delete(deleteOldFinalized), deleteFolder(s3, report.slug!, VIEWER_REPORT_CACHE)]);
 
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      username,
-      EventType.CREATE,
-      `Report ${report.reportID} was unpublished`,
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `Report ${report.reportID} was unpublished`);
 
     return CreateBackendResponse(200, "report publish process started");
   } catch (err) {
@@ -113,15 +76,9 @@ export const handler: Handler = async (
   }
 };
 
-async function deleteFolder(
-  client: S3Client,
-  key: string,
-  bucketName: string,
-): Promise<void> {
+async function deleteFolder(client: S3Client, key: string, bucketName: string): Promise<void> {
   const DeletePromises: Promise<DeleteObjectCommandOutput>[] = [];
-  const { Contents } = await client.send(
-    new ListObjectsV2Command({ Bucket: bucketName, Prefix: key + "/" }),
-  );
+  const { Contents } = await client.send(new ListObjectsV2Command({ Bucket: bucketName, Prefix: key + "/" }));
 
   if (!Contents) return;
 
@@ -130,9 +87,9 @@ async function deleteFolder(
       client.send(
         new DeleteObjectCommand({
           Bucket: bucketName,
-          Key: object.Key,
-        }),
-      ),
+          Key: object.Key
+        })
+      )
     );
   }
 

@@ -8,7 +8,7 @@ import {
   EventType,
   getDataCollectionTemplate,
   getUserDataFromEvent,
-  NewDataViewInput,
+  NewDataViewInput
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -26,10 +26,7 @@ const db = DynamoDBDocument.from(client);
 const logStream = aws_generateDailyLogStreamID();
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     if (!event?.body) {
@@ -40,14 +37,7 @@ export const handler: Handler = async (
 
     const newDataViewID = newDataView.dataViewID || randomUUID();
 
-    return await handleFileCollection(
-      db,
-      event,
-      newDataView,
-      newDataViewID,
-      logStream,
-      cloudwatch,
-    );
+    return await handleFileCollection(db, event, newDataView, newDataViewID, logStream, cloudwatch);
   } catch (err) {
     console.error(err);
     return CreateBackendErrorResponse(500, "Failed to create new data view");
@@ -55,10 +45,7 @@ export const handler: Handler = async (
 };
 
 function getStatus(view: NewDataViewInput) {
-  if (
-    view.dataViewType === "collection" &&
-    view.data.files.every((file) => file.location.length)
-  ) {
+  if (view.dataViewType === "collection" && view.data.files.every((file) => file.location.length)) {
     return "REQUESTED";
   }
 
@@ -69,25 +56,11 @@ function getStatus(view: NewDataViewInput) {
   return "MISSING DATA";
 }
 
-async function handleFileCollection(
-  db: DynamoDBDocument,
-  event: APIGatewayEvent,
-  newDataView: NewDataViewInput,
-  newDataViewID: string,
-  logStream: string,
-  cloudwatch: CloudWatchLogsClient,
-) {
-  const collection = await getDataCollectionTemplate(
-    db,
-    TEMPLATES_TABLE,
-    newDataView.data.id,
-  );
+async function handleFileCollection(db: DynamoDBDocument, event: APIGatewayEvent, newDataView: NewDataViewInput, newDataViewID: string, logStream: string, cloudwatch: CloudWatchLogsClient) {
+  const collection = await getDataCollectionTemplate(db, TEMPLATES_TABLE, newDataView.data.id);
 
   if (!collection) {
-    return CreateBackendErrorResponse(
-      404,
-      `collection ${newDataView.data.id} does not exist`,
-    );
+    return CreateBackendErrorResponse(404, `collection ${newDataView.data.id} does not exist`);
   }
 
   const { username, fullName } = getUserDataFromEvent(event);
@@ -103,28 +76,21 @@ async function handleFileCollection(
     dataViewType: newDataView.dataViewType,
     data: newDataView.data,
     lastPull: "",
-    pulledBy: "",
+    pulledBy: ""
   };
 
   const newDataViewParams = {
     TableName: TABLE_NAME,
     Key: {
       type: "DataView",
-      id: `ID#${newDataViewID}`,
+      id: `ID#${newDataViewID}`
     },
-    ...createUpdateItemFromObject(newDataViewDBItem),
+    ...createUpdateItemFromObject(newDataViewDBItem)
   };
 
   await db.update(newDataViewParams);
 
-  await aws_LogEvent(
-    cloudwatch,
-    LOG_GROUP,
-    logStream,
-    username,
-    EventType.CREATE,
-    `DataView: ${newDataViewID} was created`,
-  );
+  await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `DataView: ${newDataViewID} was created`);
 
   return CreateBackendResponse(200, newDataViewDBItem);
 }

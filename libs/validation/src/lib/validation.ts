@@ -6,10 +6,7 @@ import { NumberSchema } from "./types/schemas/NumberSchema";
 import { StringSchema } from "./types/schemas/StringSchema";
 import { HeaderValidator } from "./types/validators/HeaderValidator";
 import * as XLSX from "xlsx";
-import {
-  HeaderSelect,
-  RowCountValidator,
-} from "./types/validators/RowCountValidator";
+import { HeaderSelect, RowCountValidator } from "./types/validators/RowCountValidator";
 import * as cheerio from "cheerio";
 import { Schema } from "./types/schemas/Schema";
 import { TypeFieldValidator } from "./types/validators/TypeFieldValidator";
@@ -21,11 +18,7 @@ function isWorkbook(data: XLSX.WorkBook) {
   return "Sheets" in data;
 }
 
-export function validate(
-  data: XLSX.WorkBook | string,
-  template: ValidationTemplate,
-  context?: Record<string, any>,
-) {
+export function validate(data: XLSX.WorkBook | string, template: ValidationTemplate, context?: Record<string, any>) {
   const errors: ValidationError[] = [];
 
   if (typeof data === "string") {
@@ -42,12 +35,7 @@ export function validate(
   return errors;
 }
 
-function handleHTML(
-  data: string,
-  template: ValidationTemplate,
-  errors: ValidationError[],
-  context?: Record<string, any>,
-) {
+function handleHTML(data: string, template: ValidationTemplate, errors: ValidationError[], context?: Record<string, any>) {
   try {
     const $ = cheerio.load(data);
 
@@ -63,10 +51,7 @@ function handleHTML(
 
             if (!selectValue) {
               errors.push({
-                error:
-                  schema.errorText ||
-                  "failed to match html file value to required values" +
-                    schema.name,
+                error: schema.errorText || "failed to match html file value to required values" + schema.name
               });
               continue;
             }
@@ -91,32 +76,18 @@ function handleHTML(
 
                 if (!selectValue) {
                   errors.push({
-                    error:
-                      schema.errorText ||
-                      "Failed to match html file value to required values" +
-                        schema.name,
+                    error: schema.errorText || "Failed to match html file value to required values" + schema.name
                   });
                   continue;
                 }
 
-                if (
-                  Array.isArray(select.value) &&
-                  !select.value.some((val) => val === selectValue)
-                ) {
+                if (Array.isArray(select.value) && !select.value.some((val) => val === selectValue)) {
                   errors.push({
-                    error:
-                      schema.errorText ||
-                      "Failed to match html file value to required values" +
-                        schema.name,
+                    error: schema.errorText || "Failed to match html file value to required values" + schema.name
                   });
-                } else if (
-                  !selectValue.includes(context?.[select.value as string] || "")
-                ) {
+                } else if (!selectValue.includes(context?.[select.value as string] || "")) {
                   errors.push({
-                    error:
-                      schema.errorText ||
-                      "Failed to match html file value to required value" +
-                        schema.name,
+                    error: schema.errorText || "Failed to match html file value to required value" + schema.name
                   });
                 }
 
@@ -132,21 +103,12 @@ function handleHTML(
 
                 if (!selectValue) {
                   errors.push({
-                    error:
-                      schema.errorText ||
-                      "failed to match html file value to required values",
+                    error: schema.errorText || "failed to match html file value to required values"
                   });
                   continue;
                 }
 
-                handleStringSchema(
-                  string,
-                  selectValue?.trim(),
-                  errors,
-                  schema,
-                  name,
-                  context,
-                );
+                handleStringSchema(string, selectValue?.trim(), errors, schema, name, context);
 
                 break;
               }
@@ -189,13 +151,7 @@ function getSelectValue(select: Schema, $: cheerio.CheerioAPI) {
   return baseElementText;
 }
 
-function headerValidate(
-  schema: Schema,
-  select: string,
-  errors: ValidationError[],
-  name: string,
-  context?: Record<string, any>,
-) {
+function headerValidate(schema: Schema, select: string, errors: ValidationError[], name: string, context?: Record<string, any>) {
   switch (schema.type) {
     case "number": {
       const numberSchema = schema as NumberSchema;
@@ -204,7 +160,7 @@ function headerValidate(
         errors.push({
           error: schema.errorText || "Invalid data type for number header",
           header: schema.name,
-          rule: name,
+          rule: name
         });
       }
 
@@ -213,37 +169,22 @@ function headerValidate(
     case "string": {
       const stringSchema = schema as StringSchema;
 
-      handleStringSchema(
-        stringSchema,
-        select?.trim(),
-        errors,
-        schema,
-        name,
-        context,
-      );
+      handleStringSchema(stringSchema, select?.trim(), errors, schema, name, context);
 
       break;
     }
   }
 }
 
-function handleStringSchema(
-  stringSchema: StringSchema,
-  select: string,
-  errors: ValidationError[],
-  schema: Schema,
-  name: string,
-  context?: Record<string, any>,
-) {
+function handleStringSchema(stringSchema: StringSchema, select: string, errors: ValidationError[], schema: Schema, name: string, context?: Record<string, any>) {
   if (stringSchema.array && stringSchema.value?.length) {
     const values = stringSchema.value as string[];
 
     if (!values.some((value) => select === value)) {
       errors.push({
-        error:
-          schema.errorText || "Header value not in the allowed list of values",
+        error: schema.errorText || "Header value not in the allowed list of values",
         header: schema.name,
-        rule: name,
+        rule: name
       });
     }
   }
@@ -253,7 +194,7 @@ function handleStringSchema(
       errors.push({
         error: schema.errorText || "Header string value is invalid",
         header: schema.name,
-        rule: name,
+        rule: name
       });
     }
   }
@@ -263,33 +204,23 @@ function handleStringSchema(
 
     if (!regexp.test(select)) {
       errors.push({
-        error:
-          schema.errorText || "Header string value does not match the regex",
+        error: schema.errorText || "Header string value does not match the regex",
         header: schema.name,
-        rule: name,
+        rule: name
       });
     }
   }
 
-  if (
-    stringSchema.maxLength &&
-    ((stringSchema.maxLength === 0 && !select) ||
-      select.length > stringSchema.maxLength)
-  ) {
+  if (stringSchema.maxLength && ((stringSchema.maxLength === 0 && !select) || select.length > stringSchema.maxLength)) {
     errors.push({
       error: schema.errorText || "Header string value exceeds the max length",
       header: schema.name,
-      rule: name,
+      rule: name
     });
   }
 }
 
-function handleCSV(
-  data: XLSX.WorkBook,
-  template: ValidationTemplate,
-  errors: ValidationError[],
-  context?: Record<string, any>,
-) {
+function handleCSV(data: XLSX.WorkBook, template: ValidationTemplate, errors: ValidationError[], context?: Record<string, any>) {
   const sheet = data.Sheets[data.SheetNames[0]];
 
   const sheetJSON = XLSX.utils.sheet_to_json(sheet, { header: 1 });
@@ -322,19 +253,16 @@ function handleCSV(
           if (sheetJSON.length < value || sheetJSON.length > value) {
             errors.push({
               error: rowCountValidator.errorText || "Row Count does not match",
-              rule: name,
+              rule: name
             });
           }
         }
 
         if (typeof rowCountValidator.value === "number") {
-          if (
-            sheetJSON.length < rowCountValidator.value ||
-            sheetJSON.length > rowCountValidator.value
-          ) {
+          if (sheetJSON.length < rowCountValidator.value || sheetJSON.length > rowCountValidator.value) {
             errors.push({
               error: rowCountValidator.errorText || "Row Count does not match",
-              rule: name,
+              rule: name
             });
           }
         }
@@ -351,7 +279,7 @@ function handleCSV(
 
               if (!select?.value) {
                 errors.push({
-                  error: "invalid validation schema index:" + index,
+                  error: "invalid validation schema index:" + index
                 });
                 continue;
               }
@@ -360,7 +288,7 @@ function handleCSV(
 
               if (!value?.field) {
                 errors.push({
-                  error: "invalid validation schema index:" + index,
+                  error: "invalid validation schema index:" + index
                 });
                 continue;
               }
@@ -369,29 +297,18 @@ function handleCSV(
 
               if (!selectValue) {
                 errors.push({
-                  error: "invalid validation schema index:" + index,
+                  error: "invalid validation schema index:" + index
                 });
                 continue;
               }
 
-              if (
-                Array.isArray(select.value) &&
-                !select.value.some((val) => val === selectValue)
-              ) {
+              if (Array.isArray(select.value) && !select.value.some((val) => val === selectValue)) {
                 errors.push({
-                  error:
-                    schema.errorText ||
-                    "Failed to match file value to required values" +
-                      schema.name,
+                  error: schema.errorText || "Failed to match file value to required values" + schema.name
                 });
-              } else if (
-                !selectValue.includes(context?.[value.field as string] || "")
-              ) {
+              } else if (!selectValue.includes(context?.[value.field as string] || "")) {
                 errors.push({
-                  error:
-                    schema.errorText ||
-                    "Failed to match file value to required value" +
-                      schema.name,
+                  error: schema.errorText || "Failed to match file value to required value" + schema.name
                 });
               }
 
