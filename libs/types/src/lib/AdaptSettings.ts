@@ -4,6 +4,8 @@ export interface FooterLinks {
   external: boolean;
   target: "newTab" | "sameTab" | "newWindow";
   icon?: string;
+  showAdmin?: boolean;
+  showPublic?: boolean;
 }
 
 export interface AdaptSettings {

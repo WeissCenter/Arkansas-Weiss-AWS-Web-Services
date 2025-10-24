@@ -2,12 +2,7 @@ import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import {
-  getAdaptSettings,
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  deleteIfPresent,
-} from "../../../../libs/types/src";
+import { getAdaptSettings, CreateBackendResponse, CreateBackendErrorResponse, deleteIfPresent } from "../../../../libs/types/src";
 
 // Define Environment Variables
 const SETTINGS_TABLE = process.env.SETTINGS_TABLE || "";
@@ -16,10 +11,7 @@ const SETTINGS_TABLE = process.env.SETTINGS_TABLE || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   try {
     const settings = await getAdaptSettings(db, SETTINGS_TABLE, "current");
 
@@ -41,9 +33,6 @@ export const handler: Handler = async (
     return CreateBackendResponse(200, settings);
   } catch (err) {
     console.error(err);
-    return CreateBackendErrorResponse(
-      500,
-      "failed to retrieve settings for the application",
-    );
+    return CreateBackendErrorResponse(500, "failed to retrieve settings for the application");
   }
 };

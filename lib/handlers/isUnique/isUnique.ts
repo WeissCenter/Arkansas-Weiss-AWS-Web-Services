@@ -1,9 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  IsUniqueInput,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, IsUniqueInput } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
@@ -15,10 +11,7 @@ const REPORT_TABLE_NAME = process.env.REPORT_TABLE_NAME || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     if (!event?.body) {
@@ -35,20 +28,17 @@ export const handler: Handler = async (
       FilterExpression: "#field = :value",
       ExpressionAttributeNames: {
         "#type": "type",
-        "#field": field,
+        "#field": field
       },
       ExpressionAttributeValues: {
         ":type": body.type,
-        ":value": body.name,
-      },
+        ":value": body.name
+      }
     };
 
     const result = await db.query(params);
 
-    return CreateBackendResponse(
-      200,
-      result.Items === undefined || result.Items.length <= 0,
-    );
+    return CreateBackendResponse(200, result.Items === undefined || result.Items.length <= 0);
   } catch (err) {
     console.error(err);
     return CreateBackendErrorResponse(500, "failed to check name unique");

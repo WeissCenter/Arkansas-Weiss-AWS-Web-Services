@@ -8,7 +8,7 @@ import {
   EventType,
   getDataView,
   getUserDataFromEvent,
-  updateDataViewQueueStatus,
+  updateDataViewQueueStatus
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -26,15 +26,10 @@ const db = DynamoDBDocument.from(dynamodbClient);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 const glueClient = new GlueClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
-  const dataViewID = event.pathParameters
-    ? event.pathParameters["dataViewID"]
-    : null;
+  const dataViewID = event.pathParameters ? event.pathParameters["dataViewID"] : null;
 
   const username = getUserDataFromEvent(event).username;
   try {
@@ -47,41 +42,22 @@ export const handler: Handler = async (
       return CreateBackendErrorResponse(404, "data set does not exist");
     }
 
-    await updateDataViewQueueStatus(
-      db,
-      TABLE_NAME,
-      dataViewID,
-      DataSetQueueStatus.REQUESTED,
-    );
+    await updateDataViewQueueStatus(db, TABLE_NAME, dataViewID, DataSetQueueStatus.REQUESTED);
 
     const startJobCommand = new StartJobRunCommand({
       JobName: GLUE_JOB,
-      Arguments: { "--data-view-id": dataViewID, "--user": username },
+      Arguments: { "--data-view-id": dataViewID, "--user": username }
     });
 
     await glueClient.send(startJobCommand);
 
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      username,
-      EventType.CREATE,
-      `Data Pull for ${dataViewID} started`,
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `Data Pull for ${dataViewID} started`);
 
     return CreateBackendResponse(200);
   } catch (err) {
     console.error(err);
 
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      username,
-      EventType.CREATE,
-      `Failed to start data pull for ${dataViewID}: ${JSON.stringify(err)}`,
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `Failed to start data pull for ${dataViewID}: ${JSON.stringify(err)}`);
 
     return CreateBackendErrorResponse(500, "failed to pull data");
   }

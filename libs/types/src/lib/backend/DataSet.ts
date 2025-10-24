@@ -1,7 +1,4 @@
-import {
-  DataCollectionFieldDefinition,
-  DataCollectionFileDefinition,
-} from "../IDataCollectionTemplate";
+import { DataCollectionFieldDefinition, DataCollectionFileDefinition } from "../IDataCollectionTemplate";
 import { SQLJoinType } from "../SQLJoinType";
 import { DataSourceStatus } from "./DataSourceStatus";
 

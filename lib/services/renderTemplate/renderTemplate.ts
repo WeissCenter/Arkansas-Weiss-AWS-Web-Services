@@ -34,17 +34,11 @@ import {
   TemplateError,
   TemplateErrorCode,
   TemplateFunction,
-  ViewerTemplate,
+  ViewerTemplate
 } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import {
-  Kysely,
-  SqliteAdapter,
-  DummyDriver,
-  SqliteIntrospector,
-  SqliteQueryCompiler,
-} from "kysely";
+import { Kysely, SqliteAdapter, DummyDriver, SqliteIntrospector, SqliteQueryCompiler } from "kysely";
 import { AthenaClient } from "@aws-sdk/client-athena";
 import { BUILT_IN_FUNCTIONS } from "./template-functions/template-functions";
 import { InvokeCommand, LambdaClient, LogType } from "@aws-sdk/client-lambda";
@@ -75,8 +69,8 @@ const queryBuilder = new Kysely<any>({
     createAdapter: () => new SqliteAdapter(),
     createDriver: () => new DummyDriver(),
     createIntrospector: (db) => new SqliteIntrospector(db),
-    createQueryCompiler: () => new SqliteQueryCompiler(),
-  },
+    createQueryCompiler: () => new SqliteQueryCompiler()
+  }
 });
 
 export const handler: Handler = async (event: any, context: Context) => {
@@ -88,31 +82,17 @@ export const handler: Handler = async (event: any, context: Context) => {
     const lang = event["lang"] || "en";
     const suppress = event["suppress"] || false;
 
-    if (!report)
-      return CreateBackendErrorResponse(400, "missing report id/slug");
+    if (!report) return CreateBackendErrorResponse(400, "missing report id/slug");
 
     let dynamoReport: IReport;
 
     switch (accessType) {
       case "slug": {
-        dynamoReport = await getReportBySlug(
-          db,
-          report,
-          REPORT_TABLE,
-          undefined,
-          undefined,
-          lang,
-        );
+        dynamoReport = await getReportBySlug(db, report, REPORT_TABLE, undefined, undefined, lang);
         break;
       }
       case "id": {
-        dynamoReport = await getReportFromDynamo(
-          db,
-          REPORT_TABLE,
-          report,
-          version,
-          lang,
-        );
+        dynamoReport = await getReportFromDynamo(db, REPORT_TABLE, report, version, lang);
         break;
       }
       default: {
@@ -120,28 +100,16 @@ export const handler: Handler = async (event: any, context: Context) => {
       }
     }
 
-    if (!dynamoReport)
-      return CreateBackendErrorResponse(404, "report does not exist");
+    if (!dynamoReport) return CreateBackendErrorResponse(404, "report does not exist");
 
     const dataView = await getDataView(db, DATA_TABLE, dynamoReport.dataView);
 
-    if (!dataView)
-      return CreateBackendErrorResponse(
-        404,
-        "data view does not exist in report",
-      );
+    if (!dataView) return CreateBackendErrorResponse(404, "data view does not exist in report");
 
     if (!glossaryCache.has(lang)) {
-      const dynamoGlossary = await getAdaptGlossary(
-        db,
-        SETTINGS_TABLE,
-        "current",
-        lang,
-      );
+      const dynamoGlossary = await getAdaptGlossary(db, SETTINGS_TABLE, "current", lang);
 
-      const newGlossaryMap = new Map(
-        Object.entries(dynamoGlossary?.terms || {}),
-      );
+      const newGlossaryMap = new Map(Object.entries(dynamoGlossary?.terms || {}));
 
       glossaryCache.set(lang, newGlossaryMap);
     }
@@ -152,13 +120,10 @@ export const handler: Handler = async (event: any, context: Context) => {
       glossaryCache.get(lang)!,
       filters,
       suppress,
-      accessType === "slug" ? dynamoReport.dataView : dataView.dataViewID,
+      accessType === "slug" ? dynamoReport.dataView : dataView.dataViewID
     )) as ViewerTemplate;
 
-    rendered.suppressed =
-      suppress &&
-      (rendered.suppression?.required ||
-        (rendered.suppression?.sensitiveColumns?.length || 0) > 0);
+    rendered.suppressed = suppress && (rendered.suppression?.required || (rendered.suppression?.sensitiveColumns?.length || 0) > 0);
     delete rendered.suppression;
 
     return rendered;
@@ -168,15 +133,7 @@ export const handler: Handler = async (event: any, context: Context) => {
   }
 };
 
-async function renderTemplateWithMultipleViews(
-  template: ITemplate,
-  dataView: DataView,
-  glossary: Map<string, IGlossaryTerm>,
-  filters: any = {},
-  suppress = false,
-  slug = "",
-  pageIndex = -1,
-) {
+async function renderTemplateWithMultipleViews(template: ITemplate, dataView: DataView, glossary: Map<string, IGlossaryTerm>, filters: any = {}, suppress = false, slug = "", pageIndex = -1) {
   const renderedTemplate: ITemplate = {
     id: template.id,
     multiFile: template.multiFile ?? true,
@@ -186,7 +143,7 @@ async function renderTemplateWithMultipleViews(
     title: template.title,
     description: template.description,
     conditionalFilters: template.conditionalFilters,
-    pages: [],
+    pages: []
   };
 
   const templateFilters = flattenFilters(template.filters || {});
@@ -198,7 +155,7 @@ async function renderTemplateWithMultipleViews(
       glossaryService: glossary,
       template,
       templateFilters,
-      suppress,
+      suppress
     },
     ...dataView.data.files.map((file) => ({
       dataViewID: slug?.length ? slug : dataView.dataViewID,
@@ -207,8 +164,8 @@ async function renderTemplateWithMultipleViews(
       template,
       templateFilters,
       appliedFilters: filters,
-      suppress,
-    })),
+      suppress
+    }))
   ];
 
   for (const [i, page] of (template.pages as ITemplatePage[]).entries()) {
@@ -219,10 +176,7 @@ async function renderTemplateWithMultipleViews(
     for (const code of Object.keys(filters)) {
       const tempFilter = templateFilters[code];
 
-      if (
-        !tempFilter.condition?.pages?.length ||
-        tempFilter?.condition?.pages?.includes(page.id)
-      ) {
+      if (!tempFilter.condition?.pages?.length || tempFilter?.condition?.pages?.includes(page.id)) {
         filtersToApply[code] = filters[code];
       }
     }
@@ -237,23 +191,21 @@ async function renderTemplateWithMultipleViews(
             glossaryService: glossary,
             templateFilters,
             appliedFilters: filtersToApply,
-            suppress,
+            suppress
           }),
-      appliedFilters: filtersToApply,
+      appliedFilters: filtersToApply
     });
   }
   return renderedTemplate;
 }
 
-function flattenFilters(
-  filters: ITemplateFilters,
-): Record<string, IFilter<unknown>> {
+function flattenFilters(filters: ITemplateFilters): Record<string, IFilter<unknown>> {
   return Object.keys(filters).reduce((accum, key) => {
     if ("code" in filters[key]) {
       if ((filters[key] as IFilter<unknown>).children) {
         return Object.assign(accum, {
           [key]: filters[key],
-          ...flattenFilters((filters[key] as IFilter<unknown>).children),
+          ...flattenFilters((filters[key] as IFilter<unknown>).children)
         });
       }
 
@@ -262,7 +214,7 @@ function flattenFilters(
     } else if ("exclusive" in filters[key]) {
       // IFilterGroup
       return Object.assign(accum, {
-        ...flattenFilters((filters[key] as IFilterGroup).filters),
+        ...flattenFilters((filters[key] as IFilterGroup).filters)
       });
     }
 
@@ -281,7 +233,7 @@ async function handlePages(pages: ITemplatePage[], ctx: TemplateContext) {
   await Promise.all(
     pages.map(async (page) => {
       page.sections = await Promise.all(handleSections(page.sections, ctx));
-    }),
+    })
   );
 
   return pages;
@@ -323,16 +275,10 @@ function handleSections(sections: ISection[], ctx: TemplateContext) {
   return promises;
 }
 
-async function handleCommentBlock(
-  section: ISection,
-  ctx: TemplateContext | any,
-) {
+async function handleCommentBlock(section: ISection, ctx: TemplateContext | any) {
   const headerBlock = section.content as CommentBlock;
 
-  const [label, body] = await Promise.all([
-    parseString(headerBlock.label, ctx),
-    parseString(headerBlock.body, ctx),
-  ]);
+  const [label, body] = await Promise.all([parseString(headerBlock.label, ctx), parseString(headerBlock.body, ctx)]);
 
   headerBlock.label = label;
   headerBlock.body = body;
@@ -340,16 +286,10 @@ async function handleCommentBlock(
   return section;
 }
 
-async function handleHeaderBlock(
-  section: ISection,
-  ctx: TemplateContext | any,
-) {
+async function handleHeaderBlock(section: ISection, ctx: TemplateContext | any) {
   const headerBlock = section.content as HeaderBlock;
 
-  const [text, body] = await Promise.all([
-    parseString(headerBlock.text, ctx),
-    parseString(headerBlock.body, ctx),
-  ]);
+  const [text, body] = await Promise.all([parseString(headerBlock.text, ctx), parseString(headerBlock.body, ctx)]);
 
   headerBlock.text = text;
   headerBlock.body = body;
@@ -357,10 +297,7 @@ async function handleHeaderBlock(
   return section;
 }
 
-async function handleCountBreakdown(
-  section: ISection,
-  ctx: TemplateContext | any,
-) {
+async function handleCountBreakdown(section: ISection, ctx: TemplateContext | any) {
   const tmpCtx = { ...ctx };
 
   const content = section.content as any;
@@ -379,34 +316,18 @@ async function handleCountBreakdown(
       return {
         field: templateFilter.field,
         type: templateFilter.dataType || "string",
-        value: val,
+        value: val
       };
     });
 
     content.dataRetrievalOperations[0].arguments.push(...newArgs);
   }
 
-  const data = await getDataFromDataView(
-    ctx.dataViewID,
-    ctx.fileSpec,
-    content.dataRetrievalOperations,
-    ctx.template.suppression,
-    ctx.suppress,
-  ).then((result) => result.operationResults[0]!.value);
+  const data = await getDataFromDataView(ctx.dataViewID, ctx.fileSpec, content.dataRetrievalOperations, ctx.template.suppression, ctx.suppress).then((result) => result.operationResults[0]!.value);
 
-  (data as any[]).forEach(
-    (item: any) =>
-      (tmpCtx[item[content.labelField]] = getPercentage(
-        data as any[],
-        item,
-        "StudentCount",
-      )),
-  );
+  (data as any[]).forEach((item: any) => (tmpCtx[item[content.labelField]] = getPercentage(data as any[], item, "StudentCount")));
 
-  const [title, description] = await Promise.all([
-    parseString(content.title, tmpCtx),
-    parseString(content.description, tmpCtx),
-  ]);
+  const [title, description] = await Promise.all([parseString(content.title, tmpCtx), parseString(content.description, tmpCtx)]);
 
   if (content["caption"]) {
     content.caption = await parseString(content.caption, tmpCtx);
@@ -430,10 +351,7 @@ async function handleQuickSummary(section: ISection, ctx: TemplateContext) {
 
   for (const section of content.sections) {
     try {
-      const [title, body] = await Promise.all([
-        parseString(section.title, ctx),
-        parseString(section.body, ctx),
-      ]);
+      const [title, body] = await Promise.all([parseString(section.title, ctx), parseString(section.body, ctx)]);
 
       section.title = title;
       section.body = body;
@@ -472,10 +390,7 @@ async function handleBarChart(section: ISection, ctx: TemplateContext) {
   const content: any = section.content;
 
   if (section.type === SectionType.BarChart) {
-    const [title, description] = await Promise.all([
-      parseString(content.title, ctx),
-      parseString(content.description, ctx),
-    ]);
+    const [title, description] = await Promise.all([parseString(content.title, ctx), parseString(content.description, ctx)]);
 
     content.title = title;
     content.description = description;
@@ -511,7 +426,7 @@ async function handleBarChart(section: ISection, ctx: TemplateContext) {
         operator,
         array: true,
         type: templateFilter.dataType || "string",
-        value: [valArray].flat(),
+        value: [valArray].flat()
       };
 
       content.chart.dataRetrievalOperations[0].id += `-${ctx.fileSpec}-${templateFilter.field}-${valArray.join(",")}`;
@@ -545,22 +460,12 @@ async function handleBarChart(section: ISection, ctx: TemplateContext) {
     operations.push(content.chart.total);
   }
 
-  const dataServiceResult = await getDataFromDataView(
-    ctx.dataViewID,
-    ctx.fileSpec,
-    operations,
-    (ctx.template as ITemplate).suppression,
-    ctx.suppress,
-  ).then((result) => result.operationResults as any);
+  const dataServiceResult = await getDataFromDataView(ctx.dataViewID, ctx.fileSpec, operations, (ctx.template as ITemplate).suppression, ctx.suppress).then((result) => result.operationResults as any);
 
   content.chart.data = dataServiceResult;
-  const reportCodeArg = content.chart.dataRetrievalOperations[0].arguments.find(
-    (arg: any) => arg.field.toLowerCase() === "reportcode",
-  )?.value;
+  const reportCodeArg = content.chart.dataRetrievalOperations[0].arguments.find((arg: any) => arg.field.toLowerCase() === "reportcode")?.value;
 
-  content.fileSpec = Array.isArray(reportCodeArg)
-    ? reportCodeArg[0]
-    : reportCodeArg;
+  content.fileSpec = Array.isArray(reportCodeArg) ? reportCodeArg[0] : reportCodeArg;
   // content.chart.total = chartData?.total ?? 0;
   // content.chart.subTotals = chartData?.sub_totals;
 
@@ -584,35 +489,26 @@ function getSortableCategoryArgs(ctx: TemplateContext) {
   if (ctx.fileSpec !== "all" || !sortableCategoriesKeys?.length) return;
 
   const cleanedFilters = Object.keys(ctx.appliedFilters).filter((key) => {
-    if (Array.isArray(ctx.appliedFilters[key]))
-      return (
-        ctx.appliedFilters[key].length &&
-        ctx.appliedFilters[key].every((item: any) => item !== null)
-      );
+    if (Array.isArray(ctx.appliedFilters[key])) return ctx.appliedFilters[key].length && ctx.appliedFilters[key].every((item: any) => item !== null);
 
     return ctx.appliedFilters[key] !== null;
   });
 
-  const mappedCodes = cleanedFilters.map(
-    (key: string) => (ctx.templateFilters?.[key] as IFilter<unknown>).field,
-  ) as string[];
+  const mappedCodes = cleanedFilters.map((key: string) => (ctx.templateFilters?.[key] as IFilter<unknown>).field) as string[];
 
   const arg = {
     field: sortableCategories.categoryField,
     array: true,
     operator: "OR",
     type: "string",
-    value: [] as string[],
+    value: [] as string[]
   };
 
   const categories = new Set<string>();
 
   for (const [specKey, spec] of sortableCategoriesKeys) {
     for (const [catKey, category] of Object.entries(spec)) {
-      if (
-        mappedCodes.length > 0 &&
-        mappedCodes.every((code: string) => category.includes(code))
-      ) {
+      if (mappedCodes.length > 0 && mappedCodes.every((code: string) => category.includes(code))) {
         categories.add(catKey);
         break;
       }
@@ -652,7 +548,7 @@ function getFuncs(
     template: ITemplate | ISummaryTemplate;
   },
   promises: Record<string, Promise<string>>,
-  code: string,
+  code: string
 ) {
   let funcDecl = `${functions.function}(${functions.args.map((arg) => JSON.stringify(arg)).join(",")}`;
 
@@ -677,7 +573,7 @@ function getFuncs(
           operator,
           array: true,
           type: templateFilter.dataType || "string",
-          value: [valArray].flat(),
+          value: [valArray].flat()
         };
 
         newArgs.push(JSON.stringify(arg));
@@ -686,8 +582,8 @@ function getFuncs(
           JSON.stringify({
             field: templateFilter.field,
             type: templateFilter.dataType || "string",
-            value: val,
-          }),
+            value: val
+          })
         );
       }
 
@@ -715,15 +611,7 @@ function getFuncs(
           arg["value"] = result;
         }
 
-        getFuncs(
-          value,
-          hasFilters,
-          context,
-          sortableArgs,
-          combinedContext,
-          promises,
-          `${code}.${key}`,
-        );
+        getFuncs(value, hasFilters, context, sortableArgs, combinedContext, promises, `${code}.${key}`);
       });
 
       dependentPromises.push(promise);
@@ -762,9 +650,7 @@ async function handleDataViewSelect(code: string, context: TemplateContext) {
         throw new Error(`Field ${select[2]} not found`);
       }
 
-      const dataViewField = dataView.data.fields.find(
-        (item) => item.id === fieldSelect,
-      );
+      const dataViewField = dataView.data.fields.find((item) => item.id === fieldSelect);
 
       return dataViewField?.label ?? "";
     }
@@ -775,10 +661,7 @@ async function handleDataViewSelect(code: string, context: TemplateContext) {
   }
 }
 
-async function parseString(
-  string: StringTemplate | string,
-  context: TemplateContext,
-) {
+async function parseString(string: StringTemplate | string, context: TemplateContext) {
   if (typeof string === "string") {
     return string;
   }
@@ -787,7 +670,7 @@ async function parseString(
   const combinedContext = {
     ...context,
     ...templateFunctions,
-    dataService: { getDataFromDataViewPromise: getDataFromDataView },
+    dataService: { getDataFromDataViewPromise: getDataFromDataView }
     //glossaryService: glossary,
   };
 
@@ -816,15 +699,7 @@ async function parseString(
         return "";
       }
 
-      const extra = getFuncs(
-        functions,
-        hasFilters,
-        context,
-        sortableArgs,
-        combinedContext,
-        promiseMap,
-        variable,
-      );
+      const extra = getFuncs(functions, hasFilters, context, sortableArgs, combinedContext, promiseMap, variable);
 
       extraPromises.push(...extra);
 
@@ -832,40 +707,24 @@ async function parseString(
     });
   }
   await Promise.all(extraPromises);
-  const mapPromises = Object.entries(promiseMap).map(
-    async ([key, promise]) => ({ key, promise: await promise }),
-  );
+  const mapPromises = Object.entries(promiseMap).map(async ([key, promise]) => ({ key, promise: await promise }));
   const awaitedMapPromises = await Promise.all(mapPromises);
 
-  const reducedMapPromises = awaitedMapPromises.reduce(
-    (accum, val) => Object.assign(accum, { [val.key]: val.promise }),
-    {} as Record<string, string>,
-  );
+  const reducedMapPromises = awaitedMapPromises.reduce((accum, val) => Object.assign(accum, { [val.key]: val.promise }), {} as Record<string, string>);
 
   if (context.glossaryService) {
     // TODO: test integers that appear in glossary
     return template.replaceAll(parseRegex, (match, code) => {
-      return (
-        context.glossaryService.get(reducedMapPromises[code])?.label ||
-        reducedMapPromises[code] ||
-        ""
-      );
+      return context.glossaryService.get(reducedMapPromises[code])?.label || reducedMapPromises[code] || "";
     });
   } else {
     return template.replaceAll(parseRegex, (match, code) => {
-      return reducedMapPromises[code] !== undefined
-        ? reducedMapPromises[code]
-        : "";
+      return reducedMapPromises[code] !== undefined ? reducedMapPromises[code] : "";
     });
   }
 }
 
-async function getDataFromDataView(
-  dataViewID: string,
-  fileSpec: string,
-  operations: DataSetOperation[],
-  ...args: any[]
-) {
+async function getDataFromDataView(dataViewID: string, fileSpec: string, operations: DataSetOperation[], ...args: any[]) {
   const dataViewCode = `${dataViewID.replace(/[-]/g, "_")}`;
 
   console.log("DATA VIEW ID", dataViewCode);
@@ -891,28 +750,16 @@ async function getDataFromDataView(
     return operations;
   };
 
-  const aggregateResults = await getAggregateAthenaResults(
-    removeDupeConditions(operations),
-    queryBuilder,
-    dataViewCode,
-    athenaClient,
-    ATHENA_QUERY_RATE,
-    CATALOG,
-    BUCKET,
-  );
+  const aggregateResults = await getAggregateAthenaResults(removeDupeConditions(operations), queryBuilder, dataViewCode, athenaClient, ATHENA_QUERY_RATE, CATALOG, BUCKET);
 
-  if (args[1] && args[0] && "required" in args[0] && args[0]["required"])
-    return suppressAggregateData(args[0], aggregateResults);
+  if (args[1] && args[0] && "required" in args[0] && args[0]["required"]) return suppressAggregateData(args[0], aggregateResults);
 
   return {
-    operationResults: aggregateResults,
+    operationResults: aggregateResults
   };
 }
 
-async function suppressAggregateData(
-  suppression: ISuppression,
-  aggregateResults: any,
-) {
+async function suppressAggregateData(suppression: ISuppression, aggregateResults: any) {
   const settings = await getAdaptSettings(db, SETTINGS_TABLE, "current");
 
   const command = new InvokeCommand({
@@ -920,16 +767,16 @@ async function suppressAggregateData(
     Payload: JSON.stringify({
       data: aggregateResults,
       threshold: settings?.nSize || 30,
-      ...suppression,
+      ...suppression
     }),
-    LogType: LogType.Tail,
+    LogType: LogType.Tail
   });
 
   const { Payload } = await lambdaClient.send(command);
   const result = Buffer.from(Payload!).toString();
 
   return {
-    operationResults: JSON.parse(result),
+    operationResults: JSON.parse(result)
   };
 }
 

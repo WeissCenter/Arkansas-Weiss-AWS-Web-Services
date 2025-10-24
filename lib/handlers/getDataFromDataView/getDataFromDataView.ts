@@ -9,46 +9,24 @@ import {
   GetDataFromDataViewOutput,
   getDataView,
   getAggregateAthenaResults,
-  AdaptSettings,
+  AdaptSettings
 } from "../../../libs/types/src";
-import {
-  AthenaClient,
-  Datum,
-  ResultSet,
-  GetQueryResultsCommand,
-  StartQueryExecutionCommand,
-  GetQueryExecutionCommand,
-  QueryExecutionState,
-} from "@aws-sdk/client-athena";
+import { AthenaClient, Datum, ResultSet, GetQueryResultsCommand, StartQueryExecutionCommand, GetQueryExecutionCommand, QueryExecutionState } from "@aws-sdk/client-athena";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { LambdaClient, InvokeCommand, LogType } from "@aws-sdk/client-lambda";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import {
-  Kysely,
-  SqliteAdapter,
-  DummyDriver,
-  SqliteIntrospector,
-  SqliteQueryCompiler,
-  SelectQueryBuilder,
-  sql,
-  ColumnDataType,
-  AliasableExpression,
-} from "kysely";
+import { Kysely, SqliteAdapter, DummyDriver, SqliteIntrospector, SqliteQueryCompiler, SelectQueryBuilder, sql, ColumnDataType, AliasableExpression } from "kysely";
 import * as log4js from "log4js";
 
 // Define Environment Variables
 const TABLE_NAME = process.env.TABLE_NAME || "";
 const CATALOG = process.env.CATALOG || "";
 const BUCKET = process.env.BUCKET || "";
-const SUPPRESSION_SERVICE_FUNCTION =
-  process.env.SUPPRESSION_SERVICE_FUNCTION || "";
+const SUPPRESSION_SERVICE_FUNCTION = process.env.SUPPRESSION_SERVICE_FUNCTION || "";
 const ATHENA_QUERY_RATE = parseInt(process.env.ATHENA_QUERY_RATE || "1000");
 const SETTINGS_TABLE = process.env.SETTINGS_TABLE || "";
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   // AWS SDK Clients
   const client = new DynamoDBClient({ region: "us-east-1" });
   const db = DynamoDBDocument.from(client);
@@ -60,8 +38,8 @@ export const handler: Handler = async (
       createAdapter: () => new SqliteAdapter(),
       createDriver: () => new DummyDriver(),
       createIntrospector: (db) => new SqliteIntrospector(db),
-      createQueryCompiler: () => new SqliteQueryCompiler(),
-    },
+      createQueryCompiler: () => new SqliteQueryCompiler()
+    }
   });
 
   console.log(event);
@@ -72,14 +50,10 @@ export const handler: Handler = async (
 
     const dataViewID = event.pathParameters?.["dataViewID"];
     if (!dataViewID) {
-      return CreateBackendErrorResponse(
-        400,
-        "Missing dataViewID in path parameters",
-      );
+      return CreateBackendErrorResponse(400, "Missing dataViewID in path parameters");
     }
 
-    const previewSuppression =
-      event?.queryStringParameters?.["previewSuppression"] === "true";
+    const previewSuppression = event?.queryStringParameters?.["previewSuppression"] === "true";
 
     const dataSet = await getDataView(db, TABLE_NAME, dataViewID);
 
@@ -88,27 +62,14 @@ export const handler: Handler = async (
     }
 
     if (!dataSet.lastPull) {
-      return CreateBackendErrorResponse(
-        400,
-        "A Pull has not been run for this data set",
-      );
+      return CreateBackendErrorResponse(400, "A Pull has not been run for this data set");
     }
 
-    const { operations, suppression, fileSpec } = JSON.parse(
-      event.body,
-    ) as GetDataFromDataViewInput;
+    const { operations, suppression, fileSpec } = JSON.parse(event.body) as GetDataFromDataViewInput;
 
     const dataViewCode = `${dataSet.dataViewID.replace(/[-]/g, "_")}`;
 
-    const aggregateResults = await getAggregateAthenaResults(
-      operations,
-      queryBuilder,
-      dataViewCode,
-      athenaClient,
-      ATHENA_QUERY_RATE,
-      CATALOG,
-      BUCKET,
-    );
+    const aggregateResults = await getAggregateAthenaResults(operations, queryBuilder, dataViewCode, athenaClient, ATHENA_QUERY_RATE, CATALOG, BUCKET);
 
     if (previewSuppression && suppression?.required) {
       const settings = await getSettings(db, SETTINGS_TABLE);
@@ -118,23 +79,23 @@ export const handler: Handler = async (
         Payload: JSON.stringify({
           data: aggregateResults,
           threshold: settings.nSize || 30,
-          ...suppression,
+          ...suppression
         }),
-        LogType: LogType.Tail,
+        LogType: LogType.Tail
       });
 
       const { Payload } = await lambdaClient.send(command);
       const result = Buffer.from(Payload!).toString();
 
       const output: GetDataFromDataViewOutput = {
-        operationResults: JSON.parse(result),
+        operationResults: JSON.parse(result)
       };
 
       return CreateBackendResponse(200, output);
     }
 
     const output: GetDataFromDataViewOutput = {
-      operationResults: aggregateResults as any,
+      operationResults: aggregateResults as any
     };
 
     return CreateBackendResponse(200, output);
@@ -144,26 +105,14 @@ export const handler: Handler = async (
   }
 };
 
-function createConditions(
-  query,
-  conditions: DataSetOperationArgument[],
-  groupBy?: string,
-) {
+function createConditions(query, conditions: DataSetOperationArgument[], groupBy?: string) {
   query = query.where(({ eb, or, and, not, exists, selectFrom }: any) => {
     const conds = conditions.map((field) => {
       if (field.array) {
-        return or(
-          field.value.map((val) =>
-            eb(field.field, field.operator === "NOT" ? "!=" : "=", `'${val}'`),
-          ),
-        );
+        return or(field.value.map((val) => eb(field.field, field.operator === "NOT" ? "!=" : "=", `'${val}'`)));
       }
 
-      return eb(
-        field.field,
-        field.operator === "NOT" ? "!=" : "=",
-        `'${field.value}'`,
-      );
+      return eb(field.field, field.operator === "NOT" ? "!=" : "=", `'${field.value}'`);
     });
 
     if (groupBy && Array.isArray(groupBy)) {
@@ -204,35 +153,29 @@ function mapAthenaQueryResults(resultSet: ResultSet) {
     const subData = (item.Data || []).reduce(
       (accum, val, idx) =>
         Object.assign(accum, {
-          [ColumnInfo[idx].Name]: mapDatum(val, ColumnInfo[idx].Type),
+          [ColumnInfo[idx].Name]: mapDatum(val, ColumnInfo[idx].Type)
         }),
-      {},
+      {}
     );
 
     return subData;
   });
 }
 
-async function queryAthena(
-  compiled,
-  athenaClient: AthenaClient,
-  ATHENA_QUERY_RATE = 1000,
-) {
+async function queryAthena(compiled, athenaClient: AthenaClient, ATHENA_QUERY_RATE = 1000) {
   const params = {
     QueryString: compiled.sql,
     ResultReuseConfiguration: {
       ResultReuseByAgeConfiguration: {
         Enabled: true,
-        MaxAgeInMinutes: 60,
-      },
+        MaxAgeInMinutes: 60
+      }
     },
     QueryExecutionContext: {
-      Database: CATALOG,
+      Database: CATALOG
     },
-    ExecutionParameters: compiled.parameters.length
-      ? (compiled.parameters as any[])
-      : null,
-    ResultConfiguration: { OutputLocation: `s3://${BUCKET}/` },
+    ExecutionParameters: compiled.parameters.length ? (compiled.parameters as any[]) : null,
+    ResultConfiguration: { OutputLocation: `s3://${BUCKET}/` }
   };
 
   console.log("athena params", params);
@@ -244,18 +187,9 @@ async function queryAthena(
 
   console.log("startCommandResult", startCommandResult);
 
-  console.log(
-    "getQueryResultInputs",
-    athenaClient,
-    startCommandResult.QueryExecutionId,
-    ATHENA_QUERY_RATE,
-  );
+  console.log("getQueryResultInputs", athenaClient, startCommandResult.QueryExecutionId, ATHENA_QUERY_RATE);
 
-  const resultSet = await getQueryResult(
-    athenaClient,
-    startCommandResult.QueryExecutionId,
-    ATHENA_QUERY_RATE,
-  );
+  const resultSet = await getQueryResult(athenaClient, startCommandResult.QueryExecutionId, ATHENA_QUERY_RATE);
 
   console.log("result set", resultSet);
   return resultSet;
@@ -306,18 +240,14 @@ function mapField(field: { field: string; type: string; value: any }) {
   }
 }
 
-async function getQueryResult(
-  athena: AthenaClient,
-  id: string,
-  ATHENA_QUERY_RATE = 1000,
-) {
+async function getQueryResult(athena: AthenaClient, id: string, ATHENA_QUERY_RATE = 1000) {
   let status = "UNKNOWN";
   do {
     console.log("sleeping");
     await sleep(ATHENA_QUERY_RATE);
 
     const statusCommand = new GetQueryExecutionCommand({
-      QueryExecutionId: id,
+      QueryExecutionId: id
     });
 
     console.log("status command", statusCommand);
@@ -328,13 +258,10 @@ async function getQueryResult(
 
     status = statusResult.QueryExecution.Status.State;
     console.log("status", status);
-  } while (
-    status === QueryExecutionState.QUEUED ||
-    status === QueryExecutionState.RUNNING
-  );
+  } while (status === QueryExecutionState.QUEUED || status === QueryExecutionState.RUNNING);
 
   const getQueryResultsCommand = new GetQueryResultsCommand({
-    QueryExecutionId: id,
+    QueryExecutionId: id
   });
 
   console.log("getQueryResultsCommand", getQueryResultsCommand);
@@ -346,10 +273,7 @@ async function getQueryResult(
   return response.ResultSet;
 }
 
-function handleSelect<DB, TB extends keyof DB, O>(
-  query: SelectQueryBuilder<DB, TB, O>,
-  field: DataSetOperationArgument,
-) {
+function handleSelect<DB, TB extends keyof DB, O>(query: SelectQueryBuilder<DB, TB, O>, field: DataSetOperationArgument) {
   if (field.array) {
     const args = [];
 
@@ -374,10 +298,7 @@ function handleSelect<DB, TB extends keyof DB, O>(
   return query.select(field.value);
 }
 
-function cast(
-  expr: string,
-  type: ColumnDataType,
-): AliasableExpression<unknown> {
+function cast(expr: string, type: ColumnDataType): AliasableExpression<unknown> {
   return sql`cast("${sql.raw(expr)}" as ${sql.raw(type)})`;
 }
 
@@ -392,8 +313,8 @@ function getSettings(db: DynamoDBDocument, settingsTable: string) {
     TableName: settingsTable,
     Key: {
       type: "Settings",
-      id: "ID#current",
-    },
+      id: "ID#current"
+    }
   };
   return db.get(params).then((result) => result.Item as AdaptSettings);
 }

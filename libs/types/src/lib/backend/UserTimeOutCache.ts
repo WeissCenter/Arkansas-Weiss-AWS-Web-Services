@@ -1,10 +1,6 @@
 import { UserTimeOutCacheAction } from "./UserTimeOutCacheInput";
 
-export type UserCacheItemType =
-  | "DataSource"
-  | "DataView"
-  | "Report"
-  | "Generic";
+export type UserCacheItemType = "DataSource" | "DataView" | "Report" | "Generic";
 
 export type CacheKey = `${UserCacheItemType}_${UserTimeOutCacheAction}`;
 

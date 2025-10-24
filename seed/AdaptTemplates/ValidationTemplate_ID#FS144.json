@@ -30,7 +30,7 @@
           {
             "name": "file-name",
             "errorText": "The system has encountered an error regarding the file name of the file. The file name did not match the required structure.",
-            "regex": "^[A-Z]{2}(SEA|LEA)EDUSERVIC[A-Za-z0-9]{7}(\\.csv)$",
+            "regex": "^[A-Z]{2}(SEA|LEA)EDUSERVIC[A-Za-z0-9]{0,7}(\\.csv)$",
             "type": "string",
             "maxLength": 25
           },

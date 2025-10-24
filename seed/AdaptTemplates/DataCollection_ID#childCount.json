@@ -6,7 +6,7 @@
   "fields": [
     {
       "id": "reportingYear",
-      "label": "For what reporting year?",
+      "label": "For what fiscal year?",
       "shortLabel": "School year",
       "required": true,
       "type": "select",
@@ -26,14 +26,14 @@
       "id": "reportingLevel",
       "label": "For what reporting level?",
       "options": [
-       {
-        "label": "SEA (State Education Agency)",
-        "value": "SEA (State Education Agency)"
-       },
-       {
-        "label": "LEA (Local Education Agency)",
-        "value": "LEA (Local Education Agency)"
-       }
+        {
+          "label": "SEA (State Education Agency)",
+          "value": "SEA (State Education Agency)"
+        },
+        {
+          "label": "LEA (Local Education Agency)",
+          "value": "LEA (Local Education Agency)"
+        }
       ],
       "required": true,
       "shortLabel": "Reporting level"

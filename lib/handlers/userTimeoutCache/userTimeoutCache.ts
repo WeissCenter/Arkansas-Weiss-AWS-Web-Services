@@ -7,7 +7,7 @@ import {
   createUpdateItemFromObject,
   EventType,
   getUserDataFromEvent,
-  UserTimeOutCacheInput,
+  UserTimeOutCacheInput
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient, ReturnValue } from "@aws-sdk/client-dynamodb";
@@ -22,10 +22,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
 
@@ -40,32 +37,22 @@ export const handler: Handler = async (
     const date = Date.now();
 
     const body = {
-      cache:
-        input.action === "CLEAR"
-          ? null
-          : { ...input, added: date, expiry: date + 20 * 60 * 60 * 1000 },
+      cache: input.action === "CLEAR" ? null : { ...input, added: date, expiry: date + 20 * 60 * 60 * 1000 }
     };
 
     const userActivityUpdate = {
       TableName: USER_TABLE,
       Key: {
-        username,
+        username
       },
       ReturnValues: ReturnValue.ALL_NEW,
-      ...createUpdateItemFromObject(body),
+      ...createUpdateItemFromObject(body)
     };
 
     const userActivityUpdateResult = await db.update(userActivityUpdate);
 
     if (input.action !== "CLEAR") {
-      await aws_LogEvent(
-        cloudwatch,
-        LOG_GROUP,
-        logStream,
-        username,
-        EventType.USER,
-        `User was logged out due to inactivity and data was saved`,
-      );
+      await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.USER, `User was logged out due to inactivity and data was saved`);
     }
 
     return CreateBackendResponse(200, userActivityUpdateResult.Attributes);

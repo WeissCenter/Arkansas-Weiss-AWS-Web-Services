@@ -9,7 +9,7 @@ import {
   getSubscription,
   IReport,
   updateDataSetLastPullDate,
-  updateDataSetQueueStatus,
+  updateDataSetQueueStatus
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient, QueryInput } from "@aws-sdk/client-dynamodb";
@@ -17,12 +17,7 @@ import { QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { GetJobRunCommand, GlueClient } from "@aws-sdk/client-glue";
 import * as webpush from "web-push";
-import {
-  S3Client,
-  DeleteObjectCommandOutput,
-  ListObjectsV2Command,
-  DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, DeleteObjectCommandOutput, ListObjectsV2Command, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 // Define Environment Variables
 const TABLE_NAME = process.env["TABLE_NAME"] || "";
@@ -38,16 +33,9 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 const s3Client = new S3Client({ region: "us-east-1" });
-webpush.setVapidDetails(
-  "https://weissta.org/",
-  PUBLIC_VAPID_KEY,
-  PRIVATE_VAPID_KEY,
-);
+webpush.setVapidDetails("https://weissta.org/", PUBLIC_VAPID_KEY, PRIVATE_VAPID_KEY);
 
-export const handler: Handler = async (
-  event: EventBridgeEvent<string, any>,
-  context: Context,
-) => {
+export const handler: Handler = async (event: EventBridgeEvent<string, any>, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
 
@@ -56,7 +44,7 @@ export const handler: Handler = async (
 
     const getRunCommand = new GetJobRunCommand({
       JobName: detail["jobName"],
-      RunId: detail.jobRunId,
+      RunId: detail.jobRunId
     });
 
     const result = await glueClient.send(getRunCommand);
@@ -69,70 +57,29 @@ export const handler: Handler = async (
     const user = args?.["--user"] as string;
     const dataView = args?.["--data-view-id"] as string;
 
-    const dynamoDataView = await getDataView(
-      db,
-      TABLE_NAME,
-      dataView as string,
-    );
+    const dynamoDataView = await getDataView(db, TABLE_NAME, dataView as string);
 
     switch (state) {
       case "SUCCEEDED": {
-        await aws_LogEvent(
-          cloudwatch,
-          LOG_GROUP,
-          logStream,
-          user,
-          EventType.SUCCESS,
-          `Data Pull for ${dataView} succeeded`,
-        );
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.SUCCESS, `Data Pull for ${dataView} succeeded`);
 
-        await updateDataSetQueueStatus(
-          db,
-          TABLE_NAME,
-          dataView,
-          DataSetQueueStatus.AVAILABLE,
-        );
+        await updateDataSetQueueStatus(db, TABLE_NAME, dataView, DataSetQueueStatus.AVAILABLE);
         await updateDataSetLastPullDate(db, TABLE_NAME, dataView, user);
 
         // we need to go through all reports that use this dataview and clear their caches if they exist since data has updated
         const reports = await getReports(dataView);
 
-        await Promise.all(
-          reports.map((rpt) =>
-            deleteFolder([`${rpt.reportID}/draft`], REPORT_CACHE_BUCKET),
-          ),
-        );
+        await Promise.all(reports.map((rpt) => deleteFolder([`${rpt.reportID}/draft`], REPORT_CACHE_BUCKET)));
 
-        await sendPushMessage(
-          `Data Pull for Data View ${dynamoDataView!.name} succeeded`,
-          user,
-          db,
-        );
+        await sendPushMessage(`Data Pull for Data View ${dynamoDataView!.name} succeeded`, user, db);
         break;
       }
       case "FAILED":
       case "ERROR": {
-        await aws_LogEvent(
-          cloudwatch,
-          LOG_GROUP,
-          logStream,
-          user,
-          EventType.ERROR,
-          `Data Pull for ${dataView} failed`,
-        );
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.ERROR, `Data Pull for ${dataView} failed`);
 
-        await updateDataSetQueueStatus(
-          db,
-          TABLE_NAME,
-          dataView,
-          DataSetQueueStatus.FAILED,
-        );
-        await sendPushMessage(
-          `Data Pull for Data View ${dynamoDataView!.name} failed`,
-          user,
-          db,
-          false,
-        );
+        await updateDataSetQueueStatus(db, TABLE_NAME, dataView, DataSetQueueStatus.FAILED);
+        await sendPushMessage(`Data Pull for Data View ${dynamoDataView!.name} failed`, user, db, false);
         break;
       }
       // case 'STOPPED':{
@@ -148,21 +95,13 @@ export const handler: Handler = async (
   }
 };
 
-async function sendPushMessage(
-  message: string,
-  id: string,
-  db: DynamoDBDocument,
-  success = true,
-) {
+async function sendPushMessage(message: string, id: string, db: DynamoDBDocument, success = true) {
   const sub = await getSubscription(db, NOTIFICATION_TABLE_NAME, id);
 
   console.log("SUBSCRIPTION: ", sub);
 
   if (sub?.Item) {
-    await webpush.sendNotification(
-      sub?.Item.subscription,
-      JSON.stringify({ success, message }),
-    );
+    await webpush.sendNotification(sub?.Item.subscription, JSON.stringify({ success, message }));
     // notify the user
   }
 }
@@ -171,9 +110,7 @@ async function deleteFolder(keys: string[], bucketName: string): Promise<void> {
   const DeletePromises: Promise<DeleteObjectCommandOutput>[] = [];
 
   for (const key of keys) {
-    const { Contents } = await s3Client.send(
-      new ListObjectsV2Command({ Bucket: bucketName, Prefix: key + "/" }),
-    );
+    const { Contents } = await s3Client.send(new ListObjectsV2Command({ Bucket: bucketName, Prefix: key + "/" }));
 
     if (!Contents) continue;
 
@@ -182,9 +119,9 @@ async function deleteFolder(keys: string[], bucketName: string): Promise<void> {
         s3Client.send(
           new DeleteObjectCommand({
             Bucket: bucketName,
-            Key: object.Key,
-          }),
-        ),
+            Key: object.Key
+          })
+        )
       );
     }
   }
@@ -200,15 +137,15 @@ async function getReports(dataView: string) {
     ExpressionAttributeValues: {
       ":type": "Report",
       ":draft": "draft",
-      ":dataView": dataView,
+      ":dataView": dataView
     },
     ExpressionAttributeNames: {
       "#type": "type",
       "#version": "version",
       "#name": "name",
-      "#dataView": "dataView",
+      "#dataView": "dataView"
     },
-    ProjectionExpression: "reportID",
+    ProjectionExpression: "reportID"
   };
 
   let result, lastKey;

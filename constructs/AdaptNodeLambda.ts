@@ -3,20 +3,19 @@ import * as nodejs from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { Policy } from "aws-cdk-lib/aws-iam";
-import {
-  Charset,
-  OutputFormat,
-  SourceMapMode,
-} from "aws-cdk-lib/aws-lambda-nodejs";
+import { Charset, OutputFormat, SourceMapMode } from "aws-cdk-lib/aws-lambda-nodejs";
 
 export interface AdaptNodeLambdaProps extends nodejs.NodejsFunctionProps {
   // Define construct properties here
   prefix: string;
   attachPolicies?: Policy[];
   nodeModules?: string[];
+  bypassAuthorizer?: boolean;
 }
 
 export class AdaptNodeLambda extends nodejs.NodejsFunction {
+  public bypassAuthorizer?: boolean;
+
   constructor(scope: Construct, id: string, props: AdaptNodeLambdaProps) {
     super(scope, id, {
       // Set overridable defaults
@@ -26,7 +25,7 @@ export class AdaptNodeLambda extends nodejs.NodejsFunction {
       ...props,
       // Set non-overridable defaults (these must be last and defined in the omit props list)
       runtime: Runtime.NODEJS_20_X,
-      functionName: `${props.prefix}-${id}`,
+      functionName: `${props.prefix}-${id}`, // The function name cannot be more than 64 characters
       bundling: {
         charset: Charset.UTF8,
         format: OutputFormat.CJS,
@@ -37,9 +36,9 @@ export class AdaptNodeLambda extends nodejs.NodejsFunction {
         // tsconfig: resolve(__dirname, '../tsconfig.json'), // TODO: determine if this is correct
         nodeModules: props.nodeModules || undefined,
         esbuildArgs: {
-          "--loader:.node": "file",
-        },
-      },
+          "--loader:.node": "file"
+        }
+      }
       // End non-overridable defaults
     });
 
@@ -50,5 +49,7 @@ export class AdaptNodeLambda extends nodejs.NodejsFunction {
         }
       });
     }
+
+    this.bypassAuthorizer = props.bypassAuthorizer;
   }
 }

@@ -1,10 +1,7 @@
 import { IGlossaryTerm } from "./IGlossaryTerm";
 import { ISection } from "./ISection";
 
-export type TemplateType =
-  | "DataCollection"
-  | "ReportTemplate"
-  | "ValidationTemplate";
+export type TemplateType = "DataCollection" | "ReportTemplate" | "ValidationTemplate";
 
 export type ITemplateFilters = Record<string, IFilter<unknown> | IFilterGroup>;
 export interface ITemplate {
@@ -80,7 +77,7 @@ export interface StringTemplate {
 export enum IFilterType {
   SELECT = "select",
   SEARCH = "search",
-  RADIAL = "radial",
+  RADIAL = "radial"
 }
 
 export interface RadialFilter {

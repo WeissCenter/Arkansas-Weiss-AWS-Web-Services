@@ -138,6 +138,8 @@ Thumbs.db
 !jest.config.js
 *.d.ts
 
+# lib/handlers/**/package-lock.json
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out

@@ -1,9 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  RegisterPushNotificationsInput,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, RegisterPushNotificationsInput } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
@@ -14,10 +10,7 @@ const TABLE_NAME = process.env.TABLE_NAME || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     if (!event.body) {
@@ -30,8 +23,8 @@ export const handler: Handler = async (
       TableName: TABLE_NAME,
       Item: {
         id: body.id,
-        subscription: body.subscription,
-      },
+        subscription: body.subscription
+      }
     };
 
     await db.put(params);

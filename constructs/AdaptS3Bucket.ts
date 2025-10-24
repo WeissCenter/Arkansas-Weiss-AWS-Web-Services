@@ -9,7 +9,7 @@ export class AdaptS3Bucket extends s3.Bucket {
       ...props,
       // Set non-overridable defaults
       bucketName: props?.bucketName?.toLowerCase() || undefined, // FIXME: add account number to end of bucket?!?
-      removalPolicy: RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE, // TODO: determine the "adapt" specific properties
+      removalPolicy: RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE // TODO: determine the "adapt" specific properties
       // End non-overridable defaults
     });
   }

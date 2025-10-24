@@ -1,30 +1,10 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  AddDataInput,
-  aws_generateDailyLogStreamID,
-  aws_LogEvent,
-  DataSourceType,
-  EventType,
-  getUserDataFromEvent,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, AddDataInput, aws_generateDailyLogStreamID, aws_LogEvent, DataSourceType, EventType, getUserDataFromEvent } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import {
-  SecretsManagerClient,
-  CreateSecretCommand,
-} from "@aws-sdk/client-secrets-manager";
-import {
-  GlueClient,
-  CreateConnectionCommand,
-  CreateCrawlerCommand,
-  DeleteCrawlerCommand,
-  DeleteConnectionCommand,
-  CreateConnectionCommandOutput,
-  CreateCrawlerCommandOutput,
-} from "@aws-sdk/client-glue";
+import { SecretsManagerClient, CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
+import { GlueClient, CreateConnectionCommand, CreateCrawlerCommand, DeleteCrawlerCommand, DeleteConnectionCommand, CreateConnectionCommandOutput, CreateCrawlerCommandOutput } from "@aws-sdk/client-glue";
 
 import { randomUUID } from "crypto";
 
@@ -42,10 +22,7 @@ const secrets = new SecretsManagerClient({ region: "us-east-1" });
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 const glue = new GlueClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
   const username = getUserDataFromEvent(event).fullName;
@@ -53,10 +30,8 @@ export const handler: Handler = async (
 
   let crawler;
   let connectionName;
-  let crawlerResult: CreateCrawlerCommandOutput =
-    {} as CreateCrawlerCommandOutput;
-  let connectionResult: CreateConnectionCommandOutput =
-    {} as CreateConnectionCommandOutput;
+  let crawlerResult: CreateCrawlerCommandOutput = {} as CreateCrawlerCommandOutput;
+  let connectionResult: CreateConnectionCommandOutput = {} as CreateConnectionCommandOutput;
 
   try {
     if (!event.body) {
@@ -74,7 +49,7 @@ export const handler: Handler = async (
 
     const newSecretCommand = new CreateSecretCommand({
       Name: secretID,
-      SecretString: JSON.stringify(connectionInfo),
+      SecretString: JSON.stringify(connectionInfo)
     });
 
     await secrets.send(newSecretCommand);
@@ -89,12 +64,12 @@ export const handler: Handler = async (
       updated: Date.now(),
       author: username,
       path: body.path,
-      connectionInfo: secretID,
+      connectionInfo: secretID
     };
 
     const params = {
       TableName: TABLE_NAME,
-      Item: newDBItem,
+      Item: newDBItem
     };
 
     await db.put(params);
@@ -109,9 +84,9 @@ export const handler: Handler = async (
         ConnectionProperties: {
           USERNAME: connectionInfo.username,
           PASSWORD: connectionInfo.password,
-          JDBC_CONNECTION_URL: `jdbc:sqlserver://${body.path}:${connectionInfo.port}/${connectionInfo.database}`,
-        } as any,
-      },
+          JDBC_CONNECTION_URL: `jdbc:sqlserver://${body.path}:${connectionInfo.port}/${connectionInfo.database}`
+        } as any
+      }
     });
 
     connectionResult = await glue.send(createConn);
@@ -126,10 +101,10 @@ export const handler: Handler = async (
         JdbcTargets: [
           {
             ConnectionName: connectionName,
-            Path: "%",
-          },
-        ],
-      },
+            Path: "%"
+          }
+        ]
+      }
     });
 
     crawlerResult = await glue.send(createCrawlerConn);
@@ -138,30 +113,22 @@ export const handler: Handler = async (
       TableName: TABLE_NAME,
       Key: {
         type: "DataSource",
-        id: `ID#${dataSourceID}`,
+        id: `ID#${dataSourceID}`
       },
-      UpdateExpression:
-        "SET #crawler = :crawler, #glueConnection = :glueConnection",
+      UpdateExpression: "SET #crawler = :crawler, #glueConnection = :glueConnection",
       ExpressionAttributeNames: {
         "#crawler": "crawler",
-        "#glueConnection": "glueConnection",
+        "#glueConnection": "glueConnection"
       },
       ExpressionAttributeValues: {
         ":crawler": crawler,
-        ":glueConnection": connectionName,
-      },
+        ":glueConnection": connectionName
+      }
     };
 
     await db.update(updateParams);
 
-    await aws_LogEvent(
-      cloudwatch,
-      LOG_GROUP,
-      logStream,
-      username,
-      EventType.CREATE,
-      `DataSource: ${dataSourceID} of type ${DataSourceType.SQL} was successfully created`,
-    );
+    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `DataSource: ${dataSourceID} of type ${DataSourceType.SQL} was successfully created`);
 
     return CreateBackendResponse(200, newDBItem);
   } catch (err) {
@@ -173,15 +140,15 @@ export const handler: Handler = async (
       TableName: TABLE_NAME,
       Key: {
         type: "DataSource",
-        id: `ID#${dataSourceID}`,
-      },
+        id: `ID#${dataSourceID}`
+      }
     };
 
     await db.delete(deleteItemParams);
 
     if (crawler && crawlerResult?.$metadata?.httpStatusCode === 200) {
       const deleteCrawlerCommand = new DeleteCrawlerCommand({
-        Name: crawler,
+        Name: crawler
       });
 
       await glue.send(deleteCrawlerCommand);
@@ -189,7 +156,7 @@ export const handler: Handler = async (
 
     if (connectionName && connectionResult?.$metadata?.httpStatusCode === 200) {
       const deleteConnection = new DeleteConnectionCommand({
-        ConnectionName: connectionName,
+        ConnectionName: connectionName
       });
 
       await glue.send(deleteConnection);

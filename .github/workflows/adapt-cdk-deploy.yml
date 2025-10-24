@@ -1,0 +1,76 @@
+name: Weiss AWS Web Services Deploy
+run-name: ${{ github.actor }} pushed an update for env ${{ github.ref_name }}
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore: ".github/**"
+    branches:
+      - "dev"
+      - "qa"
+      - "uat"
+      - "main" # prod
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_RESOURCE_UNIQUE_ID: ${{ vars.AWS_RESOURCE_UNIQUE_ID }}
+  AWS_ACCOUNT_NO: ${{ vars.AWS_ACCOUNT_NO }}
+  HOSTED_ZONE: ${{ vars.HOSTED_ZONE }}
+  HOSTED_ZONE_CERT_ARN: ${{ vars.HOSTED_ZONE_CERT_ARN }}
+  ADMIN_SUB_DOMAIN: ${{ vars.ADMIN_SUB_DOMAIN }}
+  VIEWER_SUB_DOMAIN: ${{ vars.VIEWER_SUB_DOMAIN }}
+
+jobs:
+  cdk-deploy:
+    runs-on: ubuntu-latest
+    # can use this: ${{ github.ref == 'refs/heads/dev' && 'dev' || github.ref == 'refs/heads/qa' && 'qa' || 'default' }}
+    # or github.ref_name, but it requires that the github environment has to be exactly the same as the given branch
+    environment: ${{ github.ref_name }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Zip Python Library
+        run: |
+          cd ${{ github.workspace }}/libs
+          zip -vqr ./adapt-data-pull-lib.zip ./data
+      - name: Cache Suppression Layer
+        id: cache-suppression-layer
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-suppression-layer
+        with:
+          path: ${{ github.workspace }}/lib/layers/suppress-layer/lib.zip
+          key: ${{ runner.os }}-suppression-layer-${{ env.cache-name }}-${{ hashFiles('**/lib/layers/suppress-layer/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-suppression-layer-${{ env.cache-name }}-
+            ${{ runner.os }}-suppression-layer-
+            ${{ runner.os }}-
+      - name: Build Suppression Layer
+        run: |
+          cd ${{ github.workspace }}/lib/layers/suppress-layer
+          mkdir -p python/lib/python3.10/site-packages
+          pip install --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.10 --implementation cp --upgrade  --target=./python -r requirements.txt
+          zip -vqr ./lib.zip ./python
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install && npm run build
+      - name: cdk deploy # will execute the file adapt-cdk.ts in the bin folder
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: "deploy"
+          cdk_stack: "*"
+          cdk_args: "--require-approval never"
+          actions_comment: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          AWS_ACCOUNT: ${{ env.AWS_ACCOUNT_NO }}
+          HOSTED_ZONE: ${{ env.HOSTED_ZONE }}
+          ADMIN_SUB_DOMAIN: ${{ env.ADMIN_SUB_DOMAIN }}
+          VIEWER_SUB_DOMAIN: ${{ env.VIEWER_SUB_DOMAIN }}
+          #See the adapt-cdk.ts file in the bin folder for default values
+          CALLBACK_URL: "https://${{ env.ADMIN_SUB_DOMAIN }}.${{ env.HOSTED_ZONE }}/auth/redirect"
+          PUBLIC_VAPID_KEY: ${{ secrets.PUBLIC_VAPID_KEY }}
+          PRIVATE_VAPID_KEY: ${{ secrets.PRIVATE_VAPID_KEY }}
+      - run: echo "This job's status is ${{ job.status }}."

@@ -3,5 +3,5 @@ export enum CategorySet {
   CategorySetB = "CSB",
   CategorySetC = "CSC",
   CategorySetD = "CSD",
-  Total = "TOT",
+  Total = "TOT"
 }

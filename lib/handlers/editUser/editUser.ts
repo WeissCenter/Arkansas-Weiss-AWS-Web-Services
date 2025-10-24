@@ -9,7 +9,7 @@ import {
   CreateBackendResponse,
   EditUserInput,
   EventType,
-  getUserDataFromEvent,
+  getUserDataFromEvent
 } from "../../../libs/types/src";
 import {
   AdminDisableUserCommand,
@@ -20,7 +20,7 @@ import {
   AdminRemoveUserFromGroupCommand,
   CognitoIdentityProviderClient,
   GetUserCommand,
-  UserNotFoundException,
+  UserNotFoundException
 } from "@aws-sdk/client-cognito-identity-provider";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 
@@ -33,10 +33,7 @@ const ROLE_NAMES = new Set(Object.keys(appRolePermissions));
 // AWS SDK Clients
 const client = new CognitoIdentityProviderClient();
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   //   AdminAddUserToGroupCommand
   //   AdminRemoveUserFromGroupCommand
   //   AdminDisableUserCommand
@@ -49,7 +46,7 @@ export const handler: Handler = async (
 
     const userCommand = new AdminGetUserCommand({
       Username: body.username,
-      UserPoolId: USER_POOL_ID,
+      UserPoolId: USER_POOL_ID
     });
 
     const userResult = await client.send(userCommand);
@@ -57,82 +54,51 @@ export const handler: Handler = async (
     if (body.active === false) {
       const setUserDisableCommand = new AdminDisableUserCommand({
         Username: body.username,
-        UserPoolId: USER_POOL_ID,
+        UserPoolId: USER_POOL_ID
       });
 
       await client.send(setUserDisableCommand);
 
-      await aws_LogEvent(
-        cloudwatch,
-        LOG_GROUP,
-        logStream,
-        username,
-        EventType.EDIT,
-        `User ${body.username} was disabled`,
-      );
+      await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.EDIT, `User ${body.username} was disabled`);
     } else if (body.active && !userResult.Enabled) {
       const setUserActiveCommand = new AdminEnableUserCommand({
         Username: body.username,
-        UserPoolId: USER_POOL_ID,
+        UserPoolId: USER_POOL_ID
       });
 
       await client.send(setUserActiveCommand);
 
-      await aws_LogEvent(
-        cloudwatch,
-        LOG_GROUP,
-        logStream,
-        username,
-        EventType.EDIT,
-        `User ${body.username} was enabled`,
-      );
+      await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.EDIT, `User ${body.username} was enabled`);
     }
 
     if (!body.role) return CreateBackendResponse(200);
 
-    if (!ROLE_NAMES.has(body.role))
-      return CreateBackendErrorResponse(404, "unknown role");
+    if (!ROLE_NAMES.has(body.role)) return CreateBackendErrorResponse(404, "unknown role");
 
     const userGroupsCommand = new AdminListGroupsForUserCommand({
       Username: body.username,
-      UserPoolId: USER_POOL_ID,
+      UserPoolId: USER_POOL_ID
     });
 
     const userGroups = await client.send(userGroupsCommand);
 
-    const validGroups = userGroups.Groups?.map((grp) => grp.GroupName!).filter(
-      (grp) => ROLE_NAMES.has(grp!),
-    );
+    const validGroups = userGroups.Groups?.map((grp) => grp.GroupName!).filter((grp) => ROLE_NAMES.has(grp!));
 
     if (!validGroups?.includes(body.role!)) {
       await removeUserFromGroups(body.username, validGroups || []);
 
       if (validGroups?.length) {
-        await aws_LogEvent(
-          cloudwatch,
-          LOG_GROUP,
-          logStream,
-          username,
-          EventType.EDIT,
-          `User ${body.username} was removed from the group(s) ${validGroups} `,
-        );
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.EDIT, `User ${body.username} was removed from the group(s) ${validGroups} `);
       }
 
       const addGroupCommand = new AdminAddUserToGroupCommand({
         Username: body.username,
         UserPoolId: USER_POOL_ID,
-        GroupName: body.role,
+        GroupName: body.role
       });
       await client.send(addGroupCommand);
 
-      await aws_LogEvent(
-        cloudwatch,
-        LOG_GROUP,
-        logStream,
-        username,
-        EventType.EDIT,
-        `User ${body.username} was added to group ${body.role} `,
-      );
+      await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.EDIT, `User ${body.username} was added to group ${body.role} `);
     }
 
     return CreateBackendResponse(200);
@@ -153,9 +119,9 @@ async function removeUserFromGroups(username: string, groups: string[]) {
         new AdminRemoveUserFromGroupCommand({
           Username: username,
           UserPoolId: USER_POOL_ID,
-          GroupName: grp,
-        }),
-      ),
-    ),
+          GroupName: grp
+        })
+      )
+    )
   );
 }

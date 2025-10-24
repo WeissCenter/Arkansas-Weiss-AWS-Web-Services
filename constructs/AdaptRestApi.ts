@@ -1,11 +1,4 @@
-import {
-  AuthorizationType,
-  Cors,
-  LambdaIntegration,
-  MethodDeploymentOptions,
-  RequestAuthorizer,
-  RestApi,
-} from "aws-cdk-lib/aws-apigateway";
+import { AuthorizationType, Cors, LambdaIntegration, MethodDeploymentOptions, RequestAuthorizer, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AdaptNodeLambda } from "./AdaptNodeLambda";
 import { Construct } from "constructs";
 import { Duration } from "aws-cdk-lib";
@@ -79,7 +72,7 @@ export class AdaptRestApi extends Construct {
         if (cache?.enabled) {
           methodOptionsMap[methodOptionsKey(path, verb)] = {
             cachingEnabled: true,
-            cacheTtl: cache.ttl ?? Duration.seconds(300),
+            cacheTtl: cache.ttl ?? Duration.seconds(300)
           };
         }
       }
@@ -89,26 +82,25 @@ export class AdaptRestApi extends Construct {
       restApiName: props.apiName,
       defaultCorsPreflightOptions: {
         allowOrigins: Cors.ALL_ORIGINS,
-        allowMethods: Cors.ALL_METHODS,
+        allowMethods: Cors.ALL_METHODS
       },
       defaultMethodOptions: {
-        authorizationType: AuthorizationType.NONE,
+        authorizationType: AuthorizationType.NONE
       },
       deployOptions: {
         stageName: props.apiStageName,
-        methodOptions: methodOptionsMap,
-      },
+        methodOptions: methodOptionsMap
+      }
     };
 
     if (props["defaultCorsPreflightOptions"]) {
-      restAPIParams.defaultCorsPreflightOptions =
-        props.defaultCorsPreflightOptions;
+      restAPIParams.defaultCorsPreflightOptions = props.defaultCorsPreflightOptions;
     }
 
     if (props["authorizer"]) {
       restAPIParams["defaultMethodOptions"] = {
         authorizationType: AuthorizationType.CUSTOM,
-        authorizer: props.authorizer,
+        authorizer: props.authorizer
       } as any;
     }
 
@@ -117,28 +109,19 @@ export class AdaptRestApi extends Construct {
     for (const [path, endpoint] of Object.entries(props.endpoints)) {
       const resource = adaptApi.root.resourceForPath(path);
       for (const method in endpoint) {
-        resource.addMethod(
-          method,
-          new LambdaIntegration(
-            this.getLambdaFunctionForPath(path, method as Method)!,
-          ),
-        );
+        const lambdaFunction = this.getLambdaFunctionForPath(path, method as Method)!;
+        resource.addMethod(method, new LambdaIntegration(lambdaFunction), lambdaFunction.bypassAuthorizer ? { authorizationType: AuthorizationType.NONE } : {});
       }
     }
 
     this.api = adaptApi;
   }
 
-  isConfiguredMethod(
-    x: AdaptApiMethod,
-  ): x is { handler: AdaptNodeLambda; cache?: AdaptMethodCache } {
+  isConfiguredMethod(x: AdaptApiMethod): x is { handler: AdaptNodeLambda; cache?: AdaptMethodCache } {
     return typeof x === "object" && x !== null && "handler" in x;
   }
 
-  getLambdaFunctionForPath(
-    path: string,
-    method: Method,
-  ): AdaptNodeLambda | undefined {
+  getLambdaFunctionForPath(path: string, method: Method): AdaptNodeLambda | undefined {
     const spec = this._endpoints[path]?.[method];
     if (!spec) return undefined;
     return this.isConfiguredMethod(spec) ? spec.handler : spec;

@@ -1,12 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  ShareReport,
-  aws_generateDailyLogStreamID,
-  EventType,
-  aws_LogEvent,
-} from "../../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, ShareReport, aws_generateDailyLogStreamID, EventType, aws_LogEvent } from "../../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
@@ -19,10 +12,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   const logStream = aws_generateDailyLogStreamID();
 
   try {
@@ -30,14 +20,13 @@ export const handler: Handler = async (
       const getParams = {
         TableName: SHARE_TABLE,
         Key: {
-          slug: event.pathParameters["slug"],
-        },
+          slug: event.pathParameters["slug"]
+        }
       };
 
       const share = await db.get(getParams);
 
-      if (!share.Item)
-        return CreateBackendErrorResponse(404, "share link does not exist");
+      if (!share.Item) return CreateBackendErrorResponse(404, "share link does not exist");
 
       return CreateBackendResponse(200, share.Item);
     }
@@ -54,12 +43,12 @@ export const handler: Handler = async (
       slug: newSlugID,
       reportSlug: body.reportSlug,
       filters: body.filters,
-      tabIndex: body.tabIndex,
+      tabIndex: body.tabIndex
     };
 
     const putParams = {
       TableName: SHARE_TABLE,
-      Item: newShareItem,
+      Item: newShareItem
     };
 
     await db.put(putParams);
@@ -70,7 +59,7 @@ export const handler: Handler = async (
       logStream,
       "Public User",
       EventType.VIEWER_SHARE,
-      `A User created a new share link for report ${body.reportSlug} with filters ${body.filters} for page ${body.tabIndex}`,
+      `A User created a new share link for report ${body.reportSlug} with filters ${body.filters} for page ${body.tabIndex}`
     );
 
     return CreateBackendResponse(200, newSlugID);

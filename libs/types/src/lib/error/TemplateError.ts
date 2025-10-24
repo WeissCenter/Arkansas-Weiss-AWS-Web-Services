@@ -1,6 +1,6 @@
 export enum TemplateErrorCode {
   SUPPRESSION,
-  BACKEND_FAILURE,
+  BACKEND_FAILURE
 }
 
 export class TemplateError extends Error {

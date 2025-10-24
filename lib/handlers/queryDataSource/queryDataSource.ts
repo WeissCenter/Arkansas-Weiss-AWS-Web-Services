@@ -1,19 +1,8 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-  DataSource,
-  DataSourceType,
-  getDatasourceMetadata,
-  QueryDataSourceInput,
-  SQLType,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, DataSource, DataSourceType, getDatasourceMetadata, QueryDataSourceInput, SQLType } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
-import {
-  SecretsManagerClient,
-  GetSecretValueCommand,
-} from "@aws-sdk/client-secrets-manager";
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import * as sql from "mssql";
 import * as pd from "nodejs-polars";
@@ -27,10 +16,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const secrets = new SecretsManagerClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     if (!event?.body) {
@@ -40,23 +26,13 @@ export const handler: Handler = async (
 
     const dataSourceID = event.pathParameters?.["dataSourceId"];
     if (!dataSourceID) {
-      return CreateBackendErrorResponse(
-        400,
-        "Missing dataSourceID in path parameters",
-      );
+      return CreateBackendErrorResponse(400, "Missing dataSourceID in path parameters");
     }
 
-    const dataSourceMetadata = await getDatasourceMetadata(
-      db as any,
-      TABLE_NAME,
-      dataSourceID,
-    );
+    const dataSourceMetadata = await getDatasourceMetadata(db as any, TABLE_NAME, dataSourceID);
 
     if (!dataSourceMetadata) {
-      return CreateBackendErrorResponse(
-        404,
-        `Data Source with ID ${dataSourceID} does not exist`,
-      );
+      return CreateBackendErrorResponse(404, `Data Source with ID ${dataSourceID} does not exist`);
     }
 
     switch (dataSourceMetadata.sourceType) {
@@ -73,17 +49,14 @@ export const handler: Handler = async (
   }
 };
 
-async function handleFile(
-  dataSourceMetadata: DataSource,
-  queryInput: QueryDataSourceInput,
-) {
+async function handleFile(dataSourceMetadata: DataSource, queryInput: QueryDataSourceInput) {
   const path = dataSourceMetadata.path;
 
   const s3Client = new S3Client({ region: "us-east-1" });
 
   const getObjectCMD = new GetObjectCommand({
     Bucket: STAGING_BUCKET,
-    Key: path,
+    Key: path
   });
 
   const result = await s3Client.send(getObjectCMD);
@@ -98,15 +71,11 @@ async function handleFile(
 
   return CreateBackendResponse(200, {
     total: records.length,
-    result: records.slice(0, queryInput.limit ?? 10),
+    result: records.slice(0, queryInput.limit ?? 10)
   });
 }
 
-async function handleSQL(
-  dataSourceMetadata: DataSource,
-  secrets: SecretsManagerClient,
-  queryInput: QueryDataSourceInput,
-) {
+async function handleSQL(dataSourceMetadata: DataSource, secrets: SecretsManagerClient, queryInput: QueryDataSourceInput) {
   if (!queryInput.query) {
     return CreateBackendErrorResponse(400, "missing query");
   }
@@ -116,7 +85,7 @@ async function handleSQL(
   const connectionInfo = dataSourceMetadata.connectionInfo as string;
 
   const secretsParams = {
-    SecretId: connectionInfo,
+    SecretId: connectionInfo
   };
 
   const secretCommand = new GetSecretValueCommand(secretsParams);
@@ -124,22 +93,14 @@ async function handleSQL(
   const response = await secrets.send(secretCommand);
 
   if (!response.SecretString) {
-    return CreateBackendErrorResponse(
-      500,
-      `Failed to retrieve connection info for ${dataSourceMetadata.dataSourceID}`,
-    );
+    return CreateBackendErrorResponse(500, `Failed to retrieve connection info for ${dataSourceMetadata.dataSourceID}`);
   }
 
   const decryptedConnectionInfo = JSON.parse(response.SecretString);
 
   switch (decryptedConnectionInfo.type) {
     case SQLType.MSSQL: {
-      return await handleMSSQL(
-        decryptedConnectionInfo,
-        url,
-        queryInput.query,
-        queryInput.limit,
-      );
+      return await handleMSSQL(decryptedConnectionInfo, url, queryInput.query, queryInput.limit);
     }
     case SQLType.MYSQL: {
       // TODO: Implement these
@@ -152,12 +113,7 @@ async function handleSQL(
   }
 }
 
-async function handleMSSQL(
-  decryptedConnectionInfo: any,
-  url: string,
-  query: string,
-  limit?: number,
-) {
+async function handleMSSQL(decryptedConnectionInfo: any, url: string, query: string, limit?: number) {
   const configParams = {
     user: decryptedConnectionInfo.username,
     password: decryptedConnectionInfo.password,
@@ -166,11 +122,11 @@ async function handleMSSQL(
     pool: {
       max: 10,
       min: 0,
-      idleTimeoutMillis: 30000,
+      idleTimeoutMillis: 30000
     },
     options: {
-      trustServerCertificate: true, // change to true for local dev / self-signed certs
-    },
+      trustServerCertificate: true // change to true for local dev / self-signed certs
+    }
   };
 
   const pool = await sql.connect(configParams);
@@ -182,10 +138,7 @@ async function handleMSSQL(
 
     return CreateBackendResponse(200, {
       total: result.recordset.length,
-      result:
-        limit !== undefined
-          ? result.recordset.slice(0, limit)
-          : result.recordset,
+      result: limit !== undefined ? result.recordset.slice(0, limit) : result.recordset
     });
   } catch (err) {
     if (err instanceof sql.RequestError) {

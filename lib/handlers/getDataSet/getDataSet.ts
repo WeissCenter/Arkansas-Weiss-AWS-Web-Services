@@ -1,8 +1,5 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import {
-  CreateBackendResponse,
-  CreateBackendErrorResponse,
-} from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse } from "../../../libs/types/src";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 
@@ -13,10 +10,7 @@ const TABLE_NAME = process.env.TABLE_NAME || "";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     const dataSetID = event?.pathParameters?.["dataSetID"];
@@ -32,17 +26,14 @@ export const handler: Handler = async (
       TableName: TABLE_NAME,
       Key: {
         type: "DataSet",
-        id: `ID#${dataSetID}`,
-      },
+        id: `ID#${dataSetID}`
+      }
     };
 
     const result = await db.get(getParams);
 
     if (!result?.Item) {
-      return CreateBackendErrorResponse(
-        404,
-        `Dataset ${dataSetID} does not exist`,
-      );
+      return CreateBackendErrorResponse(404, `Dataset ${dataSetID} does not exist`);
     }
 
     return CreateBackendResponse(200, result.Item);
@@ -57,11 +48,11 @@ async function getAllDataSets(db: DynamoDBDocument) {
     TableName: TABLE_NAME,
     KeyConditionExpression: "#type = :type",
     ExpressionAttributeValues: {
-      ":type": "DataSet",
+      ":type": "DataSet"
     },
     ExpressionAttributeNames: {
-      "#type": "type",
-    },
+      "#type": "type"
+    }
   };
 
   let result, lastKey;

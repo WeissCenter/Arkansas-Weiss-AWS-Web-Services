@@ -2,24 +2,8 @@ import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { AdaptS3Bucket } from "../constructs/AdaptS3Bucket";
 import { BlockPublicAccess } from "aws-cdk-lib/aws-s3";
-import {
-  S3Table,
-  Database,
-  Job,
-  Schema,
-  JobExecutable,
-  Code,
-  GlueVersion,
-  PythonVersion,
-  WorkerType,
-} from "@aws-cdk/aws-glue-alpha";
-import {
-  Effect,
-  Policy,
-  PolicyStatement,
-  Role,
-  ServicePrincipal,
-} from "aws-cdk-lib/aws-iam";
+import { S3Table, Database, Job, Schema, JobExecutable, Code, GlueVersion, PythonVersion, WorkerType } from "@aws-cdk/aws-glue-alpha";
+import { Effect, Policy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { BucketDeployment, Source } from "aws-cdk-lib/aws-s3-deployment";
 import { CfnCrawler } from "aws-cdk-lib/aws-glue";
 import { AttributeType, BillingMode, Table } from "aws-cdk-lib/aws-dynamodb";
@@ -33,12 +17,12 @@ export class AdaptCdkStack extends cdk.Stack {
 
     const testBucket = new AdaptS3Bucket(this, `${id}-TestBucket`, {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      bucketName: `${id}-TestBucket`.toLowerCase(),
+      bucketName: `${id}-TestBucket`.toLowerCase()
     });
 
     const database = new Database(this, `${id}-Database`, {
       databaseName: `${id}-Database`.toLowerCase(),
-      description: "Database Description",
+      description: "Database Description"
     });
 
     const dataSourceTable = new Table(this, `${id}-adapt-data-source-table`, {
@@ -46,7 +30,7 @@ export class AdaptCdkStack extends cdk.Stack {
       sortKey: { name: "sk", type: AttributeType.STRING },
       tableName: `${id}--adapt-data-source-table`,
       billingMode: BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: cdk.RemovalPolicy.RETAIN
     });
 
     // glue crawler/job
@@ -55,32 +39,32 @@ export class AdaptCdkStack extends cdk.Stack {
         new PolicyStatement({
           actions: ["iam:*"],
           effect: Effect.ALLOW,
-          resources: ["*"],
+          resources: ["*"]
         }),
         new PolicyStatement({
           actions: ["glue:*"],
           effect: Effect.ALLOW,
-          resources: ["*"],
+          resources: ["*"]
         }),
         new PolicyStatement({
           actions: ["s3:*"],
           effect: Effect.ALLOW,
-          resources: ["*"],
+          resources: ["*"]
         }),
         new PolicyStatement({
           actions: ["dynamodb:*"],
           effect: Effect.ALLOW,
-          resources: ["*"],
+          resources: ["*"]
         }),
         new PolicyStatement({
           actions: ["logs:*"],
           effect: Effect.ALLOW,
-          resources: ["*"],
-        }),
-      ],
+          resources: ["*"]
+        })
+      ]
     });
     const dataSourceGlueRole = new Role(this, `${id}-DataSourceGlueRole`, {
-      assumedBy: new ServicePrincipal("glue.amazonaws.com"),
+      assumedBy: new ServicePrincipal("glue.amazonaws.com")
     });
     dataSourceGlueRole.attachInlinePolicy(gluePolicy);
 
@@ -90,27 +74,23 @@ export class AdaptCdkStack extends cdk.Stack {
       targets: {
         s3Targets: [
           {
-            path: `${testBucket.bucketName}`,
-          },
-        ],
+            path: `${testBucket.bucketName}`
+          }
+        ]
       },
       databaseName: database.databaseName,
       schemaChangePolicy: {
         updateBehavior: "UPDATE_IN_DATABASE",
-        deleteBehavior: "DEPRECATE_IN_DATABASE",
-      },
+        deleteBehavior: "DEPRECATE_IN_DATABASE"
+      }
     });
 
     // Upload the script to the S3 bucket
-    const uploadedScriptObject = new BucketDeployment(
-      this,
-      `${id}-PythonScripts`,
-      {
-        sources: [Source.asset(`scripts`)],
-        destinationBucket: testBucket,
-        destinationKeyPrefix: "scripts",
-      },
-    );
+    const uploadedScriptObject = new BucketDeployment(this, `${id}-PythonScripts`, {
+      sources: [Source.asset(`scripts`)],
+      destinationBucket: testBucket,
+      destinationKeyPrefix: "scripts"
+    });
 
     const glueJob = new Job(this, `${id}-GlueJob`, {
       jobName: `${id}-GlueJob`.toLowerCase(),
@@ -120,7 +100,7 @@ export class AdaptCdkStack extends cdk.Stack {
       executable: JobExecutable.pythonEtl({
         glueVersion: GlueVersion.V4_0,
         pythonVersion: PythonVersion.THREE,
-        script: Code.fromBucket(testBucket, `scripts/dataPull.py`),
+        script: Code.fromBucket(testBucket, `scripts/dataPull.py`)
       }),
       defaultArguments: {
         "--extra-py-files": `s3://${testBucket.bucketName}/${id}-adapt-data-pull-lib.zip`,
@@ -129,28 +109,23 @@ export class AdaptCdkStack extends cdk.Stack {
         "--data-set-id": "default",
         "--table-name": dataSourceTable.tableName,
         "--data-staging-s3": testBucket.bucketName, // change to stage bucket eventually
-        "--data-pull-crawler":
-          adaptDataPullCrawler.name || `${id}-adapt-data-catalog`,
-        "--user": "default",
+        "--data-pull-crawler": adaptDataPullCrawler.name || `${id}-adapt-data-catalog`,
+        "--user": "default"
       },
       workerType: WorkerType.STANDARD,
-      workerCount: 2,
+      workerCount: 2
     });
 
     // this event will trigger a Lambda function to perform a data pull
-    const dataPullJobStateChangeRule = new Rule(
-      this,
-      `${id}-adapt-data-pull-state-change-rule-cdk`,
-      {
-        eventPattern: {
-          source: ["aws.glue"],
-          detailType: [`Glue Job State Change`],
-          detail: {
-            jobName: [glueJob.jobName],
-            state: ["SUCCEEDED", "FAILED", "STOPPED"],
-          },
-        },
-      },
-    );
+    const dataPullJobStateChangeRule = new Rule(this, `${id}-adapt-data-pull-state-change-rule-cdk`, {
+      eventPattern: {
+        source: ["aws.glue"],
+        detailType: [`Glue Job State Change`],
+        detail: {
+          jobName: [glueJob.jobName],
+          state: ["SUCCEEDED", "FAILED", "STOPPED"]
+        }
+      }
+    });
   }
 }

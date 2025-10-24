@@ -10,7 +10,7 @@ import {
   getDataCollectionTemplate,
   getDataView,
   getUserDataFromEvent,
-  NewDataViewInput,
+  NewDataViewInput
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient, ReturnValue } from "@aws-sdk/client-dynamodb";
@@ -27,10 +27,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 const db = DynamoDBDocument.from(client);
 const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 
-export const handler: Handler = async (
-  event: APIGatewayEvent,
-  context: Context,
-) => {
+export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   console.log(event);
   try {
     const logStream = aws_generateDailyLogStreamID();
@@ -40,30 +37,16 @@ export const handler: Handler = async (
 
     const dataView = JSON.parse(event.body) as DataView;
 
-    const dataViewID =
-      event?.pathParameters?.["dataViewID"] ||
-      dataView.dataViewID ||
-      randomUUID();
+    const dataViewID = event?.pathParameters?.["dataViewID"] || dataView.dataViewID || randomUUID();
 
-    return await handleFileCollection(
-      db,
-      event,
-      dataView,
-      dataViewID,
-      logStream,
-      cloudwatch,
-    );
+    return await handleFileCollection(db, event, dataView, dataViewID, logStream, cloudwatch);
   } catch (err) {
     console.error(err);
     return CreateBackendErrorResponse(500, "Failed to edit data view");
   }
 };
 
-async function getStatus(
-  db: DynamoDBDocument,
-  dataViewID: string,
-  view: NewDataViewInput,
-) {
+async function getStatus(db: DynamoDBDocument, dataViewID: string, view: NewDataViewInput) {
   const dataView = await getDataView(db, TABLE_NAME, dataViewID);
 
   if (!dataView) {
@@ -74,10 +57,7 @@ async function getStatus(
     return "AVAILABLE";
   }
 
-  if (
-    view.dataViewType === "collection" &&
-    view.data.files.every((file) => file.location.length)
-  ) {
+  if (view.dataViewType === "collection" && view.data.files.every((file) => file.location.length)) {
     return "REQUESTED";
   }
 
@@ -88,25 +68,11 @@ async function getStatus(
   return "MISSING DATA";
 }
 
-async function handleFileCollection(
-  db: DynamoDBDocument,
-  event: APIGatewayEvent,
-  newDataView: NewDataViewInput,
-  newDataViewID: string,
-  logStream: string,
-  cloudwatch: CloudWatchLogsClient,
-) {
-  const collection = await getDataCollectionTemplate(
-    db,
-    TEMPLATES_TABLE,
-    newDataView.data.id,
-  );
+async function handleFileCollection(db: DynamoDBDocument, event: APIGatewayEvent, newDataView: NewDataViewInput, newDataViewID: string, logStream: string, cloudwatch: CloudWatchLogsClient) {
+  const collection = await getDataCollectionTemplate(db, TEMPLATES_TABLE, newDataView.data.id);
 
   if (!collection) {
-    return CreateBackendErrorResponse(
-      404,
-      `collection ${newDataView.data.id} does not exist`,
-    );
+    return CreateBackendErrorResponse(404, `collection ${newDataView.data.id} does not exist`);
   }
 
   const username = getUserDataFromEvent(event).username;
@@ -118,7 +84,7 @@ async function handleFileCollection(
     description: newDataView.description,
     dataViewType: newDataView.dataViewType,
     data: newDataView.data,
-    updated: Date.now(),
+    updated: Date.now()
   };
 
   const updateItem = createUpdateItemFromObject(newDataViewDBItem, ["data"]);
@@ -128,28 +94,20 @@ async function handleFileCollection(
   updateItem.ExpressionAttributeNames["#location"] = "location";
 
   // enforce the frontend can only update the location not the id or errors
-  updateItem.UpdateExpression +=
-    ", " +
-    newDataViewDBItem.data.files
-      .map(
-        (file, idx) =>
-          `#data.#files[${idx}].#location = :fileLocation${file.id}`,
-      )
-      .join(", ");
+  updateItem.UpdateExpression += ", " + newDataViewDBItem.data.files.map((file, idx) => `#data.#files[${idx}].#location = :fileLocation${file.id}`).join(", ");
 
   for (const file of newDataViewDBItem.data.files) {
-    updateItem.ExpressionAttributeValues[`:fileLocation${file.id}`] =
-      file.location;
+    updateItem.ExpressionAttributeValues[`:fileLocation${file.id}`] = file.location;
   }
 
   const newDataViewParams = {
     TableName: TABLE_NAME,
     Key: {
       type: "DataView",
-      id: `ID#${newDataViewID}`,
+      id: `ID#${newDataViewID}`
     },
     ReturnValues: ReturnValue.ALL_NEW,
-    ...updateItem,
+    ...updateItem
   };
 
   const dataViewUpdated = await db.update(newDataViewParams);
@@ -160,14 +118,7 @@ async function handleFileCollection(
     extra += `\nJustification: ${event.queryStringParameters?.["justification"]}`;
   }
 
-  await aws_LogEvent(
-    cloudwatch,
-    LOG_GROUP,
-    logStream,
-    username,
-    EventType.CREATE,
-    `DataView: ${newDataViewID} was edited${extra}`,
-  );
+  await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `DataView: ${newDataViewID} was edited${extra}`);
 
   return CreateBackendResponse(200, dataViewUpdated.Attributes);
 }

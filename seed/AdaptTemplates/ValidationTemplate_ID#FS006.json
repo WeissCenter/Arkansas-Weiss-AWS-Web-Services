@@ -20,10 +20,7 @@
             "errorText": "The system has recognized that you have uploaded the wrong file.",
             "type": "string",
             "array": true,
-            "value": [
-              "SEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
-              "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU"
-            ]
+            "value": ["SEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU", "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU"]
           },
           {
             "name": "total-records-in-file",
@@ -33,7 +30,7 @@
           {
             "name": "file-name",
             "errorText": "The system has encountered an error regarding the file name of the file. The file name did not match the required structure.",
-            "regex": "^[A-Z]{2}(SEA|LEA)CDIDEAMSE[A-Za-z0-9]{7}(\\.csv)$",
+            "regex": "^[A-Z]{2}(SEA|LEA)CDIDEAMSE[A-Za-z0-9]{0,7}(\\.csv)$",
             "type": "string",
             "maxLength": 25
           },
