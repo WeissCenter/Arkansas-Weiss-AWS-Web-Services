@@ -120,7 +120,6 @@ def handleFileDataSource(nodes, dynamo_data_source, s3, format):
         },
     )   
 
-
     try:
         transformer = file_transformer_factory.get_transformer(fileSpec)
 

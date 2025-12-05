@@ -1,7 +1,6 @@
 import { APIGatewayEvent, Context, Handler, S3CreateEvent } from "aws-lambda";
 import { CreateBackendResponse, CreateBackendErrorResponse, DataView, getDataCollectionTemplate, getDataView } from "../../../libs/types/src";
-import { validate } from "../../../libs/validation/src/index";
-import { ValidationTemplate } from "../../../libs/validation/src/lib/types/ValidationTemplate";
+import { validate, createDefaultValidationError, ValidationTemplate } from "../../../libs/validation/src/index";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
@@ -91,7 +90,12 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
             throw new Error("invalid file type");
           }
 
-          const errors = validate(toValidate, validationItem);
+          const validationContext = item.data.fields.reduce((acc, field) => {
+            acc[field.id] = field.value;
+            return acc;
+          }, {} as Record<string, any>);
+          
+          const errors = validate(toValidate, validationItem, validationContext);
 
           console.log("VALIDATION ITEM", validationItem);
           console.log("ERRORS", errors);
@@ -120,11 +124,11 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
       const params = apiEvent.pathParameters;
 
       if (!params) {
-        return CreateBackendErrorResponse(400, "path parameters are missing");
+        return CreateBackendErrorResponse(400, "Path parameters are missing");
       }
       const dataViewID = params["dataViewID"];
       if (!dataViewID) {
-        return CreateBackendErrorResponse(400, "dataViewID is missing");
+        return CreateBackendErrorResponse(400, "DataViewID is missing");
       }
 
       const originFile = (event as APIGatewayEvent)?.queryStringParameters?.["originFile"];
@@ -134,11 +138,11 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
       const item = await getDataView(db, DATA_SOURCE_TABLE, dataViewID);
 
       if (!item) {
-        return CreateBackendErrorResponse(404, "data view not found");
+        return CreateBackendErrorResponse(404, "Data view not found");
       }
 
       if (item.dataViewType !== "collection") {
-        return CreateBackendErrorResponse(400, "data view type is not supported by validation");
+        return CreateBackendErrorResponse(400, "Data view type is not supported by validation");
       }
 
       const idx = item.data.files.findIndex((file) => file.id === originFile);
@@ -151,16 +155,20 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
 
       if (!item.valid) {
         console.log("ERRORED FILE", file);
-        return CreateBackendErrorResponse(400, file.errors);
+        if (!file.errors || file.errors.length === 0) {
+          return CreateBackendResponse(200, [createDefaultValidationError('No error details available')]);
+        } else {
+          return CreateBackendResponse(200, file.errors);
+        }
       }
-      return CreateBackendResponse(200);
+      return CreateBackendResponse(204);
     }
   } catch (err) {
     console.log(err);
-    return CreateBackendErrorResponse(500, "invalid input");
+    return CreateBackendErrorResponse(500, "File validation failed due to server error");
   }
 
-  return CreateBackendErrorResponse(400, "invalid input");
+  return CreateBackendErrorResponse(500, "File validation failed due to server error");
 };
 
 async function updateDataView(dataView: string, item: DataView, valid: boolean, db: DynamoDBDocument) {

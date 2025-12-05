@@ -509,6 +509,8 @@ export class AdaptStack extends cdk.Stack {
                     effect: Effect.ALLOW,
                     actions: ["s3:DeleteObject"],
                     resources: ["*"] // TODO: restrict to the staging and repo buckets
+                    //  actions: ["s3:DeleteObject", "s3:ListBucket"],
+                    //  resources: [props.repoBucket.bucketArn, props.stagingBucket.bucketArn, props.repoBucket.bucketArn + "/*", props.stagingBucket.bucketArn + "/*"] // TODO: restrict to the staging and repo buckets
                   })
                 ]
               })
@@ -828,7 +830,8 @@ export class AdaptStack extends cdk.Stack {
                   this.loggingStatement,
                   new PolicyStatement({
                     effect: Effect.ALLOW,
-                    actions: ["dynamodb:GetItem"],
+                    actions: ["dynamodb:GetItem",
+                              "dynamodb:UpdateItem"],
                     resources: [props.dynamoTables["reportTable"].tableArn]
                   }),
                   new PolicyStatement({

@@ -4,13 +4,14 @@ import { Context, EventBridgeEvent, Handler } from "aws-lambda";
 import {
   aws_generateDailyLogStreamID,
   aws_LogEvent,
-  CreateBackendErrorResponse,
+  CreateBackendErrorResponse, createUpdateItemFromObject,
   EventType,
   getAdaptSettings,
   getReportFromDynamo,
-  getSubscription,
+  getSubscription, IReport,
   ITemplate,
   ReportVersion,
+  updateDraftReportPublishStatus,
   updateReportVersion
 } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
@@ -24,6 +25,7 @@ import { translateJSON } from "../../../scripts/translate";
 import slugify from "slugify";
 
 import crypto from "node:crypto";
+import { PublishStatus } from "../../../libs/types/src/lib/backend/PublishStatus";
 // Define Environment Variables
 const TABLE_NAME = process.env["TABLE_NAME"] || "";
 const SETTINGS_TABLE_NAME = process.env["SETTINGS_TABLE_NAME"] || "";
@@ -42,6 +44,7 @@ const lambdaClient = new LambdaClient({ region: "us-east-1" });
 const s3Client = new S3Client({ region: "us-east-1" });
 webpush.setVapidDetails("https://weissta.org/", PUBLIC_VAPID_KEY, PRIVATE_VAPID_KEY);
 
+//ReportPublishJobStatusHandler
 export const handler: Handler = async (event: EventBridgeEvent<string, any>, context: Context) => {
   console.log(event);
   const logStream = aws_generateDailyLogStreamID();
@@ -59,14 +62,21 @@ export const handler: Handler = async (event: EventBridgeEvent<string, any>, con
     const args = result?.JobRun?.Arguments;
     const state = result?.JobRun.JobRunState;
 
-    const user = args?.["--user"];
-    const report = args?.["--report-id"];
+    console.log("Job state: ", state);
 
-    const dynamoReport = await getReportFromDynamo(db, TABLE_NAME, report, ReportVersion.DRAFT, "en");
+    const user = args?.["--user"];
+    const reportID = args?.["--report-id"];
+
+    const dynamoReport = await getReportFromDynamo(db, TABLE_NAME, reportID, ReportVersion.DRAFT, "en");
 
     switch (state) {
       case "SUCCEEDED": {
-        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.SUCCESS, `Report publish for ${report} succeeded`);
+        // go to the lambda function in the AWS console, select configuration and then environment variables and the value of LOG_GROUP is the one to use
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.SUCCESS, `Report publish for ${reportID} succeeded`);
+
+        // ####### Now we need to update the publish status on the draft entry in dynamo db ####
+        await updateDraftReportPublishStatus(TABLE_NAME, reportID, PublishStatus.PUBLISHED, user, db);
+        //#########################################################################################################
 
         // pre generate templates and make sure language versions are created
 
@@ -74,7 +84,8 @@ export const handler: Handler = async (event: EventBridgeEvent<string, any>, con
 
         const supportedLangs = settings?.supportedLanguages || ["en"];
 
-        const langReports = await Promise.all(supportedLangs.map((lang) => createLanguageVersion({ ...dynamoReport, published: `${Date.now()}` }, lang)));
+        const langReports = await Promise.all(supportedLangs.map((lang) => createLanguageVersion({ ...dynamoReport, published: `${Date.now()}`, status: ''}, lang)));
+
 
         // await updateReportVersion(
         //   db,
@@ -93,9 +104,13 @@ export const handler: Handler = async (event: EventBridgeEvent<string, any>, con
       }
       case "FAILED":
       case "ERROR": {
-        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.ERROR, `Report publish ${report} failed`);
+        await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, user, EventType.ERROR, `Report ${reportID} publication failed`);
 
-        await updateReportVersion(db, TABLE_NAME, dynamoReport, ReportVersion.PUBLISH_FAILED);
+        // ####### Now we need to update the publish status on the draft entry in dynamo db ####
+        await updateDraftReportPublishStatus(TABLE_NAME, reportID, PublishStatus.FAILED, user, db);
+        //#########################################################################################################
+
+        //await updateReportVersion(db, TABLE_NAME, dynamoReport, ReportVersion.PUBLISH_FAILED);
         await sendPushMessage(`Report publish for ${dynamoReport.name} failed`, user, db, false);
         break;
       }
@@ -122,6 +137,8 @@ async function sendPushMessage(message: string, id: string, db: DynamoDBDocument
 }
 
 async function createLanguageVersion(report: IReport, lang: string) {
+
+  console.log(`Inside createLanguageVersion for report ${report.reportID} and lang ${lang}`);
   let translatedTemplate;
   let translated = await getTemplate(db, report.template.id, lang);
 

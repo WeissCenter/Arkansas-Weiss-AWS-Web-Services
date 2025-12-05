@@ -23,6 +23,9 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
 };
 
 async function getReports() {
+
+  console.log("Inside getReports");
+
   const scanParams = {
     TableName: REPORT_TABLE,
     KeyConditionExpression: "#type = :type",
@@ -56,7 +59,9 @@ async function getReports() {
   return accumulated
     .filter(
       (report) =>
+        // find all reports that have been finalized
         report.version === ReportVersion.FINALIZED ||
+        // including draft reports that have not been finalized yet
         (report.version === ReportVersion.DRAFT && accumulated.findIndex((rpt) => rpt.reportID === report.reportID && rpt.version === ReportVersion.FINALIZED) === -1)
     )
     .map((source) => cleanDBFields(source))

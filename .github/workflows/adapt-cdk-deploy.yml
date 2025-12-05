@@ -54,7 +54,7 @@ jobs:
         with:
           node-version: "20"
       - run: npm install && npm run build
-      - name: cdk deploy # will execute the file adapt-cdk.ts in the bin folder
+      - name: cdk deploy # will execute the file adapt-cdk.ts in the bin folder via the cdk.json config file
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: "deploy"

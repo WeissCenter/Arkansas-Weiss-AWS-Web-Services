@@ -1,4 +1,6 @@
-{
+import { DynamoDBValidationTemplate } from "../../libs/validation/src/lib/types";
+
+const template: DynamoDBValidationTemplate = {
   "type": "ValidationTemplate",
   "id": "ID#FS143",
   "description": "",
@@ -17,7 +19,7 @@
         "schema": [
           {
             "name": "file-type",
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "type": "string",
             "array": true,
             "value": ["SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL", "LEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL"]
@@ -25,11 +27,11 @@
           {
             "name": "total-records-in-file",
             "type": "number",
-            "errorText": "The system has encountered an error regarding the total records column of the file."
+            "errorType": "NumberOfRecords"
           },
           {
             "name": "file-name",
-            "errorText": "The system has encountered an error regarding the file name of the file. The file name did not match the required structure.",
+            "errorType": "FileHeader",
             "regex": "^[A-Z]{2}(SEA|LEA)CWDTOTDRM[A-Za-z0-9]{0,7}(\\.csv)$",
             "type": "string",
             "maxLength": 25
@@ -40,7 +42,7 @@
           },
           {
             "name": "file-reporting-period",
-            "errorText": "The system has encountered an error regarding the reporting year of the file. The reporting year did not match the required structure.",
+            "errorType": "FileHeader",
             "regex": "^\\d{4}[- ]\\d{4}$",
             "type": "string"
           },
@@ -56,10 +58,27 @@
       "name": "Row Count Validate",
       "validator": {
         "type": "rowCount",
-        "errorText": "The system has encountered an error regarding the number of records in this file. The file did not have the same number of records as specified in the header.",
+        "errorType": "NumberOfRecords",
         "value": {
           "headerIndex": 1
         }
+      }
+    },
+    {
+      "name": "Validate Year",
+      "validator": {
+        "type": "typeFieldCheck",
+        "schema": [
+          {
+            "name": "Year Check",
+            "errorType": "DifferentYear",
+            "type": "select",
+            "field": "reportingYear",
+            "value": {
+              "headerIndex": 4
+            }
+          }
+        ]
       }
     }
   ],
@@ -67,3 +86,5 @@
   "suppression": "",
   "title": ""
 }
+
+export default template;

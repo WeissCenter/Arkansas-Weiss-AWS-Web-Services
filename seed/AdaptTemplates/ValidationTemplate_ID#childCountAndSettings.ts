@@ -1,4 +1,6 @@
-{
+import { DynamoDBValidationTemplate } from "../../libs/validation/src/lib/types";
+
+const template: DynamoDBValidationTemplate = {
   "type": "ValidationTemplate",
   "id": "ID#childCountAndSettings",
   "description": "",
@@ -17,7 +19,7 @@
         "schema": [
           {
             "name": "state-name",
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "type": "string",
             "element": {
               "index": 0,
@@ -26,7 +28,7 @@
           },
           {
             "name": "file-type",
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "regex": "IDEA Part C - Child Count and Settings Release \\d+\\.\\d+",
             "type": "string",
             "element": {
@@ -36,7 +38,7 @@
           },
           {
             "name": "year",
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "regex": "Year: \\d{4}-\\d{2}",
             "type": "string",
             "element": {
@@ -54,7 +56,9 @@
         "schema": [
           {
             "name": "Year Check",
+            "errorType": "DifferentYear",
             "type": "select",
+            "field": "reportingYear",
             "value": "reportingYear",
             "element": {
               "index": 2,
@@ -69,3 +73,5 @@
   "suppression": "",
   "title": ""
 }
+
+export default template;

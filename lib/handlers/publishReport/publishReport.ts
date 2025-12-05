@@ -1,9 +1,19 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import { CreateBackendResponse, CreateBackendErrorResponse, aws_generateDailyLogStreamID, aws_LogEvent, EventType, getUserDataFromEvent, IReport } from "../../../libs/types/src";
+import {
+  CreateBackendResponse,
+  CreateBackendErrorResponse,
+  aws_generateDailyLogStreamID,
+  aws_LogEvent,
+  EventType,
+  getUserDataFromEvent,
+  IReport,
+  createUpdateItemFromObject
+} from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { GlueClient, StartJobRunCommand } from "@aws-sdk/client-glue";
+import { PublishStatus } from "../../../libs/types/src/lib/backend/PublishStatus";
 
 // Define Environment Variables
 const REPORT_TABLE = process.env.REPORT_TABLE || "";
@@ -35,18 +45,35 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       }
     };
 
-    const result = await db.get(getParams);
+    const tableRow = await db.get(getParams);
 
-    const report = result.Item as IReport;
+    const originalDraftReport = tableRow.Item as IReport;
 
     const startJobCommand = new StartJobRunCommand({
       JobName: GLUE_JOB,
-      Arguments: { "--report-id": report.reportID, "--user": username }
+      Arguments: { "--report-id": originalDraftReport.reportID, "--user": username }
     });
 
     await client.send(startJobCommand);
 
-    await aws_LogEvent(cloudwatch, LOG_GROUP, logStream, username, EventType.CREATE, `Report publish for report ${report.reportID} started`);
+    // this logs directly in the lambda function's cloudwatch log
+    console.log( `Started publishing report ${originalDraftReport.reportID}`);
+
+    // ####### Now we need to update the publish status on the draft entry in dynamo db ####
+    const updatePublishStatusForReport = {
+      TableName: REPORT_TABLE,
+      Key: {
+        type: "Report",
+        id: `ID#${id}#Version#draft#Lang#en`
+      },
+      ...createUpdateItemFromObject({ status: PublishStatus.PROCESSING })
+    };
+
+    await db.update(updatePublishStatusForReport);
+
+    console.log(`Updated publish status to: PROCESSING for report ${originalDraftReport.reportID}`);
+
+    //#########################################################################################################
 
     return CreateBackendResponse(200, "report publish process started");
   } catch (err) {

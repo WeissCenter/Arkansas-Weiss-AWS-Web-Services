@@ -95,6 +95,8 @@ def handler(event, context):
             # df_anonymized.loc[len(df_anonymized)] = dummy_data
 
             for frequency_column in frequency_columns:
+               # print("df_anonymized", df_anonymized)
+               # print("Initializing anonymizer", frequency_column, parent_organization, child_organization, threshold)
                 anonymizer = DataAnonymizer(df_anonymized, sensitive_columns=operation_sensitive_columns, parent_organization=parent_organization, child_organization=child_organization, frequency=frequency_column, minimum_threshold=threshold, redact_zero=True, redact_value=0)
 
                 df_anonymized = anonymizer.apply_anonymization()
