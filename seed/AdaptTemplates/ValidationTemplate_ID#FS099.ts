@@ -1,13 +1,15 @@
-{
+import { DynamoDBValidationTemplate } from "../../libs/validation/src/lib/types";
+
+const template: DynamoDBValidationTemplate = {
   "type": "ValidationTemplate",
-  "id": "ID#FS175",
+  "id": "ID#FS099",
   "description": "",
   "fields": "",
   "files": "",
   "filters": "",
   "metaTags": "",
   "multiFile": "",
-  "name": "General FS175 Spec Validator",
+  "name": "General FS099 Spec Validator",
   "pages": "",
   "rules": [
     {
@@ -17,20 +19,20 @@
         "schema": [
           {
             "name": "file-type",
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "type": "string",
             "array": true,
-            "value": ["SEA STUDENT PERFORMANCE MATH", "LEA STUDENT PERFORMANCE MATH", "SCHOOL STUDENT PERFORMANCE MATH"]
+            "value": ["SEA SPECIAL EDUCATION PERSONNEL", "LEA SPECIAL EDUCATION PERSONNEL"]
           },
           {
             "name": "total-records-in-file",
             "type": "number",
-            "errorText": "The system has encountered an error regarding the total records column of the file."
+            "errorType": "NumberOfRecords"
           },
           {
             "name": "file-name",
-            "errorText": "The system has encountered an error regarding the file name of the file. The file name did not match the required structure.",
-            "regex": "^[A-Z]{2}(SEA|LEA|SCH)STUPERFMA[A-Za-z0-9]{0,7}(\\.csv)$",
+            "errorType": "FileHeader",
+            "regex": "^[A-Z]{2}(SEA|LEA)SPEDPRSNL[A-Za-z0-9]{0,7}(\\.csv)$",
             "type": "string",
             "maxLength": 25
           },
@@ -40,7 +42,7 @@
           },
           {
             "name": "file-reporting-period",
-            "errorText": "The system has encountered an error regarding the reporting year of the file. The reporting year did not match the required structure.",
+            "errorType": "FileHeader",
             "regex": "^\\d{4}[- ]\\d{4}$",
             "type": "string"
           },
@@ -56,10 +58,27 @@
       "name": "Row Count Validate",
       "validator": {
         "type": "rowCount",
-        "errorText": "The system has encountered an error regarding the number of records in this file. The file did not have the same number of records as specified in the header.",
+        "errorType": "NumberOfRecords",
         "value": {
           "headerIndex": 1
         }
+      }
+    },
+    {
+      "name": "Validate Year",
+      "validator": {
+        "type": "typeFieldCheck",
+        "schema": [
+          {
+            "name": "Year Check",
+            "errorType": "DifferentYear",
+            "type": "select",
+            "field": "reportingYear",
+            "value": {
+              "headerIndex": 4
+            }
+          }
+        ]
       }
     }
   ],
@@ -67,3 +86,5 @@
   "suppression": "",
   "title": ""
 }
+
+export default template;

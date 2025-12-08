@@ -30,6 +30,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       reportID: newReportID,
       updated: `${Date.now()}`,
       version: "draft",
+      status: "unpublished", // publishing status
       template: body.template,
       dataView: body.dataView,
       author: fullName,
@@ -46,6 +47,8 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
     };
 
     await db.put(putParams);
+    console.log(`Report[${newReportID}] created successfully`);
+
     return CreateBackendResponse(200, newReportID);
   } catch (err) {
     console.error(err);

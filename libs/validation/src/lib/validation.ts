@@ -1,130 +1,407 @@
-import { ValidationRule } from "./types/ValidationRule";
-
-import { ValidationTemplate } from "./types/ValidationTemplate";
-import { ValidatorType } from "./types/ValidatorType";
-import { NumberSchema } from "./types/schemas/NumberSchema";
-import { StringSchema } from "./types/schemas/StringSchema";
-import { HeaderValidator } from "./types/validators/HeaderValidator";
 import * as XLSX from "xlsx";
-import { HeaderSelect, RowCountValidator } from "./types/validators/RowCountValidator";
 import * as cheerio from "cheerio";
-import { Schema } from "./types/schemas/Schema";
-import { TypeFieldValidator } from "./types/validators/TypeFieldValidator";
-import { TypeFieldSchema } from "./types/schemas/TypeFieldSchema";
+import type {
+  ValidationTemplate,
+  ValidationError,
+  Schema,
+  StringSchema,
+  NumberSchema,
+  SelectSchema,
+  HeaderSelect,
+  HeaderValidator,
+  HeaderHTMLValidator,
+  RowCountValidator,
+  TypeFieldCheckValidator,
+  TypeFieldCheckHTMLValidator,
+} from "./types";
+import { createDefaultValidationError, DEFAULT_ERROR_TYPE, validateReportingYear, VALIDATION_TEMPLATE_ERRORS } from "./types/core";
 
-export type ValidationError = { error: string; header?: string; rule?: string };
+export type { ValidationError } from "./types";
 
-function isWorkbook(data: XLSX.WorkBook) {
-  return "Sheets" in data;
-}
+// ============================================================================
+// Schema Validators (Pure Functions)
+// ============================================================================
 
-export function validate(data: XLSX.WorkBook | string, template: ValidationTemplate, context?: Record<string, any>) {
+function validateStringSchema(
+  schema: StringSchema,
+  value: string,
+  ruleName: string
+): ValidationError[] {
   const errors: ValidationError[] = [];
 
-  if (typeof data === "string") {
-    // html
-    handleHTML(data, template, errors, context);
-  } else if (isWorkbook(data)) {
-    // csv or excel
-    handleCSV(data, template, errors, context);
-  } else {
-    // word for now
-    console.error("unknown data type");
+  // Check if value is in allowed array
+  if (schema.array && schema.value?.length) {
+    const values = schema.value as string[];
+    if (!values.some((v) => v === value)) {
+      errors.push({
+        error: schema.errorType || DEFAULT_ERROR_TYPE,
+        context: 'validateStringSchema: value not in allowed array',
+        rule: ruleName,
+        schema: schema.name,
+      });
+    }
+  }
+
+  // Check exact string match
+  if (!schema.array && schema.value?.length && schema.value !== value) {
+    errors.push({
+      error: schema.errorType || DEFAULT_ERROR_TYPE,
+      context: 'validateStringSchema: exact match failed',
+      rule: ruleName,
+      schema: schema.name,
+    });
+  }
+
+  // Check regex pattern
+  if (schema.regex) {
+    const regexp = new RegExp(schema.regex);
+    if (!regexp.test(value)) {
+      errors.push({
+        error: schema.errorType || DEFAULT_ERROR_TYPE,
+        context: 'validateStringSchema: regex pattern failed',
+        rule: ruleName,
+        schema: schema.name,
+      });
+    }
+  }
+
+  // Check max length
+  if (schema.maxLength !== undefined) {
+    if ((schema.maxLength === 0 && value) || value.length > schema.maxLength) {
+      errors.push({
+        error: schema.errorType || DEFAULT_ERROR_TYPE,
+        context: 'validateStringSchema: max length exceeded',
+        rule: ruleName,
+        schema: schema.name,
+      });
+    }
   }
 
   return errors;
 }
 
-function handleHTML(data: string, template: ValidationTemplate, errors: ValidationError[], context?: Record<string, any>) {
-  try {
-    const $ = cheerio.load(data);
+function validateNumberSchema(
+  schema: NumberSchema,
+  value: any,
+  ruleName: string
+): ValidationError[] {
+  const errors: ValidationError[] = [];
 
-    for (const { name, validator } of template.rules) {
-      const type = validator.type;
+  if (typeof value !== "number") {
+    return [
+      {
+        error: schema.errorType || DEFAULT_ERROR_TYPE,
+        context: 'validateNumberSchema: value is not a number',
+        rule: ruleName,
+        schema: schema.name,
+      },
+    ];
+  }
 
-      switch (type) {
-        case ValidatorType.HeaderHTML: {
-          const headerValidator = validator as HeaderValidator;
+  if (schema.min !== undefined && value < schema.min) {
+    errors.push({
+      error: schema.errorType || DEFAULT_ERROR_TYPE,
+      context: 'validateNumberSchema: value below minimum',
+      rule: ruleName,
+      schema: schema.name,
+    });
+  }
 
-          for (const [index, schema] of headerValidator.schema.entries()) {
-            const selectValue = getSelectValue(schema, $);
+  if (schema.max !== undefined && value > schema.max) {
+    errors.push({
+      error: schema.errorType || DEFAULT_ERROR_TYPE,
+      context: 'validateNumberSchema: value above maximum',
+      rule: ruleName,
+      schema: schema.name,
+    });
+  }
 
-            if (!selectValue) {
-              errors.push({
-                error: schema.errorText || "failed to match html file value to required values" + schema.name
-              });
-              continue;
-            }
+  return errors;
+}
 
-            headerValidate(schema, selectValue, errors, name, context);
-          }
-          break;
-        }
-        case ValidatorType.typeFieldCheckHTML: {
-          const typeFieldValidator = validator as TypeFieldValidator;
+function validateSelectSchema(
+  schema: SelectSchema,
+  value: string | HeaderSelect,
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  if (!schema.value) {
+    return [];
+  }
 
-          for (const [index, schema] of typeFieldValidator.schema.entries()) {
-            switch (schema.type) {
-              case "select": {
-                const select = schema as TypeFieldSchema;
-
-                if (!select?.value) {
-                  continue;
-                }
-
-                const selectValue = getSelectValue(select, $);
-
-                if (!selectValue) {
-                  errors.push({
-                    error: schema.errorText || "Failed to match html file value to required values" + schema.name
-                  });
-                  continue;
-                }
-
-                if (Array.isArray(select.value) && !select.value.some((val) => val === selectValue)) {
-                  errors.push({
-                    error: schema.errorText || "Failed to match html file value to required values" + schema.name
-                  });
-                } else if (!selectValue.includes(context?.[select.value as string] || "")) {
-                  errors.push({
-                    error: schema.errorText || "Failed to match html file value to required value" + schema.name
-                  });
-                }
-
-                break;
-              }
-              case "number": {
-                break;
-              }
-              case "string": {
-                const string = schema as StringSchema;
-
-                const selectValue = getSelectValue(schema, $);
-
-                if (!selectValue) {
-                  errors.push({
-                    error: schema.errorText || "failed to match html file value to required values"
-                  });
-                  continue;
-                }
-
-                handleStringSchema(string, selectValue?.trim(), errors, schema, name, context);
-
-                break;
-              }
-            }
-          }
-          break;
-        }
-      }
+  // Handle when value is an array of allowed strings
+  if (Array.isArray(schema.value)) {
+    const stringValue = value as string;
+    if (!schema.value.some((v: string) => v === stringValue)) {
+      return [
+        {
+          error: schema.errorType || DEFAULT_ERROR_TYPE,
+          context: 'validateSelectSchema: value not in allowed array',
+          rule: ruleName,
+          schema: schema.name,
+        },
+      ];
     }
-  } catch (err) {
-    errors.push({ error: "Failed to parse html" });
+    return [];
+  }
+
+  // Handle when value is a HeaderSelect object (for typeFieldCheck)
+  if (typeof schema.value === "object" && !Array.isArray(schema.value)) {
+    const expectedValue = context?.[schema.field];
+    if (!expectedValue) {
+      return [
+        {
+          error: schema.errorType || DEFAULT_ERROR_TYPE,
+          context: `validateSelectSchema: Missing context value for field ${schema.field}`,
+          rule: ruleName,
+          schema: schema.name,
+        },
+      ];
+    }
+
+    const stringValue = value as string;
+    if (stringValue !== expectedValue) {
+      return [
+        {
+          error: schema.errorType || DEFAULT_ERROR_TYPE,
+          context: `validateSelectSchema: Value mismatch for field ${schema.field}, expected "${expectedValue}", got "${stringValue}"`,
+          rule: ruleName,
+          schema: schema.name,
+        },
+      ];
+    }
+    return [];
+  }
+
+  // Handle single string value
+  if (typeof schema.value === "string") {
+    const stringValue = value as string;
+    if (!stringValue.includes(schema.value)) {
+      return [
+        {
+          error: schema.errorType || DEFAULT_ERROR_TYPE,
+          context: `validateSelectSchema: Value does not include expected substring "${schema.value}"`,
+          rule: ruleName,
+          schema: schema.name,
+        },
+      ];
+    }
+  }
+
+  return [];
+}
+
+function validateSchema(
+  schema: Schema,
+  value: any,
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  switch (schema.type) {
+    case "string":
+      return validateStringSchema(
+        schema,
+        value?.toString().trim() || "",
+        ruleName
+      );
+    case "number":
+      return validateNumberSchema(schema, value, ruleName);
+    case "select":
+      return validateSelectSchema(schema, value, ruleName, context);
   }
 }
 
-function getSelectValue(select: Schema, $: cheerio.CheerioAPI) {
-  const element = select.element;
+// ============================================================================
+// CSV Validator Handlers (Pure Functions)
+// ============================================================================
+
+function handleHeaderValidator(
+  validator: HeaderValidator,
+  header: any[],
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  return validator.schema.flatMap((schema, index) => {
+    const value = header[index];
+    return validateSchema(schema, value, ruleName, context);
+  });
+}
+
+function handleRowCountValidator(
+  validator: RowCountValidator,
+  header: any[],
+  rowCount: number,
+  ruleName: string
+): ValidationError[] {
+  const expectedCount =
+    typeof validator.value === "number"
+      ? validator.value
+      : (header[validator.value.headerIndex] as number);
+
+  if (rowCount !== expectedCount) {
+    return [
+      {
+        error: validator.errorType || DEFAULT_ERROR_TYPE,
+        context: `handleRowCountValidator: Expected ${expectedCount} rows, got ${rowCount}`,
+        rule: ruleName,
+      },
+    ];
+  }
+
+  return [];
+}
+
+function handleTypeFieldCheckValidator(
+  validator: TypeFieldCheckValidator,
+  header: any[],
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  return validator.schema.flatMap((schema) => {
+    if (schema.type !== "select") {
+      return [];
+    }
+
+    const selectSchema = schema as SelectSchema;
+
+    if (!selectSchema.value) {
+      return [
+        {
+          error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+          context: `handleTypeFieldCheckValidator: Missing select schema value`,
+          rule: ruleName,
+          schema: selectSchema.name,
+        },
+      ];
+    }
+
+    // Handle when value is a HeaderSelect object
+    if (
+      typeof selectSchema.value === "object" &&
+      !Array.isArray(selectSchema.value)
+    ) {
+      const headerSelect = selectSchema.value as HeaderSelect;
+      if (!selectSchema.field) {
+        return [
+          {
+            error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+            context: `handleTypeFieldCheckValidator: Missing field`,
+            rule: ruleName,
+            schema: selectSchema.name,  
+          },
+        ];
+      }
+
+      let selectValue: string = String(header[headerSelect.headerIndex] ?? '').trim();
+
+      if (!selectValue) {
+        return [
+          {
+            error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+            context: `handleTypeFieldCheckValidator: Missing value for field ${selectSchema.field}`,
+            rule: ruleName,
+            schema: selectSchema.name,
+          },
+        ];
+      }
+
+      // Apply substring if configured
+      if (headerSelect.substring) {
+        if (headerSelect.substring.start === headerSelect.substring.end) {
+          return [
+            {
+              error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+              context: `handleTypeFieldCheckValidator: Invalid substring range`,
+              rule: ruleName,
+              schema: selectSchema.name,
+            },
+          ];
+        }
+
+        if (headerSelect.substring.end && headerSelect.substring.start > headerSelect.substring.end) {
+          return [
+            {
+              error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+              context: `handleTypeFieldCheckValidator: Substring start greater than end`,
+              rule: ruleName,
+              schema: selectSchema.name,
+            },
+          ];
+        }
+
+        selectValue = selectValue.substring(
+          headerSelect.substring.start,
+          headerSelect.substring.end
+        );
+      }
+
+      // Validate against context
+      const expectedValue = context?.[selectSchema.field];
+      
+      if (selectSchema.field === "reportingYear" && expectedValue) {
+        // FIXME: This exists to handle the case where reportingYear in the context is "2023" but the header contains "2022-2023" or "2022 2023"
+        console.warn("handling reportingYear special case");
+        if (!validateReportingYear(selectValue, expectedValue)) {
+          return [
+            {
+              error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+              context: `handleTypeFieldCheckValidator: Value mismatch for field ${selectSchema.field}, expected reporting year matching "${expectedValue}", got "${selectValue}"  check validateReportingYear function`,
+              rule: ruleName,
+              schema: selectSchema.name,
+            },
+          ];
+        } else {
+          return [];
+        }
+      }
+
+      if (!expectedValue) {
+        return [
+          {
+            error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+            context: `handleTypeFieldCheckValidator: Missing context value for field ${selectSchema.field}`,
+            rule: ruleName,
+            schema: selectSchema.name,
+          },
+        ];
+      }
+
+      if (selectValue !== expectedValue) {
+        return [
+          {
+            error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+            context: `handleTypeFieldCheckValidator: Value mismatch for field ${selectSchema.field}, expected "${expectedValue}", got "${selectValue}"`,
+            rule: ruleName,
+            schema: selectSchema.name,
+          },
+        ];
+      }
+
+      return [];
+    }
+    // Handle when value is an array of strings
+    else if (Array.isArray(selectSchema.value)) {
+      return validateSelectSchema(
+        selectSchema,
+        header[0]?.trim(),
+        ruleName,
+        context
+      );
+    }
+
+    return [];
+  });
+}
+
+// ============================================================================
+// HTML Helper Functions
+// ============================================================================
+
+function getHTMLElementValue(
+  schema: Schema,
+  $: cheerio.CheerioAPI
+): string | undefined {
+  const element = schema.element;
 
   if (!element) {
     return;
@@ -142,181 +419,229 @@ function getSelectValue(select: Schema, $: cheerio.CheerioAPI) {
 
   let baseElement = $(selector);
 
-  if (element.index) {
+  if (element.index !== undefined) {
     baseElement = baseElement.eq(element.index);
   }
 
-  const baseElementText = baseElement.text()?.trim();
-
-  return baseElementText;
+  return baseElement.text()?.trim();
 }
 
-function headerValidate(schema: Schema, select: string, errors: ValidationError[], name: string, context?: Record<string, any>) {
-  switch (schema.type) {
-    case "number": {
-      const numberSchema = schema as NumberSchema;
+// ============================================================================
+// HTML Validator Handlers (Pure Functions)
+// ============================================================================
 
-      if (typeof select !== "number") {
-        errors.push({
-          error: schema.errorText || "Invalid data type for number header",
-          header: schema.name,
-          rule: name
-        });
+function handleHeaderHTMLValidator(
+  validator: HeaderHTMLValidator,
+  $: cheerio.CheerioAPI,
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  return validator.schema.flatMap((schema) => {
+    const value = getHTMLElementValue(schema, $);
+
+    if (!value) {
+      return [
+        {
+          error: schema.errorType || DEFAULT_ERROR_TYPE,
+          context: `handleHeaderHTMLValidator: Missing value for field`,
+          rule: ruleName,
+          schema: schema.name,
+        },
+      ];
+    }
+
+    return validateSchema(schema, value, ruleName, context);
+  });
+}
+
+function handleTypeFieldCheckHTMLValidator(
+  validator: TypeFieldCheckHTMLValidator,
+  $: cheerio.CheerioAPI,
+  ruleName: string,
+  context?: Record<string, any>
+): ValidationError[] {
+  return validator.schema.flatMap((schema) => {
+    if (schema.type === "select") {
+      const selectSchema = schema as SelectSchema;
+
+      if (!selectSchema.value) {
+        return [];
       }
 
-      break;
-    }
-    case "string": {
-      const stringSchema = schema as StringSchema;
+      const value = getHTMLElementValue(schema, $);
 
-      handleStringSchema(stringSchema, select?.trim(), errors, schema, name, context);
+      if (!value) {
+        return [
+          {
+            error: selectSchema.errorType || validator.errorType || DEFAULT_ERROR_TYPE,
+            context: "handleTypeFieldCheckHTMLValidator: Missing value for schema.type select",
+            rule: ruleName,
+            schema: schema.name,
+          },
+        ];
+      }
 
-      break;
+      // Handle array of allowed values
+      if (Array.isArray(selectSchema.value)) {
+        return validateSelectSchema(selectSchema, value, ruleName, context);
+      }
+      // Handle context field comparison
+      else if (typeof selectSchema.value === "string") {
+        const expectedValue = context?.[selectSchema.value];
+
+        if (selectSchema.field === "reportingYear" && expectedValue) {
+          // FIXME: This exists to handle the case where reportingYear in the context is "2023" but the HTML contains "Year: 2022-23"
+          console.warn("handling reportingYear special case");
+          if (!validateReportingYear(value, expectedValue)) {
+            return [
+              {
+                error: selectSchema.errorType || DEFAULT_ERROR_TYPE,
+                context: `handleTypeFieldCheckHTMLValidator: Value mismatch for field ${selectSchema.field}, expected reporting year matching "${expectedValue}", got "${value}" check validateReportingYear function`,
+                rule: ruleName,
+                schema: selectSchema.name,
+              },
+            ];
+          } else {
+            return [];
+          }
+        }
+
+
+        if (!value.includes(expectedValue || "")) {
+          return [
+            {
+              error: selectSchema.errorType || validator.errorType || DEFAULT_ERROR_TYPE,
+              context: `handleTypeFieldCheckHTMLValidator: Value mismatch for field ${selectSchema.value}, expected "${expectedValue}", got "${value}"`,
+              rule: ruleName,
+              schema: schema.name,
+            },
+          ];
+        }
+      }
+
+      return [];
+    } else if (schema.type === "string") {
+      const value = getHTMLElementValue(schema, $);
+
+      if (!value) {
+        return [
+          {
+            error: schema.errorType || validator.errorType || DEFAULT_ERROR_TYPE,
+            context: "handleTypeFieldCheckHTMLValidator: Missing value for schema.type string",
+            rule: ruleName,
+            schema: schema.name,
+          },
+        ];
+      }
+
+      return validateSchema(schema, value, ruleName, context);
     }
-  }
+
+    return [];
+  });
 }
 
-function handleStringSchema(stringSchema: StringSchema, select: string, errors: ValidationError[], schema: Schema, name: string, context?: Record<string, any>) {
-  if (stringSchema.array && stringSchema.value?.length) {
-    const values = stringSchema.value as string[];
+// ============================================================================
+// Main Validation Functions
+// ============================================================================
 
-    if (!values.some((value) => select === value)) {
-      errors.push({
-        error: schema.errorText || "Header value not in the allowed list of values",
-        header: schema.name,
-        rule: name
-      });
+function isWorkbook(data: XLSX.WorkBook) {
+  return "Sheets" in data;
+}
+
+function deduplicateErrors(errors: ValidationError[]): ValidationError[] {
+  const uniqueErrors = new Map<string, ValidationError>();
+
+  for (const error of errors) {
+    const key = `${error.schema ?? ''}|${error.rule ?? ''}`;
+    if (!uniqueErrors.has(key)) {
+      uniqueErrors.set(key, error);
     }
   }
 
-  if (!stringSchema.array && stringSchema.value?.length) {
-    if (stringSchema.value !== select) {
-      errors.push({
-        error: schema.errorText || "Header string value is invalid",
-        header: schema.name,
-        rule: name
-      });
+  return Array.from(uniqueErrors.values());
+}
+
+export function validate(
+  data: XLSX.WorkBook | string,
+  template: ValidationTemplate,
+  context?: Record<string, any>
+): ValidationError[] {
+  try {
+    let errors: ValidationError[];
+  
+    if (typeof data === "string") {
+      errors = handleHTML(data, template, context);
+    } else if (isWorkbook(data)) {
+      errors = handleCSV(data, template, context);
+    } else {
+      // console.error("unknown data type");
+      return [createDefaultValidationError('validate: unknown data type')];
     }
-  }
-
-  if (stringSchema.regex) {
-    const regexp = new RegExp(stringSchema.regex);
-
-    if (!regexp.test(select)) {
-      errors.push({
-        error: schema.errorText || "Header string value does not match the regex",
-        header: schema.name,
-        rule: name
-      });
-    }
-  }
-
-  if (stringSchema.maxLength && ((stringSchema.maxLength === 0 && !select) || select.length > stringSchema.maxLength)) {
-    errors.push({
-      error: schema.errorText || "Header string value exceeds the max length",
-      header: schema.name,
-      rule: name
+  
+    errors = deduplicateErrors(errors);
+    errors = errors.map((error) => {
+      return {
+        ...error,
+        message: VALIDATION_TEMPLATE_ERRORS[error.error],
+      };
     });
+    return errors;
+  } catch (err) {
+    console.log("Error during validation:", err);
+    return [createDefaultValidationError('validate: exception during validation')];
   }
 }
 
-function handleCSV(data: XLSX.WorkBook, template: ValidationTemplate, errors: ValidationError[], context?: Record<string, any>) {
-  const sheet = data.Sheets[data.SheetNames[0]];
+function handleHTML(
+  data: string,
+  template: ValidationTemplate,
+  context?: Record<string, any>
+): ValidationError[] {
+  try {
+    const $ = cheerio.load(data);
 
-  const sheetJSON = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-  const header = sheetJSON.shift() as any[];
-
-  for (const { name, validator } of template.rules) {
-    const type = validator.type;
-
-    switch (type) {
-      case ValidatorType.Header: {
-        const headerValidator = validator as HeaderValidator;
-
-        for (const [index, schema] of headerValidator.schema.entries()) {
-          const select = header[index];
-
-          headerValidate(schema, select, errors, name, context);
-        }
-
-        break;
+    return template.rules.flatMap(({ name, validator }) => {
+      switch (validator.type) {
+        case "headerHTML":
+          return handleHeaderHTMLValidator(validator, $, name, context);
+        case "typeFieldCheckHTML":
+          return handleTypeFieldCheckHTMLValidator(validator, $, name, context);
+        default:
+          return [];
       }
-      case ValidatorType.RowCount: {
-        const rowCountValidator = validator as RowCountValidator;
+    });
+  } catch (err) {
+    return [createDefaultValidationError('handleHTML: failed to parse HTML')];
+  }
+}
 
-        if (typeof rowCountValidator.value === "object") {
-          const headerSelect = rowCountValidator.value;
 
-          const value = header[headerSelect.headerIndex] as number;
+function handleCSV(
+  data: XLSX.WorkBook,
+  template: ValidationTemplate,
+  context?: Record<string, any>
+): ValidationError[] {
+  try {
+    const sheet = data.Sheets[data.SheetNames[0]];
+    const sheetJSON = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    const header = sheetJSON.shift() as any[];
+    const rowCount = sheetJSON.length;
 
-          if (sheetJSON.length < value || sheetJSON.length > value) {
-            errors.push({
-              error: rowCountValidator.errorText || "Row Count does not match",
-              rule: name
-            });
-          }
-        }
-
-        if (typeof rowCountValidator.value === "number") {
-          if (sheetJSON.length < rowCountValidator.value || sheetJSON.length > rowCountValidator.value) {
-            errors.push({
-              error: rowCountValidator.errorText || "Row Count does not match",
-              rule: name
-            });
-          }
-        }
-
-        break;
+    return template.rules.flatMap(({ name, validator }) => {
+      switch (validator.type) {
+        case "header":
+          return handleHeaderValidator(validator, header, name, context);
+        case "rowCount":
+          return handleRowCountValidator(validator, header, rowCount, name);
+        case "typeFieldCheck":
+          return handleTypeFieldCheckValidator(validator, header, name, context);
+        default:
+          return [];
       }
-      case ValidatorType.typeFieldCheck: {
-        const typeFieldValidator = validator as TypeFieldValidator;
-
-        for (const [index, schema] of typeFieldValidator.schema.entries()) {
-          switch (schema.type) {
-            case "select": {
-              const select = schema as TypeFieldSchema;
-
-              if (!select?.value) {
-                errors.push({
-                  error: "invalid validation schema index:" + index
-                });
-                continue;
-              }
-
-              const value = select.value as HeaderSelect;
-
-              if (!value?.field) {
-                errors.push({
-                  error: "invalid validation schema index:" + index
-                });
-                continue;
-              }
-
-              const selectValue = header[value.headerIndex]?.trim();
-
-              if (!selectValue) {
-                errors.push({
-                  error: "invalid validation schema index:" + index
-                });
-                continue;
-              }
-
-              if (Array.isArray(select.value) && !select.value.some((val) => val === selectValue)) {
-                errors.push({
-                  error: schema.errorText || "Failed to match file value to required values" + schema.name
-                });
-              } else if (!selectValue.includes(context?.[value.field as string] || "")) {
-                errors.push({
-                  error: schema.errorText || "Failed to match file value to required value" + schema.name
-                });
-              }
-
-              break;
-            }
-          }
-        }
-      }
-    }
+    });
+  } catch (err) {
+    console.log("Error during CSV validation:", err);
+    return [createDefaultValidationError('handleCSV: failed to parse CSV data')];
   }
 }

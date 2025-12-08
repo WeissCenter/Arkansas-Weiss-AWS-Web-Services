@@ -21,6 +21,7 @@ import {
 } from "../../../libs/types/src";
 import { DeleteObjectCommandOutput, ListObjectsV2Command, DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { translateJSON } from "../../../scripts/translate";
+import { PublishStatus } from "../../../libs/types/src/lib/backend/PublishStatus";
 
 const s3Client = new S3Client({ region: "us-east-1" });
 const client = new DynamoDBClient({ region: "us-east-1" });
@@ -41,6 +42,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       languages: { [lang: string]: IReport & { verified: boolean } };
     };
 
+    // Only draft reports can be edited
     const baseReport = await getReportFromDynamo(db, process.env.REPORT_TABLE || "", body.reportID, ReportVersion.DRAFT, "en");
 
     if (!baseReport) return CreateBackendErrorResponse(404, `Report ${body.reportID} does not exist`);
@@ -81,6 +83,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
           ]);
         else translatedTemplate = translated.Items[0];
 
+        // create a deep copy of the base report
         const reportClone = structuredClone(baseReport) as any;
 
         reportClone.template = translatedTemplate;
@@ -112,6 +115,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       const updateReportItem = {
         updated: `${date}`,
         version: "draft",
+        status: PublishStatus.UNPUBLISHED,
         template: cursor.template,
         visibility: cursor.visibility,
         name: cursor.name,
@@ -120,14 +124,19 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
         slug: cursor.slug
       };
 
-      // clear out any cache for this report
+      // clear out any cache for this report. When a report is loaded for viewing or editing it is cached in S3 and
+      // here we just clear that out so we can get the latest. If it was published it will be remove from the ADMIN S3 bucket
+      // published list in the UI and this clear cache will basically remove the "published" report from S3
+      // The published version will still be in the VIEWER S3 bucket
       await deleteFolder([`${body.reportID}/draft`], process.env.CACHE_BUCKET || "");
 
       const finalizedVersion = dynamoReports.find((rpt) => rpt.version === ReportVersion.FINALIZED);
 
-      if (finalizedVersion) await handleFinalizedVersion(db, finalizedVersion, date);
+      // if this is an edit of a published report we need to remove the published version, basically unpublishing the report
+      if (finalizedVersion) await deleteFinalizedVersion(db, finalizedVersion, date);
 
-      const [draftResult, draftAudit] = await handleDraftReport(db, cursor, updateReportItem, lang);
+      //const [draftResult, draftAudit] = await handleDraftReport(db, cursor, updateReportItem, lang);
+      await updateDraftReport(db, cursor, updateReportItem, lang);
     }
 
     await aws_LogEvent(cloudwatch, process.env.LOG_GROUP || "", logStream, username, EventType.CREATE, `Report: ${body.reportID} was edited and new draft version was created`);
@@ -139,7 +148,10 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
   }
 };
 
-function handleDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem: any, lang = "en") {
+function updateDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem: any, lang = "en") {
+
+  console.log("Inside updateDraftReport");
+
   const updateReportParams = {
     TableName: process.env.REPORT_TABLE,
     Key: {
@@ -150,6 +162,8 @@ function handleDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem
     ...createUpdateItemFromObject(updateReportItem)
   };
 
+  // use this for development debugging
+  /*
   const updateAuditReport = {
     TableName: process.env.REPORT_TABLE,
     Key: {
@@ -158,10 +172,19 @@ function handleDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem
     },
     ...createUpdateItemFromObject({ ...body, version: `draft-${body.updated}`, lang }, ["id", "type"])
   };
-  return Promise.all([db.update(updateReportParams), db.update(updateAuditReport)]);
+
+  await db.update(updateAuditReport);
+
+   */
+
+  return db.update(updateReportParams);
+  //return Promise.all([db.update(updateReportParams), db.update(updateAuditReport)]);
 }
 
-async function handleFinalizedVersion(db: DynamoDBDocument, report: IReport, date: number) {
+function deleteFinalizedVersion(db: DynamoDBDocument, report: IReport, date: number) {
+
+  console.log("Inside deleteFinalizedVersion");
+
   const deleteOldFinalized = {
     TableName: process.env.REPORT_TABLE,
     Key: {
@@ -170,6 +193,8 @@ async function handleFinalizedVersion(db: DynamoDBDocument, report: IReport, dat
     }
   };
 
+  // use this for development debugging
+  /*
   const updateAuditReport = {
     TableName: process.env.REPORT_TABLE,
     Key: {
@@ -178,7 +203,11 @@ async function handleFinalizedVersion(db: DynamoDBDocument, report: IReport, dat
     },
     ...createUpdateItemFromObject({ ...report, version: `finalized-${date}` }, ["id", "type"])
   };
-  return Promise.all([db.delete(deleteOldFinalized), db.update(updateAuditReport)]);
+
+   */
+  //return Promise.all([db.delete(deleteOldFinalized), db.update(updateAuditReport)]);
+
+  return db.delete(deleteOldFinalized);
 }
 
 async function getTemplate(db: DynamoDBDocument, templateID: string, lang: string) {
@@ -207,6 +236,8 @@ async function deleteFolder(keys: string[], bucketName: string, partial = false)
         Prefix: key + partial ? "" : "/"
       })
     );
+
+    console.log("Contents", Contents);
 
     if (!Contents) continue;
 

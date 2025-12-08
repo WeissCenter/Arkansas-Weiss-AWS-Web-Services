@@ -4,11 +4,9 @@ import { ReportVersion } from "../ReportVersion";
 import { DataSetOperationArgument, DataViewOperation } from "../../../index";
 import { AthenaClient, Datum, ResultSet, GetQueryResultsCommand, StartQueryExecutionCommand, GetQueryExecutionCommand, QueryExecutionState, ResultSetMetadata, Row } from "@aws-sdk/client-athena";
 import { Kysely, SelectQueryBuilder, sql, ColumnDataType, AliasableExpression } from "kysely";
-import { QueryCommandInput } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { DataSetQueueStatus } from "../DataSetQueueStatus";
-import { QueryInput } from "@aws-sdk/client-dynamodb";
 import slugify from "slugify";
+import { PublishStatus } from "../PublishStatus";
 
 export async function getReportFromDynamo(db: any, TABLE_NAME: string, id: string, version: ReportVersion = ReportVersion.DRAFT, lang?: string) {
   const getParams = {
@@ -48,6 +46,9 @@ export async function getReportVersionsFromDynamo(db: any, TABLE_NAME: string, i
 }
 
 export function updateReportVersion(db: any, TABLE_NAME: string, report: IReport, version: ReportVersion = ReportVersion.DRAFT, lang = "en") {
+
+  console.log("Inside updateReportVersion", version, lang);
+
   const updateObj: IReport = {
     ...report,
     version: version,
@@ -74,6 +75,26 @@ export function updateReportVersion(db: any, TABLE_NAME: string, report: IReport
   };
 
   return db.update(updateParams);
+}
+
+export async function updateDraftReportPublishStatus(REPORT_TABLE_NAME: string, reportID: string, publishStatus: PublishStatus, user: string, db: DynamoDBDocument) {
+
+  console.log(`Inside updateDraftReportPublishStatus for report ${reportID} and table ${REPORT_TABLE_NAME}`);
+  // ####### Now we need to update the publish status on the draft entry in dynamo db ####
+  const updatePublishStatusForReport = {
+    TableName: REPORT_TABLE_NAME,  // this is the REPORT_TABLE
+    Key: {
+      type: "Report",
+      id: `ID#${reportID}#Version#draft#Lang#en`
+    },
+    ...createUpdateItemFromObject({ status: publishStatus })  //"PUBLISHED", "FAILED
+  };
+
+  await db.update(updatePublishStatusForReport);
+
+  console.log(`Report publish status updated to ${publishStatus} for report ${reportID}`);
+
+  //#########################################################################################################
 }
 
 function mapDatum(datum: Datum, type: string) {

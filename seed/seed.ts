@@ -3,6 +3,7 @@ import { DynamoDBDocument, PutCommandInput } from "@aws-sdk/lib-dynamodb";
 import { TranslateClient, TranslateTextCommand } from "@aws-sdk/client-translate";
 import { readFileSync } from "fs";
 import { globSync } from "glob";
+import { resolve } from "path";
 
 const SOURCE_LANGUAGE = "en";
 type SourceLang = typeof SOURCE_LANGUAGE;
@@ -49,7 +50,7 @@ type FileTranslateConfig = {
 type FilePath = string;
 
 function putIfNotExists(Item: any, TableName: string, force = false) {
-  console.log(`Inside putIfNotExists for table: ${TableName} with Item: ${Item.type} ${Item.id}`);
+  // console.log(`Inside putIfNotExists for table: ${TableName} with Item: ${Item.type} ${Item.id}`);
 
   const params: PutCommandInput = {
     TableName,
@@ -123,7 +124,7 @@ async function translateJSON(sourceLang: string, lang: string, originalLoadedJSO
 }
 
 async function translateFile(filePath: string, fileData: any) {
-  console.log(`Inside translateFile for filePath: ${filePath}`);
+  // console.log(`Inside translateFile for filePath: ${filePath}`);
   const translateConfig = TRANSLATE_CONFIG[filePath];
 
   if (!translateConfig) return;
@@ -146,17 +147,57 @@ async function translateFile(filePath: string, fileData: any) {
   return translatedJSONs.filter((result): result is PromiseFulfilledResult<TranslatedJSON> => result.status === "fulfilled").map((result) => result.value);
 }
 
+/**
+ * Loads a template file from either TypeScript (.ts) or JSON (.json) format.
+ *
+ * For TypeScript files:
+ * - The .ts files must be compiled to .js first using 'npm run build'
+ * - The function will look for the compiled .js file and dynamically import it
+ * - TypeScript templates should export a default object of type DynamoDBValidationTemplate
+ *
+ * For JSON files:
+ * - Files are read directly from the filesystem and parsed as JSON
+ *
+ * @param filePath - The path to the template file (.ts or .json)
+ * @returns The parsed template data
+ */
+async function loadTemplateFile(filePath: string): Promise<any> {
+  if (filePath.endsWith('.ts')) {
+    // For TypeScript files, check if a compiled .js file exists
+    const jsFilePath = filePath.replace('.ts', '.js');
+    const absolutePath = resolve(jsFilePath);
+
+    try {
+      // Use require instead of import to avoid issues with special characters in filenames
+      // Clear the require cache to ensure we get fresh data on each load
+      delete require.cache[absolutePath];
+      const module = require(absolutePath);
+      // Handle both default exports and direct exports
+      return module.default || module;
+    } catch (error) {
+      console.error(`Error loading template from ${jsFilePath}. Make sure to run 'npm run build' first.`);
+      throw error;
+    }
+  } else {
+    // For JSON files, use readFileSync
+    const data = readFileSync(filePath).toString();
+    return JSON.parse(data);
+  }
+}
+
 (async () => {
   const settingJSONs = globSync("./seed/AdaptSettings/*.json");
   const settingsTableName = `${process.env.AWS_RESOURCE_UNIQUE_ID}-AdaptSettings`;
 
   const templateJSONs = globSync("./seed/AdaptTemplates/*.json");
+  const templateTSFiles = globSync("./seed/AdaptTemplates/*.ts");
+  const allTemplateFiles = [...templateJSONs, ...templateTSFiles];
   const templatesTableName = `${process.env.AWS_RESOURCE_UNIQUE_ID}-AdaptTemplates`;
 
   // settingsFilePath: seed/AdaptSettings/settings.json
   for (const settingsFilePath of settingJSONs) {
     const isGlossaryFile = settingsFilePath.includes("glossary.json");
-    console.log("isGlossaryFile: ", isGlossaryFile);
+    // console.log("isGlossaryFile: ", isGlossaryFile);
 
     // if we have a glossary file and it is not the default file, meaning it is a custom file for a given state
     if (isGlossaryFile && process.env.GLOSSARY_TERMS && !settingsFilePath.endsWith(process.env.GLOSSARY_TERMS)) {
@@ -182,12 +223,11 @@ async function translateFile(filePath: string, fileData: any) {
     }
   }
 
-  for (const template of templateJSONs) {
+  for (const template of allTemplateFiles) {
     const force = true; // always force put for templates
-    const data = readFileSync(template).toString();
 
     console.log(`Processing template file: ${template} `);
-    const parsedData = JSON.parse(data);
+    const parsedData = await loadTemplateFile(template);
     await putIfNotExists(parsedData, templatesTableName, force);
 
     // Create and store translation if applicable

@@ -1,4 +1,6 @@
-{
+import { DynamoDBValidationTemplate } from "../../libs/validation/src/lib/types";
+
+const template: DynamoDBValidationTemplate = {
   "type": "ValidationTemplate",
   "id": "ID#FS901",
   "name": "General FS901 Spec Validator",
@@ -11,18 +13,18 @@
           {
             "type": "string",
             "array": true,
-            "errorText": "The system has recognized that you have uploaded the wrong file.",
+            "errorType": "WrongFile",
             "name": "file-type",
             "value": ["SEA INFANT TODD (IDEA C) EXIT", "LEA INFANT TODD (IDEA C) EXIT"]
           },
           {
             "type": "number",
-            "errorText": "The system has encountered an error regarding the total records column of the file.",
+            "errorType": "NumberOfRecords",
             "name": "total-records-in-file"
           },
           {
             "type": "string",
-            "errorText": "The system has encountered an error regarding the file name of the file. The file name did not match the required structure.",
+            "errorType": "FileHeader",
             "maxLength": 25,
             "name": "file-name",
             "regex": "^[A-Z]{2}(SEA|LEA)IDEACEXIT[A-Za-z0-9]{0,7}(\\.csv)$"
@@ -33,7 +35,7 @@
           },
           {
             "type": "string",
-            "errorText": "The system has encountered an error regarding the reporting year of the file. The reporting year did not match the required structure.",
+            "errorType": "FileHeader",
             "name": "file-reporting-period",
             "regex": "^\\d{4}[- ]\\d{4}$"
           },
@@ -49,11 +51,30 @@
       "name": "Row Count Validate",
       "validator": {
         "type": "rowCount",
-        "errorText": "The system has encountered an error regarding the number of records in this file. The file did not have the same number of records as specified in the header.",
+        "errorType": "NumberOfRecords",
         "value": {
           "headerIndex": 1
         }
       }
+    },
+    {
+      "name": "Validate Year",
+      "validator": {
+        "type": "typeFieldCheck",
+        "schema": [
+          {
+            "name": "Year Check",
+            "errorType": "DifferentYear",
+            "type": "select",
+            "field": "reportingYear",
+            "value": {
+              "headerIndex": 4
+            }
+          }
+        ]
+      }
     }
   ]
 }
+
+export default template;

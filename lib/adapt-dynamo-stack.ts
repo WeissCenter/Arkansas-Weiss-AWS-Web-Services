@@ -28,12 +28,6 @@ export class AdaptDynamoStack extends cdk.Stack {
       tableName: `${props.stage}-AdaptReport`
     });
 
-    // reportTable.addGlobalSecondaryIndex({
-    //   indexName: "report-slug-query",
-    //   partitionKey: { name: "type", type: AttributeType.STRING },
-    //   sortKey: { name: "slug", type: AttributeType.STRING },
-    // });
-
     reportTable.addGlobalSecondaryIndex({
       indexName: "report-slug-query",
       partitionKey: { name: "slug", type: AttributeType.STRING },
