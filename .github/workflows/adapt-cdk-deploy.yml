@@ -18,6 +18,7 @@ env:
   HOSTED_ZONE_CERT_ARN: ${{ vars.HOSTED_ZONE_CERT_ARN }}
   ADMIN_SUB_DOMAIN: ${{ vars.ADMIN_SUB_DOMAIN }}
   VIEWER_SUB_DOMAIN: ${{ vars.VIEWER_SUB_DOMAIN }}
+  DEPLOYMENT_BUILD_RELEASE_NO: ${{ vars.DEPLOYMENT_BUILD_RELEASE_NO }}
 
 jobs:
   cdk-deploy:
@@ -69,6 +70,7 @@ jobs:
           HOSTED_ZONE: ${{ env.HOSTED_ZONE }}
           ADMIN_SUB_DOMAIN: ${{ env.ADMIN_SUB_DOMAIN }}
           VIEWER_SUB_DOMAIN: ${{ env.VIEWER_SUB_DOMAIN }}
+          DEPLOYMENT_BUILD_RELEASE_NO: ${{ env.DEPLOYMENT_BUILD_RELEASE_NO }}
           #See the adapt-cdk.ts file in the bin folder for default values
           CALLBACK_URL: "https://${{ env.ADMIN_SUB_DOMAIN }}.${{ env.HOSTED_ZONE }}/auth/redirect"
           PUBLIC_VAPID_KEY: ${{ secrets.PUBLIC_VAPID_KEY }}

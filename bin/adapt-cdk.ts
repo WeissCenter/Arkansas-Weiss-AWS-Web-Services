@@ -28,6 +28,8 @@ const PRIVATE_VAPID_KEY = process.env["PRIVATE_VAPID_KEY"] || "";
 const AWS_ACCOUNT = process.env["AWS_ACCOUNT"] || "";
 const AWS_DEFAULT_REGION = process.env["AWS_DEFAULT_REGION"] || "us-east-1";
 
+const DEPLOYMENT_BUILD_RELEASE_NO = process.env["DEPLOYMENT_BUILD_RELEASE_NO"] || "unknown";
+
 const app = new cdk.App();
 
 const cognitoStack = new AdaptCognitoStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptCognitoStack`, {
@@ -58,6 +60,9 @@ const dataStack = new AdaptDataStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptDataSt
 // stack for adapt backend resources
 const apiStack = new AdaptStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptStack`, {
   stage: AWS_RESOURCE_UNIQUE_ID,
+  hostedZone: HOSTED_ZONE,
+  subDomain: ADMIN_SUB_DOMAIN,
+  version: DEPLOYMENT_BUILD_RELEASE_NO,
   dynamoTables: dynamoStack.tables,
   cognito: {
     userPoolId: cognitoStack.userPoolId,
