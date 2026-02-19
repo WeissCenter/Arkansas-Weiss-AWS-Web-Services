@@ -14,7 +14,10 @@ import { Bucket, EventType, HttpMethods } from "aws-cdk-lib/aws-s3";
 import { Database, Job } from "@aws-cdk/aws-glue-alpha";
 import { LambdaDestination } from "aws-cdk-lib/aws-s3-notifications";
 import * as s3express from "aws-cdk-lib/aws-s3express";
+import { AdaptMockFunction } from "../constructs/AdaptMockFunction";
 interface AdaptApiStackProps extends AdaptStackProps {
+  hostedZone: string;
+  subDomain: string;
   dynamoTables: { [key: string]: AdaptDynamoTable };
   cognito: {
     userPoolId: string;
@@ -33,6 +36,7 @@ interface AdaptApiStackProps extends AdaptStackProps {
   renderTemplateServiceFunction: AdaptNodeLambda;
   viewerReportCache: s3express.CfnDirectoryBucket;
   adminReportCache: s3express.CfnDirectoryBucket;
+  version?: string;  // This is used to track the version/build-no/release-no of the current deployment
 }
 
 export class AdaptStack extends cdk.Stack {
@@ -201,6 +205,19 @@ export class AdaptStack extends cdk.Stack {
       bucketArn: props.stagingBucket.bucketArn,
       bucketName: props.stagingBucket.bucketName
     });
+
+    //const RELEASE_DATE = new Date().toString() //.toISOString().split("T")[0];
+
+    // Get a string representation of the time in the 'America/New_York' timezone
+    const RELEASE_DATE = new Date().toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+    });
+
+    //const CORS_AccessControlAllowOrigins = `http://localhost:4200, https://${props.subDomain}.${props.hostedZone}`;
+    const CORS_AccessControlAllowOrigins = `https://${props.subDomain}.${props.hostedZone}`;
+
+    //', domainName: ', $context.domainName
+    console.log(`RELEASE_DATE: ${RELEASE_DATE} CORS_AccessControlAllowOrigins: ${CORS_AccessControlAllowOrigins} `);
 
     existingStageBucket.addEventNotification(EventType.OBJECT_CREATED, new LambdaDestination(validateFileHandler));
 
@@ -1140,7 +1157,64 @@ export class AdaptStack extends cdk.Stack {
               LOG_GROUP: props.logGroup.logGroupName
             }
           })
-        }
+        },
+        "/release": {
+          GET: new AdaptMockFunction({
+            /* Sample requestTemplates when needed
+            requestTemplates: {
+              'application/json': `{
+                   #if( $input.params('userId') == 999999999)
+                          "statusCode" : 404
+                    #else
+                           "statusCode" : 200
+                    #end
+                }`
+            },
+             */
+            //passthroughBehavior is related to the Integration request
+            passthroughBehavior: cdk.aws_apigateway.PassthroughBehavior.NEVER,  //WHEN_NO_MATCH, NEVER, WHEN_NO_TEMPLATES
+            requestTemplates: { // Integration Request Mapping Template
+              'application/json': '{"statusCode": 200}', // Required for the 200 status code to propagate
+            },
+            integrationResponses: [
+              {
+                statusCode: '200',
+                responseTemplates: {
+                  'application/json': JSON.stringify({
+                    releaseDate: RELEASE_DATE + ' EST',
+                    releaseNo: props.version
+                  }),
+                },
+                // Explicitly set CORS headers in the integration response
+                /*
+                 #if( $context.domainName == ${CORS_AccessControlAllowOrigins})
+                                                                                "$context.domainName"
+                                                                          #else
+                                                                                 "'*'"
+                                                                          #end
+                 */
+                responseParameters: {
+                  //'method.response.header.Access-Control-Allow-Origin': "'$context.domainName'",
+                  //'method.response.header.Access-Control-Allow-Origin': `'${CORS_AccessControlAllowOrigins}'`,  //https://dev.api.adaptdata.org
+                  'method.response.header.Access-Control-Allow-Origin': "'*'",
+                  'method.response.header.Access-Control-Allow-Methods': "'GET,OPTIONS'",
+                  //method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+                  'method.response.header.Access-Control-Allow-Headers': "'Content-Type, Accept, Authorization'",  //,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token
+                }
+                /*
+                  headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, PATCH, DELETE",
+                    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+                  }
+                */
+              },
+            ],
+
+          }), // end of MockIntegration
+        },  // end of version
+
       }
     });
     this.restApi = restApi;

@@ -454,19 +454,19 @@
     },
     "REMDW": {
       "label": "Removed to an IAES by school personnel",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by school staff because they have drugs, weapons, or have caused serious injury to someone else."
+      "definition": "A student with disabilities is moved to a temporary educational setting by school staff for disciplinary action involving illegal drugs, weapons, or serious bodily injury to someone else."
     },
     "REMHO": {
       "label": "Removed to an IAES by a hearing officer",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by a Hearing Officer because of a strong chance they could hurt themselves or others."
+      "definition": "A student with disabilities is moved to a temporary educational setting by a Hearing Officer because the student poses an imminent threat to harm him/herself or others."
     },
     "INSCHOOL": {
       "label": "In-School Suspensions",
-      "definition": "A student with disabilities is temporarily taken out of their classroom for discipline but is still supervised by school staff."
+      "definition": "A student with disabilities is temporarily taken out of their classroom for discipline, but remains at his/her assigned school and is supervised by school staff."
     },
     "OUTOFSCHOOL": {
       "label": "Out-of-School Suspensions/Expulsions",
-      "definition": "A student with disabilities is removed from regular school for discipline temporarily, for the rest of the school year, or longer depending on school district policy."
+      "definition": "A student with disabilities is removed from the regular school setting and required to go home or to an alternative school setting for disciplinary reasons."
     },
     "LTOREQ10": {
       "label": "Less than 10 days",
@@ -482,7 +482,7 @@
     },
     "SBI": {
       "label": "Serious bodily injury",
-      "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for causing serious bodily injury that can lead to death or cause severe pain. It may also result in lasting changes in appearance or body functions."
+      "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for causing serious bodily injury to someone else."
     },
     "LTOREQ1": {
       "label": "1 day or less",

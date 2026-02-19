@@ -1,7 +1,7 @@
 {
   "type": "ReportTemplate",
   "id": "ID#childCount",
-  "description": "State-level data on the Individuals with Disabilities Education Act (IDEA) Part B, including an unduplicated count of children with disabilities receiving special education from ages 3 through 21 served by the Office of Special Education Programs (OSEP).",
+  "description": "State-level data on the Individuals with Disabilities Education Act (IDEA) Part B, including an unduplicated count of children with disabilities receiving special education from ages 3 through 21 served by the State.",
   "filters": {
     "ageGroup": {
       "type": "multiselect",
@@ -873,19 +873,7 @@
                         "yAxisValue": "StudentCount"
                       },
                       "dataLabel": "Sex",
-                      "description": {
-                        "template": "The dataset reveals that among children with disabilities receiving special education, ages 3-21, served by OSEP, {{var_1}}% are male and {{var_2}}% are female.",
-                        "variables": {
-                          "var_1": {
-                            "args": ["M"],
-                            "function": "context"
-                          },
-                          "var_2": {
-                            "args": ["F"],
-                            "function": "context"
-                          }
-                        }
-                      },
+                      "description": "The following shows the distribution of children, ages 3-21, with disabilities that are either male or female in your State.",
                       "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
                       "title": "Sex"
                     },

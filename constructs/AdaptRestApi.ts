@@ -1,7 +1,8 @@
-import { AuthorizationType, Cors, LambdaIntegration, MethodDeploymentOptions, RequestAuthorizer, RestApi } from "aws-cdk-lib/aws-apigateway";
+import { AuthorizationType, Cors, LambdaIntegration, MockIntegration, Integration, Resource, MethodDeploymentOptions, RequestAuthorizer, RestApi } from "aws-cdk-lib/aws-apigateway";
 import { AdaptNodeLambda } from "./AdaptNodeLambda";
 import { Construct } from "constructs";
 import { Duration } from "aws-cdk-lib";
+import { AdaptMockFunction } from "./AdaptMockFunction";
 
 type PathPart = string;
 type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -10,8 +11,10 @@ interface AdaptMethodCache {
   enabled?: boolean;
   ttl?: Duration;
 }
+
 type AdaptApiMethod =
   | AdaptNodeLambda
+  | AdaptMockFunction
   | {
       handler: AdaptNodeLambda;
       cache?: AdaptMethodCache;
@@ -107,14 +110,67 @@ export class AdaptRestApi extends Construct {
     const adaptApi = new RestApi(this, "AdaptApi", restAPIParams);
 
     for (const [path, endpoint] of Object.entries(props.endpoints)) {
-      const resource = adaptApi.root.resourceForPath(path);
+
+      //console.log("Process endpoint path: ", path);
+      const resource: Resource = adaptApi.root.resourceForPath(path);
       for (const method in endpoint) {
+
+        //console.log("for Endpoint: ", path, method);
         const lambdaFunction = this.getLambdaFunctionForPath(path, method as Method)!;
-        resource.addMethod(method, new LambdaIntegration(lambdaFunction), lambdaFunction.bypassAuthorizer ? { authorizationType: AuthorizationType.NONE } : {});
+
+        const apiMethod = method as Method;
+        const mockFunction = this._endpoints[path]?.[apiMethod];
+        //console.log("_endpoint: ", path, apiMethod);
+
+        if (lambdaFunction){
+
+          console.log("add Lambda Integration for: ", path, method);
+          resource.addMethod(method, new LambdaIntegration(lambdaFunction), lambdaFunction.bypassAuthorizer ? { authorizationType: AuthorizationType.NONE } : {});
+        }
+        else {
+          //console.log("add Mock Integration for: ", path, apiMethod);
+
+          const mockFunction = this.getMockFunctionForPath(path, apiMethod);
+          //console.log("mockFunction: ", mockFunction);
+
+          if (mockFunction){
+            console.log("Add MockIntegration for endpoint: ", path, method);
+
+            //public addMethod(httpMethod: string, integration?: Integration, options?: MethodOptions): Method
+            resource.addMethod(method, mockFunction,
+              {
+                methodResponses: [
+                  { statusCode: '200',
+                    responseParameters: {
+                      'method.response.header.Access-Control-Allow-Origin': true,
+                      'method.response.header.Access-Control-Allow-Methods': true,
+                      'method.response.header.Access-Control-Allow-Headers': true,
+                    }
+                  },
+                ],
+                authorizationType: AuthorizationType.NONE
+              });
+          }
+
+        }
+
       }
     }
 
     this.api = adaptApi;
+  }
+
+  isMockIntegration(spec: AdaptApiMethod): spec is AdaptMockFunction {
+    //console.log("AdaptMockFunction: ", spec);
+      return typeof spec === "object" && spec !== null && "integrationResponses" in spec;
+  }
+
+  getMockFunctionForPath(path: string, method: Method): AdaptMockFunction | undefined {
+    const spec = this._endpoints[path]?.[method];
+
+    //console.log("Check if mock spec: ", path, method);
+
+    return this.isMockIntegration(spec) ? spec : undefined;
   }
 
   isConfiguredMethod(x: AdaptApiMethod): x is { handler: AdaptNodeLambda; cache?: AdaptMethodCache } {
@@ -123,7 +179,13 @@ export class AdaptRestApi extends Construct {
 
   getLambdaFunctionForPath(path: string, method: Method): AdaptNodeLambda | undefined {
     const spec = this._endpoints[path]?.[method];
-    if (!spec) return undefined;
+
+    //console.log("AdaptNodeLambda: ", method, path);
+    if (!spec || spec instanceof AdaptMockFunction){
+      console.log("Not a Lambda function for path: ", path, method);
+      return undefined;
+    }
+
     return this.isConfiguredMethod(spec) ? spec.handler : spec;
   }
 
