@@ -78,7 +78,7 @@ class fS175Transformer(fileTransformer):
 
         # Initialize 'CategorySetCode' column
         pysparkDF = pysparkDF.withColumn("CategorySetCode", lit(""))
-        pysparkDF = pysparkDF.withColumn("ReportCode", lit("c175"))
+        pysparkDF = pysparkDF.withColumn("ReportCode", lit("175"))
         pysparkDF = pysparkDF.withColumn("ReportYear", lit(year.split("-")[1]))
         # Set the level
 

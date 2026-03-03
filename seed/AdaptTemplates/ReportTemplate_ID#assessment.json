@@ -24,7 +24,7 @@
                     "assessmentcount",
                     {
                       "field": "ReportCode",
-                      "value": "c188"
+                      "value": "188"
                     },
                     {
                       "field": "CategorySetCode",
@@ -56,7 +56,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c178"
+                          "value": "178"
                         },
                         {
                           "field": "CategorySetCode",
@@ -81,7 +81,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c178"
+                          "value": "178"
                         },
                         {
                           "field": "CategorySetCode",
@@ -113,7 +113,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c188"
+                          "value": "188"
                         },
                         {
                           "field": "CategorySetCode",
@@ -137,7 +137,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c188"
+                          "value": "188"
                         },
                         {
                           "field": "CategorySetCode",
@@ -161,7 +161,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c188"
+                          "value": "188"
                         },
                         {
                           "field": "CategorySetCode",
@@ -251,7 +251,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c178"]
+                      "value": ["178"]
                     },
                     {
                       "type": "string",
@@ -310,7 +310,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c178"]
+                      "value": ["178"]
                     },
                     {
                       "type": "string",
@@ -382,7 +382,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c178"]
+                      "value": ["178"]
                     },
                     {
                       "type": "string",
@@ -489,7 +489,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c188"]
+                      "value": ["188"]
                     },
                     {
                       "type": "string",
@@ -570,7 +570,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c188"]
+                      "value": ["188"]
                     },
                     {
                       "type": "string",
@@ -630,7 +630,7 @@
                     "assessmentcount",
                     {
                       "field": "ReportCode",
-                      "value": "c185"
+                      "value": "185"
                     },
                     {
                       "field": "CategorySetCode",
@@ -662,7 +662,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c175"
+                          "value": "175"
                         },
                         {
                           "field": "CategorySetCode",
@@ -687,7 +687,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c175"
+                          "value": "175"
                         },
                         {
                           "field": "CategorySetCode",
@@ -719,7 +719,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c185"
+                          "value": "185"
                         },
                         {
                           "field": "CategorySetCode",
@@ -743,7 +743,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c185"
+                          "value": "185"
                         },
                         {
                           "field": "CategorySetCode",
@@ -767,7 +767,7 @@
                         },
                         {
                           "field": "ReportCode",
-                          "value": "c185"
+                          "value": "185"
                         },
                         {
                           "field": "CategorySetCode",
@@ -857,7 +857,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c175"]
+                      "value": ["175"]
                     },
                     {
                       "type": "string",
@@ -916,7 +916,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c175"]
+                      "value": ["175"]
                     },
                     {
                       "type": "string",
@@ -989,7 +989,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c175"]
+                      "value": ["175"]
                     },
                     {
                       "type": "string",
@@ -1096,7 +1096,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c185"]
+                      "value": ["185"]
                     },
                     {
                       "type": "string",
@@ -1177,7 +1177,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c185"]
+                      "value": ["185"]
                     },
                     {
                       "type": "string",

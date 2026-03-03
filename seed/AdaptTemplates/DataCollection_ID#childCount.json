@@ -56,7 +56,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = 'c089' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '089' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "previewHeaders": [
         "File Record Number",
@@ -91,7 +91,7 @@
       "name": "FS002 - Children with Disabilities (IDEA) School Age",
       "description": "The unduplicated number of children with disabilities (IDEA) who are ages 5 (in kindergarten) through 21 and receiving special education and related service according to an individualized education program (IEP) or a services plan in place on the state's child count date.",
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = 'c002' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '002' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "previewHeaders": [
         "File Record Number",

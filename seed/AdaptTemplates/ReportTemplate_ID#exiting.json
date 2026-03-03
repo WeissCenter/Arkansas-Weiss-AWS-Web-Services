@@ -315,7 +315,7 @@
                     {
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["C009", "c009"]
+                      "value": ["009", "009"]
                     },
                     {
                       "field": "CategorySetCode",
@@ -341,7 +341,7 @@
                         {
                           "array": true,
                           "field": "ReportCode",
-                          "value": ["C009", "c009"]
+                          "value": ["009", "009"]
                         },
                         {
                           "field": "CategorySetCode",
@@ -368,7 +368,7 @@
                         {
                           "array": true,
                           "field": "ReportCode",
-                          "value": ["C009", "c009"]
+                          "value": ["009", "009"]
                         },
                         {
                           "field": "CategorySetCode",
@@ -428,7 +428,7 @@
                       "type": "string",
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["C009", "c009"]
+                      "value": ["009", "009"]
                     },
                     {
                       "type": "string",
@@ -449,7 +449,7 @@
                   {
                     "array": true,
                     "field": "ReportCode",
-                    "value": ["C009", "c009"]
+                    "value": ["009", "009"]
                   }
                 ],
                 "function": "SUM"

@@ -49,7 +49,7 @@
         "explanation",
         "infantsAndToddlersCount"
       ],
-      "report_code": "c901",
+      "report_code": "901",
       "included_in_all": ["reasonForNoLongerReceivingServices"],
       "category_conditions": {
         "CSA": ["racialEthnic"],

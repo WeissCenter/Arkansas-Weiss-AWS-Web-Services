@@ -139,7 +139,7 @@
                     "infantsAndToddlersCount",
                     {
                       "field": "ReportCode",
-                      "value": "c901"
+                      "value": "901"
                     },
                     {
                       "field": "CategorySetCode",
@@ -279,7 +279,7 @@
                     {
                       "type": "string",
                       "field": "ReportCode",
-                      "value": "c901"
+                      "value": "901"
                     }
                   ],
                   "function": "GROUPBY"
@@ -294,7 +294,7 @@
                   },
                   {
                     "field": "ReportCode",
-                    "value": "c901"
+                    "value": "901"
                   }
                 ],
                 "function": "SUM"
@@ -312,7 +312,7 @@
                     "infantsandtoddlerscount",
                     {
                       "field": "ReportCode",
-                      "value": "c901"
+                      "value": "901"
                     }
                   ],
                   "function": "sum"

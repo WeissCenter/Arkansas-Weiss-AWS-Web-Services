@@ -286,7 +286,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c006"
+                          "value": "006"
                         },
                         {
                           "type": "string",
@@ -315,7 +315,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c006"
+                          "value": "006"
                         },
                         {
                           "type": "string",
@@ -383,7 +383,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "ReportCode",
-                                "value": ["c006"]
+                                "value": ["006"]
                               },
                               {
                                 "type": "string",
@@ -461,7 +461,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "ReportCode",
-                                "value": ["c006"]
+                                "value": ["006"]
                               },
                               {
                                 "type": "string",
@@ -523,7 +523,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c143"
+                          "value": "143"
                         },
                         {
                           "type": "string",
@@ -547,7 +547,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c088"
+                          "value": "088"
                         },
                         {
                           "type": "string",
@@ -624,7 +624,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c143"
+                                "value": "143"
                               },
                               {
                                 "type": "string",
@@ -696,7 +696,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c088"
+                                "value": "088"
                               },
                               {
                                 "type": "string",
@@ -753,7 +753,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c005"
+                          "value": "005"
                         },
                         {
                           "type": "string",
@@ -777,7 +777,7 @@
                         {
                           "type": "string",
                           "field": "ReportCode",
-                          "value": "c007"
+                          "value": "007"
                         },
                         {
                           "type": "string",
@@ -844,7 +844,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c005"
+                                "value": "005"
                               },
                               {
                                 "type": "string",
@@ -916,7 +916,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c007"
+                                "value": "007"
                               },
                               {
                                 "type": "string",
@@ -967,7 +967,7 @@
                     {
                       "type": "string",
                       "field": "ReportCode",
-                      "value": "c144"
+                      "value": "144"
                     }
                   ],
                   "function": "unfilteredSum"
@@ -1020,7 +1020,7 @@
                     {
                       "type": "string",
                       "field": "ReportCode",
-                      "value": "c144"
+                      "value": "144"
                     }
                   ],
                   "function": "GROUPBY"

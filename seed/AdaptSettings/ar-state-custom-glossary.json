@@ -560,15 +560,15 @@
       "label": "Not qualified",
       "definition": "This means a staff person does not have the necessary training to provide academic and functional support for students with disabilities, under the direction of other certified or qualified staff. This staff person may be a Related Service Assistant is an individual who provides a related service—such as a Speech-Language Pathology Assistant (SLPA), Certified Occupational Therapy Assistant (COTA), Physical Therapist Assistant (PTA), Registered Behavior Technician (RBT), or Paraprofessional—under the supervision of the corresponding Certified Related Service Professional or Certified Teacher. These individuals do not independently design or interpret evaluations, plans, or instructional interventions, but support the implementation of services as directed."
     },
-    "c009-D": {
+    "009-D": {
       "label": "Died",
       "definition": "This means a student with a disability left special education because they die."
     },
-    "c007-D": {
+    "007-D": {
       "label": "Drugs",
       "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for the possession of an illegal drug on school premises."
     },
-    "c901-D": {
+    "901-D": {
       "label": "Died",
       "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they passed away."
     },
@@ -696,7 +696,7 @@
       "label": "Non-English learner",
       "definition": "Someone whose primary language is English"
     },
-    "c143-N": {
+    "143-N": {
       "label": "Disciplinary Removals",
       "definition": "This refers to the number of times a student with disabilities is removed from their regular school program for disciplinary reasons. This includes suspensions, expulsions, or placement in another educational setting. Disciplinary removals may occur for a range of behaviors and include situations involving weapons, causing serious bodily injury to another person, or repeated incidents of violent or abusive behavior."
     }

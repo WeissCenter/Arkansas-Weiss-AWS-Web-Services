@@ -94,12 +94,12 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c175' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '175' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in mathematics and received a valid score.",
       "included_in_all": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"],
       "name": "FS175 - Academic Achievement in Mathematics",
-      "report_code": "c175",
+      "report_code": "175",
       "report_levels": {
         "lea": "LEA STUDENT PERFORMANCE MATH",
         "sch": "SCHOOL STUDENT PERFORMANCE MATH",
@@ -159,12 +159,12 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c178' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '178' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in reading/language arts and received a valid score.",
       "included_in_all": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"],
       "name": "FS178 - Academic Achievement in Reading/Language Arts",
-      "report_code": "c178",
+      "report_code": "178",
       "report_levels": {
         "lea": "LEA STUDENT PERFORMANCE READING LANGUAGE ARTS",
         "sch": "SCHOOL STUDENT PERFORMANCE READING LANGUAGE ARTS",
@@ -224,7 +224,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c185' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '185' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in mathematics.",
       "included_in_all": ["assessmentregistrationparticipationindicator", "gradelevel"],
@@ -254,7 +254,7 @@
         "explanation",
         "assessmentcount"
       ],
-      "report_code": "c185",
+      "report_code": "185",
       "report_levels": {
         "lea": "LEA MATH ASSESSMENT PARTICIPATION",
         "sch": "SCHOOL MATH ASSESSMENT PARTICIPATION",
@@ -314,7 +314,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = 'c188' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '188' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in reading/language arts.",
       "included_in_all": ["gradelevel", "assessmentregistrationparticipationindicator"],
@@ -344,7 +344,7 @@
         "explanation",
         "assessmentcount"
       ],
-      "report_code": "c188",
+      "report_code": "188",
       "report_levels": {
         "lea": "LEA RLA ASSESSMENT PARTICIPATION",
         "sch": "SCHOOL RLA ASSESSMENT PARTICIPATION",
