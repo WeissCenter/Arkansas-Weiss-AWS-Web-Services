@@ -21,11 +21,11 @@
           },
           {
             "label": "Preschool Age 3 through 5 (not in kindergarten)",
-            "value": "c089"
+            "value": "089"
           },
           {
             "label": "School Age 5 (in kindergarten) through 21",
-            "value": "c002"
+            "value": "002"
           }
         ]
       },
@@ -600,7 +600,7 @@
                     {
                       "array": true,
                       "field": "ReportCode",
-                      "value": ["c089", "c002"]
+                      "value": ["089", "002"]
                     },
                     {
                       "type": "string",
@@ -623,7 +623,7 @@
                         {
                           "array": true,
                           "field": "ReportCode",
-                          "value": ["c089", "c002"]
+                          "value": ["089", "002"]
                         },
                         {
                           "type": "string",
@@ -647,7 +647,7 @@
                         {
                           "array": true,
                           "field": "ReportCode",
-                          "value": ["c089", "c002"]
+                          "value": ["089", "002"]
                         },
                         {
                           "type": "string",
@@ -715,7 +715,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "ReportCode",
-                                "value": ["c002", "c089"]
+                                "value": ["002", "089"]
                               },
                               {
                                 "type": "string",
@@ -788,7 +788,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "ReportCode",
-                                "value": ["c002", "c089"]
+                                "value": ["002", "089"]
                               },
                               {
                                 "type": "string",
@@ -855,7 +855,7 @@
                                 "type": "string",
                                 "array": true,
                                 "field": "ReportCode",
-                                "value": ["c002", "c089"]
+                                "value": ["002", "089"]
                               },
                               {
                                 "type": "string",
@@ -903,7 +903,7 @@
                     "StudentCount",
                     {
                       "field": "ReportCode",
-                      "value": "c089"
+                      "value": "089"
                     },
                     {
                       "field": "CategorySetCode",
@@ -924,7 +924,7 @@
                         3,
                         {
                           "field": "ReportCode",
-                          "value": "c089"
+                          "value": "089"
                         }
                       ],
                       "function": "top_disabilities_percentages"
@@ -942,7 +942,7 @@
                         3,
                         {
                           "field": "ReportCode",
-                          "value": "c089"
+                          "value": "089"
                         }
                       ],
                       "function": "bottom_disabilities_percentages"
@@ -1013,7 +1013,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c089"
+                                "value": "089"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1087,7 +1087,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c089"
+                                "value": "089"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1161,7 +1161,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c089"
+                                "value": "089"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1241,7 +1241,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c089"
+                                "value": "089"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1316,7 +1316,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c089"
+                                "value": "089"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1364,7 +1364,7 @@
                     "StudentCount",
                     {
                       "field": "ReportCode",
-                      "value": "c002"
+                      "value": "002"
                     },
                     {
                       "field": "CategorySetCode",
@@ -1385,7 +1385,7 @@
                         3,
                         {
                           "field": "ReportCode",
-                          "value": "c002"
+                          "value": "002"
                         },
                         {
                           "field": "CategorySetCode",
@@ -1407,7 +1407,7 @@
                         3,
                         {
                           "field": "ReportCode",
-                          "value": "c002"
+                          "value": "002"
                         },
                         {
                           "field": "CategorySetCode",
@@ -1482,7 +1482,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c002"
+                                "value": "002"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1556,7 +1556,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c002"
+                                "value": "002"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1630,7 +1630,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c002"
+                                "value": "002"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1710,7 +1710,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c002"
+                                "value": "002"
                               },
                               {
                                 "field": "CategorySetCode",
@@ -1785,7 +1785,7 @@
                               {
                                 "type": "string",
                                 "field": "ReportCode",
-                                "value": "c002"
+                                "value": "002"
                               },
                               {
                                 "field": "CategorySetCode",

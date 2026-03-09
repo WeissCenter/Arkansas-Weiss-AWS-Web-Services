@@ -166,7 +166,7 @@
                         {
                           "type": "string",
                           "field": "reportcode",
-                          "value": "c070"
+                          "value": "070"
                         },
                         {
                           "type": "string",
@@ -195,7 +195,7 @@
                         {
                           "type": "string",
                           "field": "reportcode",
-                          "value": "c112"
+                          "value": "112"
                         },
                         {
                           "type": "string",
@@ -267,7 +267,7 @@
                               {
                                 "type": "string",
                                 "field": "reportcode",
-                                "value": "c070"
+                                "value": "070"
                               },
                               {
                                 "type": "string",
@@ -339,7 +339,7 @@
                               {
                                 "type": "string",
                                 "field": "reportcode",
-                                "value": "c112"
+                                "value": "112"
                               },
                               {
                                 "type": "string",
@@ -569,7 +569,7 @@
                     {
                       "type": "string",
                       "field": "reportcode",
-                      "value": "c099"
+                      "value": "099"
                     },
                     {
                       "type": "string",
@@ -599,5 +599,5 @@
     }
   ],
   "suppression": {},
-  "title": "IDEA Personnel for State level"
+  "title": "IDEA Personnel for State Level"
 }

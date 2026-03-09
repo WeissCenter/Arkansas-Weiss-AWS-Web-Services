@@ -80,12 +80,12 @@
         "StudentCount"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = 'c009' and LOWER(ReportLevel) = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = '009' and LOWER(ReportLevel) = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
       "included_in_all": ["specialeducationexitreason"],
       "name": "FS009 - Children with Disabilities (IDEA) Exiting Special Education",
-      "report_code": "c009",
+      "report_code": "009",
       "report_levels": {
         "lea": "LEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED",
         "sea": "SEA CHILDREN WITH DISAB (IDEA) EXITING SPEC ED"

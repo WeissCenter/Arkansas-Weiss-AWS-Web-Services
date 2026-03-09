@@ -64,12 +64,12 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c070' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '070' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) special education teachers employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],
       "name": "FS070 - Special Education Teachers (FTE)",
-      "report_code": "c070",
+      "report_code": "070",
       "report_levels": {
         "lea": "LEA SPECIAL EDUCATION TEACHER",
         "sea": "SEA SPECIAL EDUCATION TEACHER"
@@ -101,12 +101,12 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c099' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '099' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) related services personnel employed or contracted to provide related services for children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],
       "name": "FS099 - Special Education Related Services Personnel",
-      "report_code": "c099",
+      "report_code": "099",
       "report_levels": {
         "lea": "LEA SPECIAL EDUCATION PERSONNEL",
         "sea": "SEA SPECIAL EDUCATION PERSONNEL"
@@ -139,12 +139,12 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = 'c112' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '112' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "description": "The number of full-time equivalent (FTE) paraprofessionals employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],
       "name": "FS112 - Special Education Paraprofessionals",
-      "report_code": "c112",
+      "report_code": "112",
       "report_levels": {
         "lea": "LEA SPECIAL ED PARAPROFESSIONALS",
         "sea": "SEA SPECIAL ED PARAPROFESSIONALS"

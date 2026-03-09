@@ -560,15 +560,15 @@
       "label": "Not qualified",
       "definition": "This means a staff person does not have the necessary training to provide academic and functional support for students with disabilities, under the direction of other certified or qualified staff."
     },
-    "c009-D": {
+    "009-D": {
       "label": "Died",
       "definition": "This means a student with a disability left special education because they die."
     },
-    "c007-D": {
+    "007-D": {
       "label": "Drugs",
       "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for the possession of an illegal drug on school premises."
     },
-    "c901-D": {
+    "901-D": {
       "label": "Died",
       "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they passed away."
     },
@@ -696,7 +696,7 @@
       "label": "Non-English learner",
       "definition": "Someone whose primary language is English"
     },
-    "c143-N": {
+    "143-N": {
       "label": "Disciplinary Removals",
       "definition": "This refers to the number of times a student with disabilities is removed from their regular school program for any type of disciplinary reason. This includes any instance where the student is suspended, expelled, or placed in a different educational setting as a result of disciplinary actions."
     }

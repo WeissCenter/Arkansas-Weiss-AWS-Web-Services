@@ -1,5 +1,5 @@
 export enum ReportCode {
-  FS002 = "c002",
-  FS029 = "c029",
-  FS089 = "c089"
+  FS002 = "002",
+  FS029 = "029",
+  FS089 = "089"
 }

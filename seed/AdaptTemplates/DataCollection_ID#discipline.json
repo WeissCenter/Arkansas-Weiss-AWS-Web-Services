@@ -49,7 +49,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c005' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '005' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) DISCIPLINE",
@@ -78,7 +78,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c005",
+      "report_code": "005",
       "included_in_all": ["ideainterimremoval"],
       "category_conditions": {
         "CSA": ["ideadisabilitytype"],
@@ -98,7 +98,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c006' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '006' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
@@ -127,7 +127,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c006",
+      "report_code": "006",
       "included_in_all": ["disciplinemethodofchildrenwithdisabilities", "removallength"],
       "category_conditions": {
         "CSA": ["ideadisabilitytype"],
@@ -147,7 +147,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c007' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '007' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) REMOVAL",
@@ -176,7 +176,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c007",
+      "report_code": "007",
       "included_in_all": ["ideainterimremovalreason"],
       "category_conditions": {
         "CSA": ["ideadisabilitytype"],
@@ -196,7 +196,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c088' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '088' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT",
@@ -218,7 +218,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c088",
+      "report_code": "088",
       "included_in_all": ["removallength"],
       "category_conditions": {
         "CSA": ["ideadisabilitytype"],
@@ -238,7 +238,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c143' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '143' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL",
@@ -260,7 +260,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c143",
+      "report_code": "143",
       "included_in_all": [],
       "category_conditions": {
         "CSA": ["ideadisabilitytype"],
@@ -280,7 +280,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = 'c144' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '144' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
       },
       "report_levels": {
         "sea": "SEA EDUCATIONAL SERVICES",
@@ -300,7 +300,7 @@
         "explanation",
         "disciplinecount"
       ],
-      "report_code": "c144",
+      "report_code": "144",
       "included_in_all": [],
       "category_conditions": {
         "CSA": ["ideadisabilitytype", "educationalservicesafterremoval"]
