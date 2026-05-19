@@ -1,7 +1,7 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
 // eslint-disable-next-line @nx/enforce-module-boundaries
 
-import { DynamoDBClient, UpdateItemInput } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, UpdateItemInput, UpdateItemOutput } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { randomUUID } from "crypto";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
@@ -31,7 +31,7 @@ const cloudwatch = new CloudWatchLogsClient({ region: "us-east-1" });
 
 export const handler: Handler = async (event: APIGatewayEvent, context: Context) => {
   const { username } = getUserDataFromEvent(event);
-
+  let updateReportRes = {};
   try {
     if (!event?.body) {
       return CreateBackendErrorResponse(400, "Missing body");
@@ -136,12 +136,14 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       if (finalizedVersion) await deleteFinalizedVersion(db, finalizedVersion, date);
 
       //const [draftResult, draftAudit] = await handleDraftReport(db, cursor, updateReportItem, lang);
-      await updateDraftReport(db, cursor, updateReportItem, lang);
+      const updatedReport = await updateDraftReport(db, cursor, updateReportItem, lang);
+      // console.log(updatedReport as UpdateItemOutput);
+      updateReportRes = updatedReport?.Attributes || {};
     }
 
     await aws_LogEvent(cloudwatch, process.env.LOG_GROUP || "", logStream, username, EventType.CREATE, `Report: ${body.reportID} was edited and new draft version was created`);
 
-    return CreateBackendResponse(200);
+    return CreateBackendResponse(200, updateReportRes);
   } catch (err) {
     console.log(err);
     return CreateBackendErrorResponse(500, "Failed to edit report");
@@ -158,7 +160,7 @@ function updateDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem
       type: "Report",
       id: `ID#${body.reportID}#Version#draft${lang ? `#Lang#${lang}` : ""}`
     },
-    ReturnValues: "ALL_NEW",
+    ReturnValues: "ALL_NEW" as const,
     ...createUpdateItemFromObject(updateReportItem)
   };
 
@@ -176,7 +178,7 @@ function updateDraftReport(db: DynamoDBDocument, body: IReport, updateReportItem
   await db.update(updateAuditReport);
 
    */
-
+  
   return db.update(updateReportParams);
   //return Promise.all([db.update(updateReportParams), db.update(updateAuditReport)]);
 }

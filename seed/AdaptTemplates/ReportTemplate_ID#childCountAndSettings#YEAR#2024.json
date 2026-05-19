@@ -584,7 +584,17 @@
                       ]
                     }
                   ],
-                  "function": "GROUPBY"
+                  "function": "GROUPBY",
+                  "metadata": {
+                    "filterOptions": [
+                      "Birth to 1",
+                      "1 to 2",
+                      "2 to 3",
+                      "3 to 4",
+                      "4 to 5",
+                      "5 or Older"
+                    ]
+                  }
                 }
               ],
               "filterBy": "age",
