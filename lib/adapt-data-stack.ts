@@ -1,7 +1,7 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { AdaptStackProps } from "./adpat-stack-props";
-import { Database, Job, JobExecutable, Code, GlueVersion, PythonVersion, WorkerType } from "@aws-cdk/aws-glue-alpha";
+import { Database, PySparkEtlJob, Code, GlueVersion, WorkerType } from "@aws-cdk/aws-glue-alpha";
 import { CfnCrawler } from "aws-cdk-lib/aws-glue";
 import { HttpMethods } from "aws-cdk-lib/aws-s3";
 import { AdaptS3Bucket } from "../constructs/AdaptS3Bucket";
@@ -34,8 +34,8 @@ export class AdaptDataStack extends cdk.Stack {
   reportDataBucket: AdaptS3Bucket;
   dataCatalog: Database;
   renderTemplateServiceFunction: AdaptNodeLambda;
-  dataPullJob: Job;
-  publishJob: Job;
+  dataPullJob: PySparkEtlJob;
+  publishJob: PySparkEtlJob;
   dataSourceGlueRole: Role;
   suppressionServiceFunctionName: string;
   loggingStatement: PolicyStatement;
@@ -215,16 +215,13 @@ export class AdaptDataStack extends cdk.Stack {
     //   }
     // );
 
-    const adaptDataPullJob = new Job(this, `${id}-AdaptDataPullJob`, {
+    const adaptDataPullJob = new PySparkEtlJob(this, `${id}-AdaptDataPullJob`, {
       jobName: `${id}-AdaptDataPullJob`,
       role: dataSourceGlueRole,
       maxRetries: 0,
       maxConcurrentRuns: 5,
-      executable: JobExecutable.pythonEtl({
-        glueVersion: GlueVersion.V4_0,
-        pythonVersion: PythonVersion.THREE,
-        script: Code.fromBucket(assetsBucket, `scripts/dataPull.py`)
-      }),
+      glueVersion: GlueVersion.V4_0,
+      script: Code.fromBucket(assetsBucket, `scripts/dataPull.py`),
       defaultArguments: {
         "--extra-py-files": `s3://${assetsBucket.bucketName}/libs/${cdk.Fn.select(0, uploadedDataPullLibObject.objectKeys)}`,
         "--additional-python-modules": "sql-metadata,lxml,beautifulsoup4",
@@ -233,27 +230,23 @@ export class AdaptDataStack extends cdk.Stack {
         "--table-name": props.dynamoTables["dataSourceTable"].tableName,
         "--templates-table-name": props.dynamoTables["templatesTable"].tableName,
         "--settings-table-name": props.dynamoTables["settingsTable"].tableName,
-        "--data-staging-s3": stagingBucket.bucketName, // change to stage bucket eventually
+        "--data-staging-s3": stagingBucket.bucketName,
         "--data-pull-crawler": adaptDataPullCrawler.name || `${id}-adapt-data-catalog`,
         "--user": "default"
       },
       workerType: WorkerType.STANDARD,
-      workerCount: 2
+      numberOfWorkers: 2
     });
     this.dataPullJob = adaptDataPullJob;
 
-    const adaptPublishReportJob = new Job(this, `${id}-AdaptPublishReportJob`, {
+    const adaptPublishReportJob = new PySparkEtlJob(this, `${id}-AdaptPublishReportJob`, {
       jobName: `${id}-AdaptPublishReportJob`,
       role: dataSourceGlueRole,
       maxRetries: 0,
       maxConcurrentRuns: 5,
-      executable: JobExecutable.pythonEtl({
-        glueVersion: GlueVersion.V4_0,
-        pythonVersion: PythonVersion.THREE,
-        script: Code.fromBucket(assetsBucket, `scripts/publish.py`)
-      }),
+      glueVersion: GlueVersion.V4_0,
+      script: Code.fromBucket(assetsBucket, `scripts/publish.py`),
       defaultArguments: {
-        // "--extra-py-files": `s3://${assetsBucket.bucketName}/libs/${cdk.Fn.select(0,uploadedReportPublishLibObject.objectKeys)}`,
         "--additional-python-modules": "sql-metadata,numpy,dar-tool==1.0.6,pandas",
         "--data-pull-s3": repositoryBucket.bucketName,
         "--report-id": "default",
@@ -264,8 +257,8 @@ export class AdaptDataStack extends cdk.Stack {
         "--published-report-data-crawler": adaptReportCrawler.name!,
         "--user": "default"
       },
-      workerType: WorkerType.G_1X,
-      workerCount: 2
+      workerType: WorkerType.R_2X,
+      numberOfWorkers: 2
     });
     this.publishJob = adaptPublishReportJob;
 

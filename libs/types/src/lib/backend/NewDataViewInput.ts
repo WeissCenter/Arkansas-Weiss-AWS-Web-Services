@@ -8,6 +8,7 @@ export interface NewDataViewInput {
   description: string;
   type?: "collection" | "file" | "database";
   dataViewType?: "collection" | "file" | "database";
+  reportingYear?: string;
   data: DBDataViewDataCollection;
 }
 

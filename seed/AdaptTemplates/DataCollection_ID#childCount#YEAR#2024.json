@@ -1,0 +1,110 @@
+{
+  "type": "DataCollection",
+  "id": "ID#childCount#YEAR#2024",
+  "dataCollectionId": "childCount",
+  "reportingYear": "2024",
+  "name": "Child Count for State Level",
+  "dataViewDescription": "For creating Child Count (Part B) reports, States/entities are required to report the Child Count data under Title 1, Part A, Subsection 618 of IDEA.",
+  "fields": [
+    {
+      "type": "select",
+      "id": "reportingLevel",
+      "label": "For what reporting level?",
+      "options": [
+        {
+          "label": "SEA (State Education Agency)",
+          "value": "SEA (State Education Agency)"
+        },
+        {
+          "label": "LEA (Local Education Agency)",
+          "value": "LEA (Local Education Agency)"
+        }
+      ],
+      "required": true,
+      "shortLabel": "Reporting level"
+    }
+  ],
+  "files": [
+    {
+      "id": "FS089",
+      "acceptedFileFormats": {
+        "fieldAccept": ".csv",
+        "fileInputHint": "Only CSV files are accepted."
+      },
+      "name": "FS089 - Children with Disabilities (IDEA) Early Childhood",
+      "description": "The unduplicated number of children with disabilities (IDEA) who are ages 3 through 5 and not in kindergarten and receiving special education and related service according to an individualized education program (IEP), an individualized family service plan (IFSP), or a services plan in place on the state's child count date.",
+      "conditions": [
+        {
+          "field": "scopeLevel",
+          "operation": "neq",
+          "value": "SCH"
+        }
+      ],
+      "database": {
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '089' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+      },
+      "previewHeaders": [
+        "File Record Number",
+        "State Code",
+        "State Agency Number",
+        "LEA Identifier (State)",
+        "Filler",
+        "Table Name",
+        "Racial Ethnic",
+        "Sex (Membership)",
+        "Age (Early Childhood)",
+        "English Learner Status (Both)",
+        "Disability Category (IDEA)",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Educational Environment (IDEA) EC",
+        "Total Indicator",
+        "Explanation",
+        "Student Count"
+      ],
+      "validation": "FS089"
+    },
+    {
+      "id": "FS002",
+      "acceptedFileFormats": {
+        "fieldAccept": ".csv",
+        "fileInputHint": "Only CSV files are accepted."
+      },
+      "name": "FS002 - Children with Disabilities (IDEA) School Age",
+      "description": "The unduplicated number of children with disabilities (IDEA) who are ages 5 (in kindergarten) through 21 and receiving special education and related service according to an individualized education program (IEP) or a services plan in place on the state's child count date.",
+      "database": {
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '002' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+      },
+      "previewHeaders": [
+        "File Record Number",
+        "State Code",
+        "State Agency Number",
+        "LEA Identifier (State)",
+        "School Identifier (State)",
+        "Table Name",
+        "Filler",
+        "RACE",
+        "SEX",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Filler",
+        "Filler",
+        "IDEADISABILITYTYPE",
+        "Filler",
+        "Filler",
+        "AGE",
+        "IDEAEDUCATIONALENVIRONMENTFORSCHOOLAGE",
+        "ENGLISHLEARNERSTATUS",
+        "TotalIndicator",
+        "Explanation",
+        "StudentCount"
+      ],
+      "validation": "FS002"
+    }
+  ]
+}

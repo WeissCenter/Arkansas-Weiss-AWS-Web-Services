@@ -36,7 +36,12 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
         return CreateBackendErrorResponse(400, "data view type is not supported by validation");
       }
 
-      const collection = await getDataCollectionTemplate(db, TEMPLATE_TABLE, item.data.id);
+      let collectionID = item.data.id;
+      if (item.reportingYear) {
+        collectionID = `${collectionID}#YEAR#${item.reportingYear}`;
+      }
+        
+      const collection = await getDataCollectionTemplate(db, TEMPLATE_TABLE, collectionID); // FIXME: this needs the year with the ID
 
       if (!collection) {
         return CreateBackendErrorResponse(404, "collection not found");
@@ -95,7 +100,7 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
             return acc;
           }, {} as Record<string, any>);
           
-          const errors = validate(toValidate, validationItem, validationContext);
+          const errors = validate(toValidate, validationItem, {reportingYear: item.reportingYear || "", ...validationContext});
 
           console.log("VALIDATION ITEM", validationItem);
           console.log("ERRORS", errors);

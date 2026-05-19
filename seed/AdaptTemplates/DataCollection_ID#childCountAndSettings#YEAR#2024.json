@@ -1,0 +1,266 @@
+{
+  "type": "DataCollection",
+  "id": "ID#childCountAndSettings#YEAR#2024",
+  "dataCollectionId": "childCountAndSettings",
+  "reportingYear": "2024",
+  "name": "Child Count and Settings",
+  "dataViewDescription": "IDEA Part C Child Count and Settings provides the unduplicated number of infants and toddlers, who are ages birth through 2 or older who received early intervention services.",
+  "fields": [
+    {
+      "type": "select",
+      "id": "reportingLevel",
+      "label": "For what reporting level?",
+      "options": [
+        {
+          "label": "SEA (State Education Agency)",
+          "value": "SEA (State Education Agency)"
+        },
+        {
+          "label": "LEA (Local Education Agency)",
+          "value": "LEA (Local Education Agency)"
+        }
+      ],
+      "required": true,
+      "shortLabel": "Reporting level"
+    }
+  ],
+  "files": [
+    {
+      "id": "partCHTML",
+      "name": "IDEA Part C - Child Count and Settings",
+      "description": "The unduplicated number of infants and toddlers who are ages birth through 2 or older, who received early intervention services.",
+      "acceptedFileFormats": {
+        "fileInputHint": "Only HTML files are accepted.",
+        "fieldAccept": ".html"
+      },
+      "database": {
+        "query": ""
+      },
+      "previewHeaders": [],
+      "validation": "childCountAndSettings",
+      "dataParse": {
+        "from": "html",
+        "config": {
+          "header": ["section", "gender", "race", "age", "setting", "value", "comment", "acknowledgement"],
+          "groups": [
+            {
+              "id": "A",
+              "rowMapping": [
+                {
+                  "field": "age",
+                  "index": 3
+                },
+                {
+                  "field": "home",
+                  "children": [
+                    {
+                      "label": "home",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "community",
+                  "children": [
+                    {
+                      "label": "community",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "other",
+                  "children": [
+                    {
+                      "label": "other",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "total",
+                  "children": [
+                    {
+                      "label": "total",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "B",
+              "rowMapping": [
+                {
+                  "field": "race",
+                  "index": 2
+                },
+                {
+                  "field": "home",
+                  "children": [
+                    {
+                      "label": "home",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "community",
+                  "children": [
+                    {
+                      "label": "community",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "other",
+                  "children": [
+                    {
+                      "label": "other",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                },
+                {
+                  "field": "total",
+                  "children": [
+                    {
+                      "label": "total",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "C",
+              "rowMapping": [
+                {
+                  "field": "gender",
+                  "index": 1
+                },
+                {
+                  "field": "total",
+                  "children": [
+                    {
+                      "label": "total",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "D",
+              "rowMapping": [
+                {
+                  "field": "race",
+                  "index": 2
+                },
+                {
+                  "field": "total",
+                  "index": 5,
+                  "children": [
+                    {
+                      "label": "total",
+                      "index": 3
+                    },
+                    {
+                      "label": "total",
+                      "index": 4
+                    }
+                  ],
+                  "value": true
+                },
+                {
+                  "field": "birth_1",
+                  "index": 5,
+                  "children": [
+                    {
+                      "label": "Birth to 1",
+                      "index": 3
+                    },
+                    {
+                      "label": "age_total",
+                      "index": 4
+                    }
+                  ],
+                  "value": true
+                },
+                {
+                  "field": "one_two",
+                  "index": 5,
+                  "children": [
+                    {
+                      "label": "1 to 2",
+                      "index": 3
+                    },
+                    {
+                      "label": "age_total",
+                      "index": 4
+                    }
+                  ],
+                  "value": true
+                },
+                {
+                  "field": "two_three",
+                  "index": 5,
+                  "children": [
+                    {
+                      "label": "2 to 3",
+                      "index": 3
+                    },
+                    {
+                      "label": "age_total",
+                      "index": 4
+                    }
+                  ],
+                  "value": true
+                }
+              ]
+            },
+            {
+              "id": "E",
+              "rowMapping": [
+                {
+                  "field": "race",
+                  "index": 2
+                },
+                {
+                  "field": "total",
+                  "children": [
+                    {
+                      "label": "total",
+                      "index": 4
+                    }
+                  ],
+                  "index": 5,
+                  "value": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1163 @@
+{
+  "type": "ReportTemplate",
+  "id": "ID#discipline#YEAR#2024",
+  "description": "The count of children with disabilities, ages 3 through 21, who were subject to disciplinary removals, including suspensions, expulsions, placements in interim alternative educational settings, and removals due to violations such as drug or weapon offenses, serious bodily injury, and violations of the Gun-Free Schools Act (GFSA).",
+  "filters": {
+    "suspensionsExpulsionsSection": {
+      "type": "select",
+      "code": "suspensionsExpulsionsSection",
+      "condition": {
+        "operator": "AND",
+        "pages": [
+          "suspensions-expulsions",
+          "disciplinary-removals",
+          "unilateral-removals"
+        ]
+      },
+      "dataType": "string",
+      "field": "categorysetcode",
+      "filter": {
+        "default": "CSA",
+        "options": [
+          {
+            "label": "Disability",
+            "value": "CSA"
+          },
+          {
+            "label": "Race",
+            "value": "CSB"
+          },
+          {
+            "label": "Sex",
+            "value": "CSC"
+          },
+          {
+            "label": "English Learner Status",
+            "value": "CSD"
+          }
+        ]
+      },
+      "label": "Category Set Code",
+      "order": 0
+    },
+    "disability": {
+      "code": "disability",
+      "label": "Select a Disability",
+      "field": "IDEADISABILITYTYPE",
+      "condition": {
+        "pages": [
+          "suspensions-expulsions",
+          "disciplinary-removals",
+          "unilateral-removals"
+        ],
+        "operator": "OR",
+        "conditions": [
+          {
+            "parent": "suspensionsExpulsionsSection",
+            "value": [
+              "CSA"
+            ]
+          }
+        ]
+      },
+      "tags": {
+        "categoryTag": "ST1"
+      },
+      "type": "multiselect",
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "AUT",
+            "label": "Autism"
+          },
+          {
+            "value": "DB",
+            "label": "Deaf-blindness"
+          },
+          {
+            "value": "DD",
+            "label": "Developmental delay"
+          },
+          {
+            "value": "EMN",
+            "label": "Emotional disturbance"
+          },
+          {
+            "value": "HI",
+            "label": "Hearing impairment"
+          },
+          {
+            "value": "ID",
+            "label": "Intellectual disability"
+          },
+          {
+            "value": "MD",
+            "label": "Multiple disabilities"
+          },
+          {
+            "value": "OI",
+            "label": "Orthopedic impairment"
+          },
+          {
+            "value": "SLD",
+            "label": "Specific learning disability"
+          },
+          {
+            "value": "SLI",
+            "label": "Speech or language impairment"
+          },
+          {
+            "value": "TBI",
+            "label": "Traumatic brain injury"
+          },
+          {
+            "value": "VI",
+            "label": "Visual impairment"
+          },
+          {
+            "value": "OHI",
+            "label": "Other health impairment"
+          }
+        ]
+      },
+      "order": 1
+    },
+    "race": {
+      "code": "race",
+      "label": "Select a Race",
+      "field": "RACE",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "suspensions-expulsions",
+          "disciplinary-removals",
+          "unilateral-removals"
+        ],
+        "operator": "OR",
+        "conditions": [
+          {
+            "parent": "suspensionsExpulsionsSection",
+            "value": [
+              "CSB"
+            ]
+          }
+        ]
+      },
+      "tags": {
+        "categoryTag": "ST1"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "AM7",
+            "label": "American Indian or Alaska Native"
+          },
+          {
+            "value": "AS7",
+            "label": "Asian"
+          },
+          {
+            "value": "BL7",
+            "label": "Black or African American"
+          },
+          {
+            "value": "HI7",
+            "label": "Hispanic/Latino"
+          },
+          {
+            "value": "PI7",
+            "label": "Native Hawaiian or Other Pacific Islander"
+          },
+          {
+            "value": "MU7",
+            "label": "Two or more races"
+          },
+          {
+            "value": "WH7",
+            "label": "White"
+          }
+        ]
+      },
+      "order": 2
+    },
+    "sex": {
+      "code": "sex",
+      "label": "Select a Sex",
+      "field": "SEX",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "suspensions-expulsions",
+          "disciplinary-removals",
+          "unilateral-removals"
+        ],
+        "operator": "OR",
+        "conditions": [
+          {
+            "parent": "suspensionsExpulsionsSection",
+            "value": [
+              "CSC"
+            ]
+          }
+        ]
+      },
+      "tags": {
+        "categoryTag": "ST1"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "F",
+            "label": "Female"
+          },
+          {
+            "value": "M",
+            "label": "Male"
+          }
+        ]
+      },
+      "order": 3
+    },
+    "englishLearner": {
+      "code": "englishLearner",
+      "label": "Select a English Learner Status",
+      "field": "ENGLISHLEARNERSTATUS",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "suspensions-expulsions",
+          "disciplinary-removals",
+          "unilateral-removals"
+        ],
+        "operator": "OR",
+        "conditions": [
+          {
+            "parent": "suspensionsExpulsionsSection",
+            "value": [
+              "CSD"
+            ]
+          }
+        ]
+      },
+      "tags": {
+        "categoryTag": "ST1"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "LEP",
+            "label": "English learners"
+          },
+          {
+            "value": "NLEP",
+            "label": "Non-English learner"
+          }
+        ]
+      },
+      "order": 4
+    }
+  },
+  "metaTags": [
+    "Part B",
+    "Discipline"
+  ],
+  "reportingLevels": [
+    "SEA (State Education Agency)",
+    "LEA (Local Education Agency)"
+  ],
+  "multiFile": false,
+  "pages": [
+    {
+      "id": "suspensions-expulsions",
+      "combined": true,
+      "description": "",
+      "name": "Suspensions/Expulsions",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "",
+              "variables": {}
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} students with disabilities, ages 3 through 21 who received in-school suspensions in your State.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "disciplinemethodofchildrenwithdisabilities",
+                          "value": "INSCHOOL"
+                        },
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "006"
+                        },
+                        {
+                          "type": "string",
+                          "field": "categorysetcode",
+                          "value": "ST1"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "In School Suspensions"
+              },
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} students with disabilities, ages 3 through 21 who received out-of-school suspensions/expulsions in your State.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "disciplinemethodofchildrenwithdisabilities",
+                          "value": "OUTOFSCHOOL"
+                        },
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "006"
+                        },
+                        {
+                          "type": "string",
+                          "field": "categorysetcode",
+                          "value": "ST1"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Out of School Suspensions/Expulsions"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "gridView",
+          "content": {
+            "columns": [
+              {
+                "id": "inSchoolSuspensionColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "inSchoolSuspension",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "ReportCode",
+                                "value": [
+                                  "006"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "disciplinemethodofchildrenwithdisabilities",
+                                "value": "INSCHOOL"
+                              },
+                              {
+                                "type": "string",
+                                "field": "categorysetcode",
+                                "value": "ST1"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "removallength",
+                        "xAxisValue": "removallength",
+                        "yAxisLabel": "Child Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "In-School Suspensions",
+                      "description": "This section represents the number and percentage of students with disabilities, ages 3 through 21 who received in-school suspensions by the number of days removed.",
+                      "explainTemplate": "In the reported data, {{LTOREQ10-percentage}} of students received in-school suspensions less than 10 days and {{GREATER10-percentage}} of students received in-school suspensions greater than 10 days.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "In-School Suspensions"
+                    },
+                    "sectionLabel": "In-School Suspensions"
+                  }
+                ]
+              },
+              {
+                "id": "outOfSchoolSuspensionColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "outOfSchoolSuspension",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "ReportCode",
+                                "value": [
+                                  "006"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "disciplinemethodofchildrenwithdisabilities",
+                                "value": "OUTOFSCHOOL"
+                              },
+                              {
+                                "type": "string",
+                                "field": "categorysetcode",
+                                "value": "ST1"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "removallength",
+                        "xAxisValue": "removallength",
+                        "yAxisLabel": "Child Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "TODO:dataLabel",
+                      "description": "This section represents the number and percentage of students with disabilities, ages 3 through 21 who received out-of-school suspensions or expulsions by the number of days removed.",
+                      "explainTemplate": "In the reported data, {{LTOREQ10-percentage}} of students received out-of-school suspensions/expulsions less than 10 days and {{GREATER10-percentage}} of students received out-of-school suspensions/expulsions greater than 10 days.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Out-of-School Suspensions/Expulsions"
+                    },
+                    "sectionLabel": "Out-of-School Suspensions/Expulsions"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Suspensions/Expulsions"
+    },
+    {
+      "id": "disciplinary-removals",
+      "combined": true,
+      "description": "",
+      "name": "Disciplinary Removals",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "",
+              "variables": {}
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} number of disciplinary removals of any kind among students with disabilities, ages 3 through 21 in your State.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "143"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalIndicator",
+                          "value": "Y"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Total Disciplinary Removals"
+              },
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} students with disabilities, ages 3 through 21 who received any kind of disciplinary removals in your State.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "088"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalIndicator",
+                          "value": "Y"
+                        },
+                        {
+                          "type": "string",
+                          "field": "categorysetcode",
+                          "value": "TOT"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Total Students Removed"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "gridView",
+          "content": {
+            "columns": [
+              {
+                "id": "totalDisciplinaryRemovalsColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "totalDisciplinaryRemovals",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "totalindicator"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "totalindicator"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "totalIndicator",
+                                "value": "N"
+                              },
+                              {
+                                "type": "string",
+                                "field": "ReportCode",
+                                "value": "143"
+                              },
+                              {
+                                "type": "string",
+                                "field": "categorysetcode",
+                                "value": "CSA"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "totalindicator",
+                        "xAxisValue": "totalindicator",
+                        "yAxisLabel": "Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "ideadisabilitytype",
+                      "description": "This section represents the number of disciplinary removals of any kind among students with disabilities ages 3 through 21.",
+                      "explainTemplate": "In the reported data, there were {{N-percentage}} of disciplinary removals of any kind.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Total Disciplinary Removals"
+                    },
+                    "sectionLabel": "Total Disciplinary Removals"
+                  }
+                ]
+              },
+              {
+                "id": "removalLengthColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "removalLength",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "removallength"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "ReportCode",
+                                "value": "088"
+                              },
+                              {
+                                "type": "string",
+                                "field": "categorysetcode",
+                                "value": "CSA"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "removallength",
+                        "xAxisValue": "removallength",
+                        "yAxisLabel": "Student Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "removallength",
+                      "description": "This section represents the number of students with disabilities, ages 3 through 21 who received any kind of disciplinary removals by the number of days removed.",
+                      "explainTemplate": "In the reported data, {{LTOREQ1-percentage}} of students were removed 1 day or less, {{2TO10-percentage}} 2 through 10 days, and {{GREATER10-percentage}} greater than 10 days.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Removal Length"
+                    },
+                    "sectionLabel": "Removal Length"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Disciplinary Removals"
+    },
+    {
+      "id": "unilateral-removals",
+      "combined": true,
+      "description": "",
+      "name": "Unilateral Removals",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "Unilateral removal occurs when a student is removed from their current educational placement by school personnel or a hearing officer, without a decision made by the IEP team.",
+              "variables": {}
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} students with disabilities, ages 3 through 21 who were unilaterally removed for disciplinary purposes.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "005"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalIndicator",
+                          "value": "N"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Unilaterally Removed Students"
+              },
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} unilateral removals of students with disabilities ages 3 through 21.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "disciplinecount",
+                        {
+                          "type": "string",
+                          "field": "ReportCode",
+                          "value": "007"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalIndicator",
+                          "value": "N"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Unilateral Removal Events"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "gridView",
+          "content": {
+            "columns": [
+              {
+                "id": "interimRemovalDecisionMakerColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "interimRemovalDecisionMaker",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "ideainterimremoval"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "ideainterimremoval"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "ReportCode",
+                                "value": "005"
+                              },
+                              {
+                                "type": "string",
+                                "field": "totalIndicator",
+                                "value": "N"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "ideainterimremoval",
+                        "xAxisValue": "ideainterimremoval",
+                        "yAxisLabel": "Student Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "decisionmaker",
+                      "description": "This section represents the number of students with disabilities, ages 3 through 21, who were unilaterally removed to an Interim Alternative Education Setting (IAES) by the person who removed the student.",
+                      "explainTemplate": "In the reported data, {{REMDW-percentage}} of students were unilaterally removed by school personnel and {{REMHO-percentage}} of students were removed by a hearing officer.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Interim Removal Decision Maker"
+                    },
+                    "sectionLabel": "Interim Removal Decision Maker"
+                  }
+                ]
+              },
+              {
+                "id": "removalReasonColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "removalReason",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "disciplinecount"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "ideainterimremovalreason"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "disciplinecount desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "ideainterimremovalreason"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "ReportCode",
+                                "value": "007"
+                              },
+                              {
+                                "type": "string",
+                                "field": "totalIndicator",
+                                "value": "N"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "ideainterimremovalreason",
+                        "xAxisValue": "ideainterimremovalreason",
+                        "yAxisLabel": "Removal Count",
+                        "yAxisValue": "disciplinecount"
+                      },
+                      "dataLabel": "removalreason",
+                      "description": "This section represents the number of times students with disabilities, ages 3 through 21, were unilaterally removed by school personnel to an Interim Alternative Education Setting (IAES) by the reason for the removal.",
+                      "explainTemplate": "In the reported data, {{D-percentage}} of students were removed for drugs, {{W-percentage}} for weapons, and {{SBI-percentage}} for serious bodily injury.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Removal Reason"
+                    },
+                    "sectionLabel": "Removal Reason"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Unilateral Removals"
+    },
+    {
+      "id": "services-during-expulsion",
+      "combined": true,
+      "description": "",
+      "name": "Services During Expulsion",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "In school year 2023-2024, there were {{var_1}} students with disabilities ages 3 through 21 who were expelled for disciplinary purposes.",
+              "variables": {
+                "var_1": {
+                  "args": [
+                    "disciplinecount",
+                    {
+                      "type": "string",
+                      "field": "ReportCode",
+                      "value": "144"
+                    }
+                  ],
+                  "function": "unfilteredSum"
+                }
+              }
+            },
+            "sections": []
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "barChart",
+          "content": {
+            "chart": {
+              "dataRetrievalOperations": [
+                {
+                  "id": "educationalServicesExpulsion",
+                  "arguments": [
+                    {
+                      "type": "string",
+                      "field": "func",
+                      "value": "sum"
+                    },
+                    {
+                      "array": true,
+                      "field": "columns",
+                      "value": [
+                        "disciplinecount"
+                      ]
+                    },
+                    {
+                      "array": true,
+                      "field": "selectColumns",
+                      "value": [
+                        "educationalservicesafterremoval"
+                      ]
+                    },
+                    {
+                      "type": "number",
+                      "field": "limit"
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "order",
+                      "value": [
+                        "disciplinecount desc"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "groupby",
+                      "value": [
+                        "educationalservicesafterremoval"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "field": "ReportCode",
+                      "value": "144"
+                    }
+                  ],
+                  "function": "GROUPBY"
+                }
+              ],
+              "filterOn": "x",
+              "xAxisLabel": "educationalservicesafterremoval",
+              "xAxisValue": "educationalservicesafterremoval",
+              "yAxisLabel": "Student Count",
+              "yAxisValue": "disciplinecount"
+            },
+            "dataLabel": "educationalservicesafterremoval",
+            "description": "This section represents the number of students with disabilities, ages 3 through 21 who were expelled by whether they received educational services during the expulsion.",
+            "explainTemplate": "In the reported data, {{SERVPROV-percentage}} of students received educational services and {{SERVNOTPROV-percentage}} of students did not receive educational services during expulsion.",
+            "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+            "title": "Educational Services During Expulsion"
+          },
+          "sectionLabel": "Educational Services During Expulsion"
+        }
+      ],
+      "title": "Services During Expulsion"
+    }
+  ],
+  "suppression": {
+    "childOrganization": "CategorySetCode",
+    "frequencyColumns": [
+      "disciplinecount"
+    ],
+    "parentOrganization": "file",
+    "required": true,
+    "sensitiveColumns": [
+      "ideadisabilitytype",
+      "ideainterimremoval",
+      "ideainterimremovalreason",
+      "removallength",
+      "educationalservicesafterremoval",
+      "disciplinemethodofchildrenwithdisabilities",
+      "race",
+      "englishlearnerstatus",
+      "sex",
+      "totalindicator"
+    ]
+  },
+  "title": "IDEA Discipline for State level",
+  "reportingYear": "2024"
+}

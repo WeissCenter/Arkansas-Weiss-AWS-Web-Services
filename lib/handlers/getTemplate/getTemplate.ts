@@ -14,7 +14,11 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
   console.log(event);
   try {
     const templateType = event.pathParameters?.["templateType"];
-    const templateID = event.pathParameters?.["templateID"];
+    let templateID = event.pathParameters?.["templateID"];
+    if (templateID) {
+      templateID = decodeURIComponent(templateID)
+    }
+    
 
     if (!templateType) {
       return CreateBackendErrorResponse(400, "Template type is required");
