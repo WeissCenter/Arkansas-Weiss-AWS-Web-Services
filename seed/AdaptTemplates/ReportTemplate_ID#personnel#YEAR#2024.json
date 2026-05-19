@@ -1,0 +1,723 @@
+{
+  "type": "ReportTemplate",
+  "id": "ID#personnel#YEAR#2024",
+  "name": "IDEA Personnel",
+  "description": "The number of full-time equivalent (FTE) special education teachers, related service personnel, and paraprofessionals that are employed or contracted to provide services to children with disabilities (IDEA) aged 3 through 21.",
+  "combinedFilters": {},
+  "filters": {
+    "ageGroup": {
+      "code": "ageGroup",
+      "label": "Classroom Personnel by Age Group",
+      "field": "specialeducationagegrouptaught",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "classroom-personnel"
+        ],
+        "operator": "OR"
+      },
+      "tags": {
+        "categoryTag": "AGE"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "3TO5NOTK",
+            "label": "Preschool Age 3 through 5 (Not in Kindergarten)"
+          },
+          {
+            "value": "AGE5KTO21",
+            "label": "School Age 5 (In Kindergarten) through 21"
+          }
+        ]
+      },
+      "order": 0
+    },
+    "staffCategory": {
+      "code": "staffCategory",
+      "label": "Special Education Staff Categories",
+      "field": "specialeducationsupportservicescategory",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "related-service-providers"
+        ],
+        "operator": "OR"
+      },
+      "tags": {
+        "categoryTag": "STAFF"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "AUDIO",
+            "label": "Audiologists"
+          },
+          {
+            "value": "SPEECHPATH",
+            "label": "Speech-language pathologists"
+          },
+          {
+            "value": "INTERPRET",
+            "label": "Interpreters"
+          },
+          {
+            "value": "PSYCH",
+            "label": "Psychologists"
+          },
+          {
+            "value": "OCCTHERAP",
+            "label": "Occupational therapists"
+          },
+          {
+            "value": "PHYSTHERAP",
+            "label": "Physical therapists"
+          },
+          {
+            "value": "PEANDREC",
+            "label": "Physical education teachers and recreation specialists"
+          },
+          {
+            "value": "SOCIALWORK",
+            "label": "Social workers"
+          },
+          {
+            "value": "MEDNURSE",
+            "label": "Medical/nursing service staff"
+          },
+          {
+            "value": "COUNSELOR",
+            "label": "Counselors and rehabilitation counselors"
+          },
+          {
+            "value": "ORIENTMOBIL",
+            "label": "Orientation and mobility specialists"
+          }
+        ]
+      },
+      "order": 1
+    },
+    "qualificationStatus": {
+      "code": "qualificationStatus",
+      "label": "Certification Status",
+      "field": "edfactscertificationstatus",
+      "type": "multiselect",
+      "condition": {
+        "pages": [
+          "related-service-providers"
+        ],
+        "operator": "OR"
+      },
+      "tags": {
+        "categoryTag": "QUAL"
+      },
+      "filter": {
+        "default": "all",
+        "options": [
+          {
+            "value": "all",
+            "exclusive": true,
+            "label": "All"
+          },
+          {
+            "value": "FC",
+            "label": "Fully certified or licensed"
+          },
+          {
+            "value": "NFC",
+            "label": "Not fully certified or licensed"
+          }
+        ]
+      },
+      "order": 2
+    }
+  },
+  "metaTags": [
+    "Part B",
+    "Personnel"
+  ],
+  "reportingLevels": [
+    "SEA (State Education Agency)"
+  ],
+  "multiFile": false,
+  "pages": [
+    {
+      "id": "classroom-personnel",
+      "combined": true,
+      "description": "",
+      "name": "Classroom Personnel",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "In this report, staff are counted based on how much they work, not just how many people there are. This is called Full-Time Equivalent, or FTE, and it means someone working part-time is counted as part of a full-time position.",
+              "variables": {}
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} FTE special education teachers employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "stafffulltimeequivalency",
+                        {
+                          "type": "string",
+                          "field": "reportcode",
+                          "value": "070"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalindicator",
+                          "value": "Y"
+                        },
+                        {
+                          "type": "string",
+                          "field": "categorysetcode",
+                          "value": "ST1"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Special Education Teachers"
+              },
+              {
+                "body": {
+                  "template": "In school year 2023-2024, there were {{var_1}} FTE of paraprofessionals employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
+                  "variables": {
+                    "var_1": {
+                      "args": [
+                        "stafffulltimeequivalency",
+                        {
+                          "type": "string",
+                          "field": "reportcode",
+                          "value": "112"
+                        },
+                        {
+                          "type": "string",
+                          "field": "totalindicator",
+                          "value": "Y"
+                        },
+                        {
+                          "type": "string",
+                          "field": "categorysetcode",
+                          "value": "ST1"
+                        }
+                      ],
+                      "function": "unfilteredSum"
+                    }
+                  }
+                },
+                "title": "Paraprofessionals"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "gridView",
+          "content": {
+            "columns": [
+              {
+                "id": "specialEducationTeachersColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "specialEducationTeachers",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "stafffulltimeequivalency"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "specialeducationteacherqualificationstatus"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "stafffulltimeequivalency desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "specialeducationteacherqualificationstatus"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "reportcode",
+                                "value": "070"
+                              },
+                              {
+                                "type": "string",
+                                "field": "totalindicator",
+                                "value": "N"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "specialeducationteacherqualificationstatus",
+                        "xAxisValue": "specialeducationteacherqualificationstatus",
+                        "yAxisLabel": "Teacher FTE",
+                        "yAxisValue": "stafffulltimeequivalency"
+                      },
+                      "dataLabel": "specialeducationteacherqualificationstatus",
+                      "description": "This section represents the number and percentage of full-time equivalent (FTE) special education teachers who worked with students with disabilities ages 3 through 21, that were either fully certified or not fully certified.",
+                      "explainTemplate": "In the reported data, {{SPEDTCHFULCRT-percentage}} of special education teachers were fully certified and {{SPEDTCHNFULCRT-percentage}} of special education teachers were not fully certified.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Special Education Teachers"
+                    },
+                    "sectionLabel": "Special Education Teachers"
+                  }
+                ]
+              },
+              {
+                "id": "paraprofessionalsColumn",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "paraprofessionals",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": [
+                                  "stafffulltimeequivalency"
+                                ]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": [
+                                  "edfactscertificationstatus"
+                                ]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": [
+                                  "stafffulltimeequivalency desc"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": [
+                                  "edfactscertificationstatus"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "field": "reportcode",
+                                "value": "112"
+                              },
+                              {
+                                "type": "string",
+                                "field": "totalindicator",
+                                "value": "N"
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "edfactscertificationstatus",
+                        "xAxisValue": "edfactscertificationstatus",
+                        "yAxisLabel": "Teacher FTE",
+                        "yAxisValue": "stafffulltimeequivalency"
+                      },
+                      "dataLabel": "edfactscertificationstatus",
+                      "description": "This section represents the number and percentage of full-time equivalent (FTE) paraprofessionals who worked with students with disabilities ages 3 through 21, that were either qualified or not qualified.",
+                      "explainTemplate": "In the reported data, {{Q-percentage}} of paraprofessionals were qualified and {{NQ-percentage}} of paraprofessionals were not qualified.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "Paraprofessionals"
+                    },
+                    "sectionLabel": "Paraprofessionals"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Classroom Personnel"
+    },
+    {
+      "id": "related-service-providers",
+      "combined": true,
+      "description": "",
+      "name": "Related Service Providers",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "In this report, staff are counted based on how much they work, not just how many people there are. This is called Full-Time Equivalent, or FTE, and it means someone working part-time is counted as part of a full-time position.",
+              "variables": {}
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In school year 2023-2024, the top three related service providers that worked with children with disabilities (IDEA) ages 3 through 21, were {{specialeducationsupportservicescategory}} ({{specialeducationsupportservicescategory.percentage}}),  {{specialeducationsupportservicescategory-two}} ({{specialeducationsupportservicescategory-two.percentage}}), and {{specialeducationsupportservicescategory-three}} ({{specialeducationsupportservicescategory-three.percentage}}).",
+                  "variables": {
+                    "specialeducationsupportservicescategory": {
+                      "function": "unfilteredMax",
+                      "args": [
+                        0,
+                        "stafffulltimeequivalency",
+                        {
+                          "field": "maxSelect",
+                          "value": "specialeducationsupportservicescategory"
+                        },
+                        {
+                          "field": "totalindicator",
+                          "array": true,
+                          "value": [
+                            "Y"
+                          ]
+                        },
+                        {
+                          "field": "specialeducationsupportservicescategory",
+                          "array": true,
+                          "value": [
+                            "AUDIO",
+                            "COUNSELOR",
+                            "INTERPRET",
+                            "MEDNURSE",
+                            "OCCTHERAP",
+                            "ORIENTMOBIL",
+                            "PEANDREC",
+                            "PHYSTHERAP",
+                            "PSYCH",
+                            "SOCIALWORK",
+                            "SPEECHPATH"
+                          ]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "function": "unfilteredPercentage",
+                          "args": [
+                            "stafffulltimeequivalency",
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "parent": true
+                            },
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "array": true,
+                              "value": [
+                                "AUDIO",
+                                "COUNSELOR",
+                                "INTERPRET",
+                                "MEDNURSE",
+                                "OCCTHERAP",
+                                "ORIENTMOBIL",
+                                "PEANDREC",
+                                "PHYSTHERAP",
+                                "PSYCH",
+                                "SOCIALWORK",
+                                "SPEECHPATH"
+                              ]
+                            },
+                            {
+                              "field": "totalindicator",
+                              "array": true,
+                              "value": [
+                                "Y"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "specialeducationsupportservicescategory-two": {
+                      "function": "unfilteredMax",
+                      "args": [
+                        1,
+                        "stafffulltimeequivalency",
+                        {
+                          "field": "maxSelect",
+                          "value": "specialeducationsupportservicescategory"
+                        },
+                        {
+                          "field": "totalindicator",
+                          "array": true,
+                          "value": [
+                            "Y"
+                          ]
+                        },
+                        {
+                          "field": "specialeducationsupportservicescategory",
+                          "array": true,
+                          "value": [
+                            "AUDIO",
+                            "COUNSELOR",
+                            "INTERPRET",
+                            "MEDNURSE",
+                            "OCCTHERAP",
+                            "ORIENTMOBIL",
+                            "PEANDREC",
+                            "PHYSTHERAP",
+                            "PSYCH",
+                            "SOCIALWORK",
+                            "SPEECHPATH"
+                          ]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "function": "unfilteredPercentage",
+                          "args": [
+                            "stafffulltimeequivalency",
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "parent": true
+                            },
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "array": true,
+                              "value": [
+                                "AUDIO",
+                                "COUNSELOR",
+                                "INTERPRET",
+                                "MEDNURSE",
+                                "OCCTHERAP",
+                                "ORIENTMOBIL",
+                                "PEANDREC",
+                                "PHYSTHERAP",
+                                "PSYCH",
+                                "SOCIALWORK",
+                                "SPEECHPATH"
+                              ]
+                            },
+                            {
+                              "field": "totalindicator",
+                              "array": true,
+                              "value": [
+                                "Y"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "specialeducationsupportservicescategory-three": {
+                      "function": "unfilteredMax",
+                      "args": [
+                        2,
+                        "stafffulltimeequivalency",
+                        {
+                          "field": "maxSelect",
+                          "value": "specialeducationsupportservicescategory"
+                        },
+                        {
+                          "field": "totalindicator",
+                          "array": true,
+                          "value": [
+                            "Y"
+                          ]
+                        },
+                        {
+                          "field": "specialeducationsupportservicescategory",
+                          "array": true,
+                          "value": [
+                            "AUDIO",
+                            "COUNSELOR",
+                            "INTERPRET",
+                            "MEDNURSE",
+                            "OCCTHERAP",
+                            "ORIENTMOBIL",
+                            "PEANDREC",
+                            "PHYSTHERAP",
+                            "PSYCH",
+                            "SOCIALWORK",
+                            "SPEECHPATH"
+                          ]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "function": "unfilteredPercentage",
+                          "args": [
+                            "stafffulltimeequivalency",
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "parent": true
+                            },
+                            {
+                              "field": "specialeducationsupportservicescategory",
+                              "array": true,
+                              "value": [
+                                "AUDIO",
+                                "COUNSELOR",
+                                "INTERPRET",
+                                "MEDNURSE",
+                                "OCCTHERAP",
+                                "ORIENTMOBIL",
+                                "PEANDREC",
+                                "PHYSTHERAP",
+                                "PSYCH",
+                                "SOCIALWORK",
+                                "SPEECHPATH"
+                              ]
+                            },
+                            {
+                              "field": "totalindicator",
+                              "array": true,
+                              "value": [
+                                "Y"
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "title": "Most common related service providers"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "barChart",
+          "content": {
+            "chart": {
+              "dataRetrievalOperations": [
+                {
+                  "id": "staffCategories",
+                  "arguments": [
+                    {
+                      "type": "string",
+                      "field": "func",
+                      "value": "sum"
+                    },
+                    {
+                      "array": true,
+                      "field": "columns",
+                      "value": [
+                        "stafffulltimeequivalency"
+                      ]
+                    },
+                    {
+                      "array": true,
+                      "field": "selectColumns",
+                      "value": [
+                        "specialeducationsupportservicescategory"
+                      ]
+                    },
+                    {
+                      "type": "number",
+                      "field": "limit"
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "order",
+                      "value": [
+                        "stafffulltimeequivalency desc"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "groupby",
+                      "value": [
+                        "specialeducationsupportservicescategory"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "field": "reportcode",
+                      "value": "099"
+                    },
+                    {
+                      "type": "string",
+                      "field": "totalindicator",
+                      "value": "N"
+                    }
+                  ],
+                  "function": "GROUPBY"
+                }
+              ],
+              "filterOn": "x",
+              "xAxisLabel": "specialeducationsupportservicescategory",
+              "xAxisValue": "specialeducationsupportservicescategory",
+              "yAxisLabel": "Staff FTE",
+              "yAxisValue": "stafffulltimeequivalency"
+            },
+            "dataLabel": "specialeducationsupportservicescategory",
+            "description": "This section represents the number and percentage of full-time equivalent (FTE) related service providers who worked with students with disabilities ages 3 through 21.",
+            "explainTemplate": "In the reported data, the top three related service providers that worked with children with disabilities, were {{first}}, {{second}}, and {{third}}.",
+            "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+            "title": "Staff Categories"
+          },
+          "sectionLabel": "Staff Categories"
+        }
+      ],
+      "title": "Related Service Providers"
+    }
+  ],
+  "suppression": {},
+  "title": "IDEA Personnel for State Level",
+  "reportingYear": "2024"
+}

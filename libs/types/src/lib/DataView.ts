@@ -1,6 +1,7 @@
 import { DBDataViewDataCollection } from "./backend/NewDataViewInput";
 
 export interface DataView {
+  reportingYear: any;
   dataViewID: string;
   author: string;
   name: string;
@@ -16,6 +17,7 @@ export interface DataView {
 }
 
 export interface DBDataView {
+  reportingYear: any;
   dataViewID: string;
   author: string;
   name: string;

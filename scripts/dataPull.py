@@ -37,7 +37,27 @@ logger = glueContext.get_logger()
 # test config for 175 will eventually just slam it in the templates for data collections
 
 
-fs_list = ["FS175", "FS178", "FS185", "FS188", "FS009", "FS901", "FS005", "FS006", "FS007", "FS088", "FS143", "FS144", "FS070", "FS099", "FS112"]
+fs_list = [
+    "FS005",
+    "FS006",
+    "FS007",
+    "FS009",
+    "FS070",
+    "FS088",
+    "FS099",
+    "FS112",
+    "FS143",
+    "FS144",
+    "FS175",
+    "FS178",
+    "FS185",
+    "FS188",
+    "FS901",
+    "FS902",
+    "FS903",
+    "FS904",
+    "FS905",
+]
 
 
 common_opts = {"quoteChar": '\'', "withHeader": False, "separator": ","}
@@ -244,7 +264,8 @@ def handleFileDataCollection(nodes, dynamo_data_view, data_staging_s3):
         
     # get the data collection if it exists.
     
-    template_dynamo_response = dbClient.get_item(TableName=templates_table_name, Key={"type": {"S": "DataCollection"}, "id": {"S": f"ID#{dynamo_data_view['data']['id']}"}})
+    reporting_year = getReportingYear(dynamo_data_view)
+    template_dynamo_response = dbClient.get_item(TableName=templates_table_name, Key={"type": {"S": "DataCollection"}, "id": {"S": f"ID#{dynamo_data_view['data']['id']}#YEAR#{reporting_year}"}})
 
 
     dynamo_template = {k: deserializer.deserialize(v) for k, v in template_dynamo_response["Item"].items()} 
@@ -384,6 +405,15 @@ def handleRelationships(nodes, dynamo_data_set):
             )
     
     return super_dataframe
+
+
+def getReportingYear(dynamo_data_view):
+    if ('reportingYear' in dynamo_data_view):
+        # newer dataViews have the reporting year field at the top level
+        return dynamo_data_view.get('reportingYear')
+    else:
+        # older dataViews have the reporting year field in the fields array
+        return next((field['value'] for field in dynamo_data_view['data']['fields'] if field['id'] == 'reportingYear'), None)
 
 try:
 

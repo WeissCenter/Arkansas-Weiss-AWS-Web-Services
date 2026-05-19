@@ -3,13 +3,10 @@
   "id": "ID#current",
   "copyright": "Enter copyright information",
   "footerLinks": [],
-  "idleMinutes": 5,
-  "idleSeconds": 300,
+  "idleMinutes": 30,
   "logo": "TODO: Add logo",
   "nSize": 10,
-  "timeoutMinutes": 10,
-  "timeoutSeconds": 10,
+  "timeoutMinutes": 5,
   "warningMinutes": 2,
-  "warningSeconds": 250,
   "supportedLanguages": ["en", "es-MX"]
 }

@@ -2,6 +2,33 @@
   "type": "Glossary",
   "id": "ID#current#LANG#en",
   "terms": {
+    "OTHRSTNG": {
+      "label": "Other Setting",
+      "description": "Other setting",
+      "definition": "The one-day count of infants and toddlers who get their services neither home or community-based places for example, hospitals, therapist office, doctor's office or clinic."
+    },
+    "CMNTYBSDSTNG": {
+      "label": "Community-Based Setting",
+      "description": "Community-based setting",
+      "definition": "The one-day count of infants and toddlers who get their services in a setting where children without disabilities usually go. These places include child care centers, Early Head Start Programs, preschools, and early childhood centers."
+    },
+    "AGE1": {
+      "definition": "1 to 2",
+      "label": "1 to 2"
+    },
+    "AGE2": {
+      "definition": "2 to 3",
+      "label": "2 to 3"
+    },
+    "AGEB": {
+      "definition": "Birth to 1",
+      "label": "Birth to 1"
+    },
+    "902-H": {
+      "label": "Home",
+      "description": "Are not in regular early childhood programs",
+      "definition": "The one-day count of infants and toddlers who get their services in their home or where their caregiver lives."
+    },
     "6": {
       "definition": "Represents an individual who is 6 years old.",
       "label": "Age 6"

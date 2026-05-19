@@ -1,0 +1,136 @@
+{
+  "type": "DataCollection",
+  "id": "ID#childCountAndSettings#YEAR#2025",
+  "dataCollectionId": "childCountAndSettings",
+  "reportingYear": "2025",
+  "name": "Child Count and Settings",
+  "dataViewDescription": "IDEA Part C Child Count and Settings provides the unduplicated number of infants and toddlers, who are ages birth through 2 or older who received early intervention services.",
+  "fields": [
+    {
+      "type": "select",
+      "id": "reportingLevel",
+      "label": "For what reporting level?",
+      "options": [
+        {
+          "label": "SEA (State Education Agency)",
+          "value": "SEA (State Education Agency)"
+        },
+        {
+          "label": "LEA (Local Education Agency)",
+          "value": "LEA (Local Education Agency)"
+        }
+      ],
+      "required": true,
+      "shortLabel": "Reporting level"
+    }
+  ],
+  "files": [
+    {
+      "id": "FS902",
+      "acceptedFileFormats": {
+        "fieldAccept": ".csv",
+        "fileInputHint": "Only CSV files are accepted."
+      },
+      "name": "FS902 - Infants and Toddlers with Disabilities (IDEA Part C) Early Intervention",
+      "description": "The unduplicated number of eligible infants and toddlers receiving early intervention services according to an active individualized family service plan (IFSP) in place on the count date.",
+      "database": {
+        "query": ""
+      },
+      "previewHeaders": [
+        "File Record Number",
+        "State Code",
+        "Lead Agency Number",
+        "Filler",
+        "Filler",
+        "Table Name",
+        "Filler",
+        "Age (EI)",
+        "Sex (Membership)",
+        "Setting (Part C)",
+        "Racial Ethnic",
+        "Total Indicator",
+        "Explanation",
+        "Infants and Toddlers Count"
+      ],
+      "columns": [
+        "fileRecordNumber",
+        "stateCode",
+        "leadAgencyNumber",
+        "filler1",
+        "filler2",
+        "tableName",
+        "filler3",
+        "age",
+        "sex",
+        "setting",
+        "racialEthnic",
+        "totalIndicator",
+        "explanation",
+        "infantsAndToddlersCount"
+      ],
+      "validation": "FS902",
+      "report_code": "902",
+      "report_levels": {
+        "sea": "SEA INFANT TODD IDEA C EI"
+       },
+      "included_in_all": [],
+      "subtotal_columns": [["setting"], ["age"], ["racialEthnic"]],
+      "category_conditions": {
+        "CSA": ["setting", "age"],
+        "CSB": ["setting", "racialEthnic"],
+        "CSC": ["sex"]
+      }
+    },
+    {
+      "id": "FS905",
+      "acceptedFileFormats": {
+        "fieldAccept": ".csv",
+        "fileInputHint": "Only CSV files are accepted."
+      },
+      "name": "FS905 - Infants and Toddlers with Disabilities (IDEA Part C) Cumulative Count",
+      "description": "The number of infants and toddlers with disabilities, ages birth through 2, who received early intervention services during the most recent 12-month period for which data are available.",
+      "database": {
+        "query": ""
+      },
+      "previewHeaders": [
+        "File Record Number",
+        "State Code",
+        "Lead Agency Number",
+        "Filler",
+        "Filler",
+        "Table Name",
+        "Filler",
+        "Racial Ethnic",
+        "Sex (Membership)",
+        "Total Indicator",
+        "Explanation",
+        "Infants and Toddlers Count"
+      ],
+      "columns": [
+        "fileRecordNumber",
+        "stateCode",
+        "leadAgencyNumber",
+        "filler1",
+        "filler2",
+        "tableName",
+        "filler3",
+        "racialEthnic",
+        "sex",
+        "totalIndicator",
+        "explanation",
+        "infantsAndToddlersCount"
+      ],
+      "validation": "FS905",
+      "report_code": "905",
+      "report_levels": {
+        "sea": "SEA INFANT TODD IDEA C CMLT"
+       },
+      "included_in_all": [],
+      "subtotal_columns": [],
+      "category_conditions": {
+        "CSA": ["racialEthnic"],
+        "CSB": ["sex"]
+      }
+    }
+  ]
+}

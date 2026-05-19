@@ -21,8 +21,7 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
     const body = JSON.parse(event.body) as IsUniqueInput;
 
     const field = body.field ?? "name";
-
-    const params = {
+    const params: any = {
       TableName: body.type === "Report" ? REPORT_TABLE_NAME : TABLE_NAME,
       KeyConditionExpression: "#type = :type",
       FilterExpression: "#field = :value",
@@ -35,6 +34,11 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
         ":value": body.name
       }
     };
+    if (body.ignoreID) {
+      params.FilterExpression += ` AND #id <> :ignoreID`;
+      params.ExpressionAttributeNames["#id"] = body.ignoreID.idField;
+      params.ExpressionAttributeValues[":ignoreID"] = body.ignoreID.idValue;
+    }
 
     const result = await db.query(params);
 

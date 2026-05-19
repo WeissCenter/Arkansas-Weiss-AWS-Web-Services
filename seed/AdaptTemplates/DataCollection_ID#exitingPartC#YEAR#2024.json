@@ -1,0 +1,46 @@
+{
+  "type": "DataCollection",
+  "id": "ID#exitingPartC#YEAR#2024",
+  "dataCollectionId": "exitingPartC",
+  "reportingYear": "2024",
+  "name": "Infants and Toddlers with Disabilities (IDEA Part C) Exiting",
+  "dataViewDescription": "The unduplicated number of infants and toddlers who were under age three and had an active individualized family service plan (IFSP) in place at some point during the reporting period and at the end of the reporting period either were no longer receiving early intervention services under IDEA Part C or had reached their third birthday.",
+  "fields": [],
+  "files": [
+    {
+      "id": "FS901",
+      "name": "FS901 - Infants and Toddlers with Disabilities (IDEA Part C) Exiting",
+      "description": "The unduplicated number of infants and toddlers who were under age three and had an active individualized family service plan (IFSP) in place at some point during the reporting period and at the end of the reporting period either were no longer receiving early intervention services under IDEA Part C or had reached their third birthday.",
+      "acceptedFileFormats": {
+        "fileInputHint": "Only CSV files are accepted.",
+        "fieldAccept": ".csv"
+      },
+      "report_levels": {
+        "sea": "SEA INFANT TODD (IDEA C) EXIT",
+        "lea": "LEA INFANT TODD (IDEA C) EXIT"
+      },
+      "columns": [
+        "fileRecordNumber",
+        "stateCode",
+        "leadAgencyNumber",
+        "filler1",
+        "filler2",
+        "tableName",
+        "reasonForNoLongerReceivingServices",
+        "racialEthnic",
+        "sex",
+        "totalIndicator",
+        "explanation",
+        "infantsAndToddlersCount"
+      ],
+      "report_code": "901",
+      "included_in_all": ["reasonForNoLongerReceivingServices"],
+      "category_conditions": {
+        "CSA": ["racialEthnic"],
+        "CSB": ["sex"]
+      },
+      "subtotal_columns": [["reasonForNoLongerReceivingServices"], ["racialEthnic"], ["sex"]],
+      "validation": "FS901"
+    }
+  ]
+}

@@ -133,7 +133,7 @@ async function getReports(dataView: string) {
   const scanParams: QueryCommandInput = {
     TableName: REPORT_TABLE,
     KeyConditionExpression: "#type = :type",
-    FilterExpression: "#version = :draft, #dataView = :dataView",
+    FilterExpression: "#version = :draft AND #dataView = :dataView",
     ExpressionAttributeValues: {
       ":type": "Report",
       ":draft": "draft",

@@ -160,7 +160,7 @@
       "definition": "Home is the place where children ages 3 to 5 receive special education and related services."
     },
     "SPL": {
-      "label": "Service Provider Location (Other)",
+      "label": "Service Provider Location",
       "description": "Are not in regular early childhood programs",
       "definition": "A location other than a pre-school classroom, separate school, or residential facility where children ages 3 to 5 receive special education and related services."
     },
@@ -445,7 +445,7 @@
     },
     "MNP": {
       "label": "Native Hawaiian \\ other Pacific Islander \\ Pacific Islander",
-      "definition": "This means a person whose ancestors were the first people to live in places like Hawaii, Guam, Samoa, Marshal Islands, or other islands in the Pacific Ocean. They have a heritage connected to these islands."
+      "definition": "This means a person whose ancestors were the first people to live in places like Hawaii, Guam, Samoa, or other islands in the Pacific Ocean. They have a heritage connected to these islands."
     },
     "MPR": {
       "label": "Puerto Rican",
@@ -480,12 +480,12 @@
       "definition": "The student did not participate in the state assessments due to significant medical emergencies."
     },
     "REMDW": {
-      "label": "Removed to an IAES by school personnel",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by school staff because they have drugs, weapons, or have caused serious injury to someone else."
+      "label": "Unilateral Removal by School District",
+      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by school staff for not more than 45 days because they have drugs, weapons, or have caused serious injury to someone else. A unilateral removal by school ditrict does NOT include placement changes made by IEP team."
     },
     "REMHO": {
-      "label": "Removed to an IAES by a hearing officer",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by a Hearing Officer because of a strong chance they could hurt themselves or others."
+      "label": "Unilateral Removal by State Level Hearing Officer",
+      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by a Hearing Officer because of a strong chance they could hurt themselves or others. Per Rule 55,  a hearing officer is appointed by the NDE."
     },
     "INSCHOOL": {
       "label": "In-School Suspensions",
@@ -493,7 +493,7 @@
     },
     "OUTOFSCHOOL": {
       "label": "Out-of-School Suspensions/Expulsions",
-      "definition": "A student with disabilities is removed from regular school for discipline temporarily, for the rest of the school year, or longer depending on school district policy."
+      "definition": "Out-of-School Suspensions: A student with disabilities is removed from his/her regular school for disciplinary purposes to another placement (like home or a behavior center). This includes removals in which no IEP services are provided because the removal is 10 days or less and removals in which the student continues to receive services according to his/her IEP. Expulsion: A student with disabilities is removed from his/her regular school for disciplinary purposes for the remainder of the school year or longer in accordance with school district policy. This includes removals resulting from violations of the Gun Free Schools Act that are modified to less than 365 days."
     },
     "LTOREQ10": {
       "label": "Less than 10 days",
@@ -509,7 +509,7 @@
     },
     "SBI": {
       "label": "Serious bodily injury",
-      "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for causing serious bodily injury once or on multiple instances that can lead to death or cause severe pain. It may also result in lasting changes in appearance or body functions."
+      "definition": "A student with disabilities is removed from their current educational setting to a temporary educational setting for causing serious bodily injury that can lead to death or cause severe pain. It may also result in lasting changes in appearance or body functions."
     },
     "LTOREQ1": {
       "label": "1 day or less",
@@ -540,16 +540,16 @@
       "definition": "This means a person who is qualified to assess and support students who have hearing problems, including the use of hearing aids and educating students, families, and other school staff about the student's hearing problems."
     },
     "SPEECHPATH": {
-      "label": "Speech-language pathologists",
-      "definition": "This means a person who is qualified to assess and support students with speech or language problems to improve the student's communication skills and/or make communication accessible at school."
+      "label": "Speech Pathologists",
+      "definition": "This means a person who is assigned to assess communicative disorders; to plan, direct, and participate in many habilitative and instructional programs for children and youth who have communicative disorders; and to seek to prevent language, speech, and hearing disorders whenever possible. May also include the job title: Language Pathologist, Speech Therapist."
     },
     "INTERPRET": {
       "label": "Interpreters",
-      "definition": "This means a person who is qualified to assess and support students who are deaf or hard of hearing by providing sign language and/or other types of interpretation and/or translation to make communication accessible at school. For this category, the person may also be qualified to assess and support students for other spoken language interpretation."
+      "definition": "This means a person who is qualified to assess and support students who are deaf or hard of hearing by providing sign language and/or other types of translation to  make communication accessible at school."
     },
     "PSYCH": {
-      "label": "School psychologist/Educational examiners",
-      "definition": "The School Psychology Specialist is a person who is qualified to assess and support students with cognitive, behavioral, mental, social, and/or emotional issues, including educating students, families, and other school staff about the student's strengths and needs. An Educational Examiner is a person who conducts school-based assessments for special education eligibility. They work with teachers, parents, and students to support those facing learning challenges or emotional difficulties in the school setting."
+      "label": "Psychologists",
+      "definition": "This means a person who is qualified to assess and support students with cognitive, behavioral, mental, social, and/or emotional issues, including educating students, families, and other school staff about the student's strengths and needs. They work with teachers, parents, and students to support those facing learning challenges or emotional difficulties in the school setting."
     },
     "OCCTHERAP": {
       "label": "Occupational therapists",
@@ -561,7 +561,7 @@
     },
     "PEANDREC": {
       "label": "Physical education teachers and recreation specialists",
-      "definition": "A physical education teacher is a qualified professional who teaches physical education and supports students who may require adapted instruction, environments, or equipment to participate in physical activities at school. They help students develop physical skills, motor development, fitness, and healthy habits in inclusive settings. A Recreation Specialist is a professional who supports students in developing leisure, play, and recreational skills. They may design or adapt activities, equipment, or environments to enable students with disabilities to participate in school- and community-based recreation and leisure opportunities."
+      "definition": "This means a person who is assigned and responsible for providing related services specific to recreational therapy that utilizes recreation and other activity-based interventions to address the assessed needs of individuals with illness and/or disabling conditions, as a means to psychological and physical health, recovery and well-being."
     },
     "SOCIALWORK": {
       "label": "Social workers",
@@ -569,11 +569,11 @@
     },
     "MEDNURSE": {
       "label": "Medical/nursing service staff",
-      "definition": "This means a person who is qualified to assess and support students with medical conditions, including giving medication, responding to medical emergencies, and working with teachers and parents to meet students'  medical needs at school."
+      "definition": "This means a person who is qualified to assess and support students with medical conditions, including giving medication, responding to medical emergencies, and working with teachers and parents to meet students' medical needs at school. School nurses can be Registered Nurses (RN) or Licensed Practice Nurses (LPN)."
     },
     "COUNSELOR": {
       "label": "Counselors and rehabilitation counselors",
-      "definition": "A counselor is a person who is qualified to support students in their personal, social, and educational development. Counselors help students build coping skills, address academic or behavioral concerns, and plan for postsecondary goals. They work with families, teachers, and other school staff to coordinate supports that help students be successful in school. A rehabilitation counselor is a professional who helps students with disabilities plan for future education, employment, and independent living. They collaborate with vocational rehabilitation programs, families, and school staff to coordinate services and supports that help students transition from school to adult life."
+      "definition": "This means a person who is qualified to assess and support students who need help planning  personal, educational, and career paths, including coordinating activities with vocational rehabilitation programs."
     },
     "ORIENTMOBIL": {
       "label": "Orientation and mobility specialists",
@@ -585,10 +585,10 @@
     },
     "NQ": {
       "label": "Not qualified",
-      "definition": "This means a staff person does not have the necessary training to provide academic and functional support for students with disabilities, under the direction of other certified or qualified staff. This staff person may be a Related Service Assistant is an individual who provides a related service—such as a Speech-Language Pathology Assistant (SLPA), Certified Occupational Therapy Assistant (COTA), Physical Therapist Assistant (PTA), Registered Behavior Technician (RBT), or Paraprofessional—under the supervision of the corresponding Certified Related Service Professional or Certified Teacher. These individuals do not independently design or interpret evaluations, plans, or instructional interventions, but support the implementation of services as directed."
+      "definition": "This means a staff person does not have the necessary training to provide academic and functional support for students with disabilities, under the direction of other certified or qualified staff."
     },
     "009-D": {
-      "label": "Died",
+      "label": "Deceased",
       "definition": "This means a student with a disability left special education because they die."
     },
     "007-D": {
@@ -605,7 +605,7 @@
     },
     "GRADALTDPL": {
       "label": "Graduated with an alternate diploma",
-      "definition": "This means a student with a disability left special education because they finished school with a diploma that was different than a regular high school diploma. If a student graduated with an alternate diploma, then they completed requirements for the alternate pathway. After graduating, the student is still eligible for Free Appropriate Public Education (FAPE) until the age of 21."
+      "definition": "This means a student with a disability left special education because they finished school with a diploma that was different than a regular high school diploma."
     },
     "RC": {
       "label": "Received a certificate",
@@ -649,7 +649,7 @@
     },
     "PI7": {
       "label": "Native Hawaiian or Other Pacific Islander",
-      "definition": "This means a person whose ancestors were the first people to live in places like Hawaii, Guam, Samoa, Marshall Islands, or other islands in the Pacific Ocean. They have a heritage connected to these islands."
+      "definition": "This means a person whose ancestors were the first people to live in places like Hawaii, Guam, Samoa, or other islands in the Pacific Ocean. They have a heritage connected to these islands."
     },
     "WH7": {
       "label": "White",
@@ -665,15 +665,15 @@
     },
     "DD": {
       "label": "Developmental delay",
-      "definition": "Developmental delays happen when a child is slower to develop in one or more areas like physical growth, thinking skills, communication, social or emotional skills, or daily life skills. Children ages three through seven are eligible with a developmental delay when they demonstrate a measurable, verifiable discrepancy between expected performance for the child’s chronological age and the current level of performance as measured by appropriate diagnostic instruments and procedures in one or more of the following areas of development: physical, cognitive, communication, social-emotional, or adaptive."
+      "definition": "Developmental delays happen when a child is slower to develop in one or more areas like physical growth, thinking skills, communication, social or emotional skills, or daily life skills."
     },
     "EMN": {
-      "label": "Emotional disability",
-      "definition": "Emotional disability is a condition that affects a child's ability to learn and interact with others. It shows up in one or more of these ways over a long time and in a noticeable way. Some examples include, the child has trouble learning, and it’s not because of thinking, senses, or health problems, the child has difficulty making and keeping friends or getting along with teachers, or the child behaves or feels in ways that are not appropriate for the situation."
+      "label": "Emotional disturbance",
+      "definition": "Emotional disturbance is a condition that affects a child's ability to learn and interact with others. It shows up in one or more of these ways over a long time and in a noticeable way. Some examples include, the child has trouble learning, and it\u2019s not because of thinking, senses, or health problems, the child has difficulty making and keeping friends or getting along with teachers, or the child behaves or feels in ways that are not appropriate for the situation. "
     },
     "HI": {
-      "label": "Deaf/Hard of hearing",
-      "definition": "Deaf/Hard of hearing means a problem with hearing that can be either permanent or come and go. It affects a child's ability to do well in school, but it’s not the same as being completely deaf."
+      "label": "Hearing impairment",
+      "definition": "Hearing impairment means a problem with hearing that can be either permanent or come and go. It affects a child's ability to do well in school, but it\u2019s not the same as being completely deaf."
     },
     "ID": {
       "label": "Intellectual disability",
@@ -696,24 +696,24 @@
       "definition": "Specific learning disability means having a disorder that affects one or more of the basic mental processes needed to understand or use language, whether spoken or written. This can make it hard to listen, think, speak, read, write, spell, or do math. It includes conditions like dyslexia, brain injuries, and other challenges that affect learning."
     },
     "SLI": {
-      "label": "Speech or language impairment",
+      "label": "Speech - language impairment",
       "definition": "Speech or language impairment means a communication disorder, such as stuttering, impaired articulation, a language impairment, or a voice impairment, that adversely affects a child's educational performance."
     },
     "TBI": {
-      "label": "Brain injury",
-      "definition": "A brain injury is caused by an outside physical force, which can lead to full or partial disabilities, or problems with social behavior, and can make it harder for a child to succeed in school. This type of injury can affect thinking, memory, language, attention, problem-solving, senses, movement, behavior, physical abilities, and speech. It doesn’t include brain injuries present at birth, those that get worse over time, or those caused by birth trauma."
+      "label": "Traumatic brain injury",
+      "definition": "Traumatic brain injury means a brain injury caused by an outside physical force, which can lead to full or partial disabilities, or problems with social behavior, and can make it harder for a child to succeed in school. This type of injury can affect thinking, memory, language, attention, problem-solving, senses, movement, behavior, physical abilities, and speech. It doesn\u2019t include brain injuries present at birth, those that get worse over time, or those caused by birth trauma."
     },
     "VI": {
-      "label": "Visual impairment",
+      "label": "Visual impairment, including blindness",
       "definition": "Visual impairment, including blindness, means having vision problems that, even with glasses or other help, make it hard for a child to do well in school. This includes both partial sight and complete blindness."
     },
     "F": {
       "label": "Female",
-      "definition": "Female"
+      "definition": "This means a person who identifies as female."
     },
     "M": {
       "label": "Male",
-      "definition": "Male"
+      "definition": "This means a person who identifies as male."
     },
     "LEP": {
       "label": "English learner",
@@ -725,7 +725,7 @@
     },
     "143-N": {
       "label": "Disciplinary Removals",
-      "definition": "This refers to the number of times a student with disabilities is removed from their regular school program for disciplinary reasons. This includes suspensions, expulsions, or placement in another educational setting. Disciplinary removals may occur for a range of behaviors and include situations involving weapons, causing serious bodily injury to another person, or repeated incidents of violent or abusive behavior."
+      "definition": "This refers to the number of times a student with disabilities is removed from their regular school program for any type of disciplinary reason. This includes any instance where the student is suspended, expelled, or placed in a different educational setting as a result of disciplinary actions."
     }
   }
 }

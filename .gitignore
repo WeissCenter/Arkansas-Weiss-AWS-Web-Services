@@ -146,3 +146,6 @@ cdk.out
 
 scripts/data
 scripts/.vscode
+
+res/github-environment-setup/*.env
+!res/github-environment-setup/example-*.env

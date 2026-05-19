@@ -75,6 +75,7 @@ async function handleFileCollection(db: DynamoDBDocument, event: APIGatewayEvent
     description: newDataView.description,
     dataViewType: newDataView.dataViewType,
     data: newDataView.data,
+    reportingYear: newDataView?.reportingYear,
     lastPull: "",
     pulledBy: ""
   };

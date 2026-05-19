@@ -57,7 +57,12 @@ class edFactsCSVTransformer(fileTransformer):
         # Initialize 'CategorySetCode' column
         pysparkDF = pysparkDF.withColumn("CategorySetCode", lit(""))
         pysparkDF = pysparkDF.withColumn("ReportCode", lit(self.report_code))
-        pysparkDF = pysparkDF.withColumn("ReportYear", lit(year.split("-")[1]))
+        if (year is not None) and ("-" in year):
+            pysparkDF = pysparkDF.withColumn("ReportYear", lit(year.split("-")[1]))
+        elif (year is not None) and (" " in year):
+            pysparkDF = pysparkDF.withColumn("ReportYear", lit(year.split(" ")[1]))
+        else:
+            raise ValueError(f"Unexpected year format: {year}")
         # Set the level
         
 

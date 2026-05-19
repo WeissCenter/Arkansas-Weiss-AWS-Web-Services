@@ -1,0 +1,1148 @@
+{
+  "type": "ReportTemplate",
+  "id": "ID#childCountAndSettings#YEAR#2025",
+  "description": "This report represents the unduplicated number of children with an active Individualized Family Service Plan (IFSP) in place based on the State’s child count date, according to the child’s age and primary settings.",
+  "metaTags": ["Part C", "Child Count And Settings"],
+  "multiFile": false,
+  "pages": [
+    {
+      "id": "oneDayCount",
+      "combined": true,
+      "name": "One-Day Count",
+      "description": "The one-day count is the number of infants and toddlers with disabilities, ages birth through 2, who received early intervention services on a state selected date between October 1 and December 1.",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "On the one-day count there were {{var_1}} children receiving early intervention services in your state.",
+              "variables": {
+                "var_1": {
+                  "args": [
+                    "infantsAndToddlersCount",
+                    {
+                      "field": "CategorySetCode",
+                      "value": ["ST1"]
+                    },
+                    {
+                      "array": true,
+                      "field": "ReportCode",
+                      "value": ["902"]
+                    }
+                  ],
+                  "function": "unfilteredSum"
+                }
+              }
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In the reported data, the Setting categories in your State are distributed as, {{setting}} ({{setting.percentage}}), {{setting-two}} ({{setting-two.percentage}}), and {{setting-three}} ({{setting-three.percentage}}).",
+                  "variables": {
+                    "setting": {
+                      "args": [
+                        0,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "setting"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST1"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "setting",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST1"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "setting-three": {
+                      "args": [
+                        2,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "setting"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST1"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "setting",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST1"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "setting-two": {
+                      "args": [
+                        1,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "setting"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST1"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "setting",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST1"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    }
+                  }
+                },
+                "title": "Distribution of Settings"
+              },
+              {
+                "body": {
+                  "template": "In the reported data, the top three Race/Ethnicity categories receiving Early Intervention services in your State are {{ethnicity}} ({{ethnicity.percentage}}), {{ethnicity-two}} ({{ethnicity-two.percentage}}), {{ethnicity-three}} ({{ethnicity-three.percentage}}).",
+                  "variables": {
+                    "ethnicity": {
+                      "args": [
+                        0,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST3"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST3"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "ethnicity-three": {
+                      "args": [
+                        2,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST3"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST3"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "ethnicity-two": {
+                      "args": [
+                        1,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["ST3"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["ST3"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    }
+                  }
+                },
+                "title": "Distribution of Most Common Race/Ethnicity"
+              },
+              {
+                "body": {
+                  "template": "In the reported data, the Sex categories receiving Early Intervention services in your State are distributed as, {{sex}} ({{sex.percentage}}), and {{sex-two}} ({{sex-two.percentage}}).",
+                  "variables": {
+                    "sex": {
+                      "args": [
+                        0,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "sex"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSC"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "sex",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSC"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "sex-two": {
+                      "args": [
+                        1,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "sex"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSC"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["902"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "sex",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSC"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["902"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    }
+                  }
+                },
+                "title": "Distribution of Sex"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "header",
+          "content": {
+            "body": "This section represents the number of children, ages birth through 2, with an active Individualized Family Service Plan (IFSP) in place on the one-day child count date, according to the child’s age and primary settings.",
+            "level": "h2",
+            "text": "Child Count and Settings by Age"
+          },
+          "sectionLabel": "Child Count and Settings by Age heading"
+        },
+        {
+          "type": "barChartGrouped",
+          "content": {
+            "allMap": "ages birth through 2",
+            "chart": {
+              "dataRetrievalOperations": [
+                {
+                  "id": "ageChart",
+                  "arguments": [
+                    {
+                      "type": "string",
+                      "field": "func",
+                      "value": "sum"
+                    },
+                    {
+                      "array": true,
+                      "field": "columns",
+                      "value": ["infantsAndToddlersCount"]
+                    },
+                    {
+                      "array": true,
+                      "field": "selectColumns",
+                      "value": ["setting", "age"]
+                    },
+                    {
+                      "type": "number",
+                      "field": "limit"
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "order",
+                      "value": ["infantsAndToddlersCount desc"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "groupby",
+                      "value": ["setting", "age"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "ReportCode",
+                      "value": ["902"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "CategorySetCode",
+                      "value": ["CSA"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "setting",
+                      "value": ["H", "CMNTYBSDSTNG", "OTHRSTNG"]
+                    }
+                  ],
+                  "function": "GROUPBY",
+                  "metadata": {
+                    "filterOptions": [
+                      "AGEB",
+                      "AGE1",
+                      "AGE2"
+                    ]
+                  }
+                }
+              ],
+              "filterBy": "age",
+              "filterOn": "x",
+              "groupBy": "setting",
+              "xAxisLabel": "setting",
+              "xAxisValue": "setting",
+              "yAxisLabel": "Child Count",
+              "yAxisValue": "infantsAndToddlersCount"
+            },
+            "dataLabel": "Setting",
+            "descriptionTemplate": "There are {{total}} ({{percentage}}) children, {{filter}}, served in various settings.",
+            "explainTemplate": "In the reported data, the Setting categories in your State are distributed as, {{first}}, {{second}}, and {{third}}.",
+            "filterDescription": "Choose an age range to see specific data and insights.",
+            "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+            "prefix": "ages",
+            "title": "All Ages"
+          },
+          "sectionLabel": "Child Count and Settings by Age"
+        },
+        {
+          "type": "header",
+          "content": {
+            "body": "This section represents the number of children, ages birth through 2, with an active Individualized Family Service Plan (IFSP) in place on the one-day child count date, according to the child’s race/ethnicity and primary settings.",
+            "level": "h2",
+            "text": "Child Count and Settings by Race/Ethnicity"
+          },
+          "sectionLabel": "Child Count and Settings by Race/Ethnicity heading"
+        },
+        {
+          "type": "barChartGrouped",
+          "content": {
+            "allMap": "of all race/ethnicity",
+            "chart": {
+              "dataRetrievalOperations": [
+                {
+                  "id": "sectionBChart",
+                  "arguments": [
+                    {
+                      "type": "string",
+                      "field": "func",
+                      "value": "sum"
+                    },
+                    {
+                      "array": true,
+                      "field": "columns",
+                      "value": ["infantsAndToddlersCount"]
+                    },
+                    {
+                      "array": true,
+                      "field": "selectColumns",
+                      "value": ["setting", "racialEthnic"]
+                    },
+                    {
+                      "type": "number",
+                      "field": "limit"
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "order",
+                      "value": ["infantsAndToddlersCount desc"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "groupby",
+                      "value": ["setting", "racialEthnic"]
+                    },
+                    {
+                      "field": "CategorySetCode",
+                      "value": ["CSB"]
+                    },
+                    {
+                      "array": true,
+                      "field": "ReportCode",
+                      "value": ["902"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "setting",
+                      "value": ["H", "CMNTYBSDSTNG", "OTHRSTNG"]
+                    }
+                  ],
+                  "function": "GROUPBY"
+                }
+              ],
+              "filterBy": "racialEthnic",
+              "filterOn": "x",
+              "groupBy": "setting",
+              "xAxisLabel": "setting",
+              "xAxisValue": "racialEthnic",
+              "yAxisLabel": "Child Count",
+              "yAxisValue": "infantsAndToddlersCount"
+            },
+            "dataLabel": "Setting",
+            "descriptionTemplate": "There are {{total}} ({{percentage}}) children, {{filter}}, served in various settings.",
+            "explainTemplate": "In the reported data, the top three Race/Ethnicity categories receiving Early Intervention services in your State are {{first}}, {{second}}, and {{third}}.",
+            "filterDescription": "Choose a race/ethnicity to see specific data and insights.",
+            "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+            "prefix": "that are",
+            "title": "All Race/Ethnicities"
+          },
+          "sectionLabel": "Child Count and Settings by Race/Ethnicity"
+        },
+        {
+          "type": "header",
+          "content": {
+            "body": "This section represents the number of children, ages birth through 2, with an active Individualized Family Service Plan (IFSP) in place on the one-day child count date, according to the child’s sex.",
+            "level": "h2",
+            "text": "Child Count by Sex"
+          },
+          "sectionLabel": "Child Count by Sex heading"
+        },
+        {
+          "type": "barChart",
+          "content": {
+            "chart": {
+              "dataRetrievalOperations": [
+                {
+                  "id": "sectionCSexChart",
+                  "arguments": [
+                    {
+                      "type": "string",
+                      "field": "func",
+                      "value": "sum"
+                    },
+                    {
+                      "array": true,
+                      "field": "columns",
+                      "value": ["infantsAndToddlersCount"]
+                    },
+                    {
+                      "array": true,
+                      "field": "selectColumns",
+                      "value": ["sex"]
+                    },
+                    {
+                      "type": "number",
+                      "field": "limit"
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "order",
+                      "value": ["infantsAndToddlersCount desc"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "groupby",
+                      "value": ["sex"]
+                    },
+                    {
+                      "type": "string",
+                      "array": true,
+                      "field": "CategorySetCode",
+                      "value": ["CSC"]
+                    },
+                    {
+                      "array": true,
+                      "field": "ReportCode",
+                      "value": ["902"]
+                    }
+                  ],
+                  "function": "GROUPBY"
+                }
+              ],
+              "filterOn": "x",
+              "xAxisLabel": "sex",
+              "xAxisValue": "sex",
+              "yAxisLabel": "Child Count",
+              "yAxisValue": "infantsAndToddlersCount"
+            },
+            "dataLabel": "Sex",
+            "description": {
+              "template": "There are {{total}} children, male or female, who received early intervention services.",
+              "variables": {
+                "total": {
+                  "args": [
+                    "infantsAndToddlersCount",
+                    {
+                      "array": true,
+                      "field": "CategorySetCode",
+                      "value": ["CSC"]
+                    },
+                    {
+                      "array": true,
+                      "field": "ReportCode",
+                      "value": ["902"]
+                    }
+                  ],
+                  "function": "sum"
+                }
+              }
+            },
+            "explainTemplate": "In the reported data, the Sex categories receiving Early Intervention services in your State are distributed as, {{first}}, {{second}}.",
+            "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+            "title": "Child Count by Sex"
+          },
+          "sectionLabel": "Child Count by Sex"
+        }
+      ],
+      "title": "One-Day Count"
+    },
+    {
+      "id": "totalCount",
+      "title": "12-Month Count",
+      "combined": true,
+      "description": "The 12-month count is the cumulative number of infants and toddlers, ages birth through 2, who received early intervention services during the most recent 12-month period.",
+      "name": "12-Month Count",
+      "sections": [
+        {
+          "type": "quickSummary",
+          "content": {
+            "heading": {
+              "template": "There were {{var_1}} children receiving early intervention services in your state during the most recent 12-month period.",
+              "variables": {
+                "var_1": {
+                  "args": [
+                    "infantsAndToddlersCount",
+                    {
+                      "array": true,
+                      "field": "CategorySetCode",
+                      "value": ["CSA"]
+                    },
+                    {
+                      "field": "ReportCode",
+                      "value": ["905"]
+                    }
+                  ],
+                  "function": "sum"
+                }
+              }
+            },
+            "sections": [
+              {
+                "body": {
+                  "template": "In the reported data, the top three Race/Ethnicity categories in your State are distributed as, {{racialEthnic}} ({{racialEthnic.percentage}}), {{racialEthnic-two}} ({{racialEthnic-two.percentage}}), and {{racialEthnic-three}} ({{racialEthnic-three.percentage}}).",
+                  "variables": {
+                    "racialEthnic": {
+                      "args": [
+                        0,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSA"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["905"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSA"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["905"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "racialEthnic-three": {
+                      "args": [
+                        2,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSA"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["905"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSA"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["905"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "racialEthnic-two": {
+                      "args": [
+                        1,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "racialEthnic"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSA"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["905"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "racialEthnic",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSA"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["905"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    }
+                  }
+                },
+                "title": "Distribution of Most Common Race/Ethnicity"
+              },
+              {
+                "body": {
+                  "template": "In the reported data, the Sex categories in your State are distributed as, {{sex}} ({{sex.percentage}}) and {{sex-two}} ({{sex-two.percentage}}).",
+                  "variables": {
+                    "sex": {
+                      "args": [
+                        0,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "sex"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSB"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["905"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "sex",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSB"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["905"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    },
+                    "sex-two": {
+                      "args": [
+                        1,
+                        "infantsAndToddlersCount",
+                        {
+                          "field": "maxSelect",
+                          "value": "sex"
+                        },
+                        {
+                          "field": "CategorySetCode",
+                          "value": ["CSB"]
+                        },
+                        {
+                          "array": true,
+                          "field": "ReportCode",
+                          "value": ["905"]
+                        }
+                      ],
+                      "dependents": {
+                        "percentage": {
+                          "args": [
+                            "infantsAndToddlersCount",
+                            {
+                              "field": "sex",
+                              "parent": true
+                            },
+                            {
+                              "field": "CategorySetCode",
+                              "value": ["CSB"]
+                            },
+                            {
+                              "array": true,
+                              "field": "ReportCode",
+                              "value": ["905"]
+                            }
+                          ],
+                          "function": "percentage"
+                        }
+                      },
+                      "function": "max"
+                    }
+                  }
+                },
+                "title": "Distribution of Sex"
+              }
+            ]
+          },
+          "sectionLabel": "Quick Summary"
+        },
+        {
+          "type": "header",
+          "content": {
+            "body": "Cumulative Number of Infants and Toddlers Who Received Early Intervention Services by Race/Ethnicity and Sex from 1/1/2024 to 12/31/2024.",
+            "level": "h2",
+            "text": "12-Month Child Count by Race/Ethnicity and Sex"
+          },
+          "sectionLabel": "Grid View Heading"
+        },
+        {
+          "type": "gridView",
+          "content": {
+            "columns": [
+              {
+                "id": "twelveMonthRace",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "twelveMonth.1RaceChart",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": ["infantsAndToddlersCount"]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": ["racialEthnic"]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": ["infantsAndToddlersCount desc"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": ["racialEthnic"]
+                              },
+                              {
+                                "type": "string",
+                                "field": "CategorySetCode",
+                                "value": ["CSA"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "ReportCode",
+                                "value": ["905"]
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "racialEthnic",
+                        "xAxisValue": "racialEthnic",
+                        "yAxisLabel": "Child Count",
+                        "yAxisValue": "infantsAndToddlersCount"
+                      },
+                      "dataLabel": "Race / Ethnicity",
+                      "description": {
+                        "template": "There are {{total}} children, of all race/ethnicity, who received early intervention services from 1/1/2024 to 12/31/2024.",
+                        "variables": {
+                          "total": {
+                            "args": [
+                              "infantsAndToddlersCount",
+                              {
+                                "array": true,
+                                "field": "CategorySetCode",
+                                "value": ["CSA"]
+                              },
+                              {
+                                "field": "ReportCode",
+                                "value": ["905"]
+                              }
+                            ],
+                            "function": "sum"
+                          }
+                        }
+                      },
+                      "explainTemplate": "In the reported data, the top three Race/Ethnicity categories receiving Early Intervention services in your State are, {{first}}, {{second}}, and {{third}}.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "By Race/Ethnicity"
+                    },
+                    "sectionLabel": "By Race/Ethnicity"
+                  }
+                ]
+              },
+              {
+                "id": "twelveMonthAge",
+                "rows": [
+                  {
+                    "type": "barChart",
+                    "content": {
+                      "chart": {
+                        "dataRetrievalOperations": [
+                          {
+                            "id": "twelveMonthChartAge",
+                            "arguments": [
+                              {
+                                "type": "string",
+                                "field": "func",
+                                "value": "sum"
+                              },
+                              {
+                                "array": true,
+                                "field": "columns",
+                                "value": ["infantsAndToddlersCount"]
+                              },
+                              {
+                                "array": true,
+                                "field": "selectColumns",
+                                "value": ["sex"]
+                              },
+                              {
+                                "type": "number",
+                                "field": "limit"
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "order",
+                                "value": ["infantsAndToddlersCount desc"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "groupby",
+                                "value": ["sex"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "CategorySetCode",
+                                "value": ["CSB"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "ReportCode",
+                                "value": ["905"]
+                              }
+                            ],
+                            "function": "GROUPBY"
+                          }
+                        ],
+                        "filterOn": "x",
+                        "xAxisLabel": "sex",
+                        "xAxisValue": "sex",
+                        "yAxisLabel": "Child Count",
+                        "yAxisValue": "infantsAndToddlersCount"
+                      },
+                      "dataLabel": "Sex",
+                      "description": {
+                        "template": "There are {{total}} children, male or female, who received early intervention services from 1/1/2024 to 12/31/2024.",
+                        "variables": {
+                          "total": {
+                            "args": [
+                              "infantsAndToddlersCount",
+                              {
+                                "array": true,
+                                "field": "CategorySetCode",
+                                "value": ["CSB"]
+                              },
+                              {
+                                "type": "string",
+                                "array": true,
+                                "field": "ReportCode",
+                                "value": ["905"]
+                              }
+                            ],
+                            "function": "sum"
+                          }
+                        }
+                      },
+                      "explainTemplate": "In the reported data, the Sex categories receiving Early Intervention services in your State are distributed as, {{first}}, {{second}}, and {{third}}.",
+                      "noDataDescription": "Unfortunately, there is no data to display for this section. This is due to how the Office of Special Education Programs (OSEP) requires the State's data to be organized.",
+                      "title": "By Sex"
+                    },
+                    "sectionLabel": "By Sex"
+                  }
+                ]
+              }
+            ]
+          },
+          "sectionLabel": "Grid View"
+        }
+      ]
+    }
+  ],
+  "suppression": {
+    "childOrganization": "CategorySetCode",
+    "frequencyColumns": ["infantsAndToddlersCount"],
+    "parentOrganization": "file",
+    "required": true,
+    "sensitiveColumns": ["setting", "racialEthnic", "sex", "age"]
+  },
+  "title": "IDEA Child Count and Settings",
+  "reportingYear": "2025"
+}
