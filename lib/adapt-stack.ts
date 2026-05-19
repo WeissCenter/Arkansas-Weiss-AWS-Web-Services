@@ -11,7 +11,7 @@ import { AdaptDynamoTable } from "../constructs/AdaptDynamoTable";
 import { LogGroup } from "aws-cdk-lib/aws-logs";
 import { AdaptS3Bucket } from "../constructs/AdaptS3Bucket";
 import { Bucket, EventType, HttpMethods } from "aws-cdk-lib/aws-s3";
-import { Database, Job } from "@aws-cdk/aws-glue-alpha";
+import { Database, IJob } from "@aws-cdk/aws-glue-alpha";
 import { LambdaDestination } from "aws-cdk-lib/aws-s3-notifications";
 import * as s3express from "aws-cdk-lib/aws-s3express";
 import { AdaptMockFunction } from "../constructs/AdaptMockFunction";
@@ -29,8 +29,8 @@ interface AdaptApiStackProps extends AdaptStackProps {
   dataCatalog: Database;
   crawlerRole: Role;
   dataSourceGlueRole: Role;
-  glueJob: Job;
-  publishGlueJob: Job;
+  glueJob: IJob;
+  publishGlueJob: IJob;
   suppressionServiceFunction: string;
   logGroup: LogGroup;
   renderTemplateServiceFunction: AdaptNodeLambda;
@@ -524,9 +524,8 @@ export class AdaptStack extends cdk.Stack {
                   }),
                   new PolicyStatement({
                     effect: Effect.ALLOW,
-                    actions: ["s3:DeleteObject"],
+                    actions: ["s3:DeleteObject", "s3:ListBucket"],
                     resources: ["*"] // TODO: restrict to the staging and repo buckets
-                    //  actions: ["s3:DeleteObject", "s3:ListBucket"],
                     //  resources: [props.repoBucket.bucketArn, props.stagingBucket.bucketArn, props.repoBucket.bucketArn + "/*", props.stagingBucket.bucketArn + "/*"] // TODO: restrict to the staging and repo buckets
                   })
                 ]

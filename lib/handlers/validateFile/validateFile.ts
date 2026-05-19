@@ -41,7 +41,7 @@ export const handler: Handler = async (event: APIGatewayEvent | S3CreateEvent, c
         collectionID = `${collectionID}#YEAR#${item.reportingYear}`;
       }
         
-      const collection = await getDataCollectionTemplate(db, TEMPLATE_TABLE, collectionID);
+      const collection = await getDataCollectionTemplate(db, TEMPLATE_TABLE, collectionID); // FIXME: this needs the year with the ID
 
       if (!collection) {
         return CreateBackendErrorResponse(404, "collection not found");
