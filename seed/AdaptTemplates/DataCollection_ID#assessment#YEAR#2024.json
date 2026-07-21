@@ -79,7 +79,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '175' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '175' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in mathematics and received a valid score.",
       "included_in_all": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"],
@@ -144,7 +144,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '178' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '178' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "description": "The unduplicated number of students in grades 3 through 8 and in high school who completed the state assessment(s) in reading/language arts and received a valid score.",
       "included_in_all": ["gradelevel", "proficiencystatus", "assessmenttypeadministered"],
@@ -209,7 +209,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '185' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '185' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in mathematics.",
       "included_in_all": ["assessmentregistrationparticipationindicator", "gradelevel"],
@@ -299,7 +299,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '188' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentAssessments where ReportCode = '188' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "description": "The unduplicated number of students enrolled in grades 3 through 8 and high school students expected to participate in an end-of-grade or end-of-course assessment during the period of the state assessment(s) in reading/language arts.",
       "included_in_all": ["gradelevel", "assessmentregistrationparticipationindicator"],

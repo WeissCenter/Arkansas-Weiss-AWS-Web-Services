@@ -3,7 +3,9 @@ run-name: ${{ github.actor }} pushed an update for env ${{ github.ref_name }}
 on:
   workflow_dispatch:
   push:
-    paths-ignore: ".github/**"
+    paths-ignore:
+      - ".github/**"
+      - "seed/**"
     branches:
       - "dev"
       - "qa"
@@ -19,6 +21,15 @@ env:
   ADMIN_SUB_DOMAIN: ${{ vars.ADMIN_SUB_DOMAIN }}
   VIEWER_SUB_DOMAIN: ${{ vars.VIEWER_SUB_DOMAIN }}
   DEPLOYMENT_BUILD_RELEASE_NO: ${{ vars.DEPLOYMENT_BUILD_RELEASE_NO }}
+  ENABLE_CLIENT_DB_VPN: ${{ vars.ENABLE_CLIENT_DB_VPN }}
+  GLUE_VPC_CIDR: ${{ vars.GLUE_VPC_CIDR }}
+
+# Serialize deploys per environment. Never cancel an in-flight deploy — killing a
+# cdk deploy mid-CloudFormation-update can leave a stack in UPDATE_ROLLBACK_FAILED;
+# queue the new run behind the current one instead.
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   cdk-deploy:
@@ -28,16 +39,38 @@ jobs:
     environment: ${{ github.ref_name }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Zip Python Library
         run: |
           cd ${{ github.workspace }}/libs
-          zip -vqr ./adapt-data-pull-lib.zip ./data
+          # Deterministic build (normalized mtimes + sorted entries): zip embeds
+          # mtimes + entry order, so a naive `zip -r` changes the archive hash every
+          # run, churning --extra-py-files and orphaning hashed S3 objects each deploy.
+          # Keep directory entries (no `-type f`): data/transformers is a namespace
+          # package (no __init__.py) that zipimport resolves only via the dir entry.
+          rm -f ./adapt-data-pull-lib.zip
+          TZ=UTC find data -exec touch -t 198001010000.00 {} +
+          find data | LC_ALL=C sort | zip -X -q ./adapt-data-pull-lib.zip -@
+      - name: Zip Python Dependencies
+        run: |
+          cd ${{ github.workspace }}/libs
+          # The data-pull job runs in the isolated VPC subnet (no internet), so
+          # --additional-python-modules can't reach PyPI; pre-build the deps and ship
+          # them on --extra-py-files (built deterministically, as above). lxml excluded
+          # (C extensions can't load from a zip — dataPull.py uses bs4/html5lib).
+          # beautifulsoup4 pinned <4.13: Glue 4.0's pandas read_html reads
+          # SoupStrainer.name, removed in bs4 4.13+.
+          rm -rf ./pydeps ./adapt-data-pull-deps.zip
+          pip install --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.10 \
+            --implementation cp --target ./pydeps sql-metadata==2.20.0 beautifulsoup4==4.12.3 html5lib==1.1
+          cd pydeps
+          TZ=UTC find . -exec touch -t 198001010000.00 {} +
+          find . | LC_ALL=C sort | zip -X -q ../adapt-data-pull-deps.zip -@
       - name: Cache Suppression Layer
         id: cache-suppression-layer
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         env:
-          cache-name: cache-suppression-layer
+          cache-name: cache-suppression-layer-py312
         with:
           path: ${{ github.workspace }}/lib/layers/suppress-layer/lib.zip
           key: ${{ runner.os }}-suppression-layer-${{ env.cache-name }}-${{ hashFiles('**/lib/layers/suppress-layer/requirements.txt') }}
@@ -46,22 +79,19 @@ jobs:
             ${{ runner.os }}-suppression-layer-
             ${{ runner.os }}-
       - name: Build Suppression Layer
+        if: steps.cache-suppression-layer.outputs.cache-hit != 'true'
         run: |
           cd ${{ github.workspace }}/lib/layers/suppress-layer
-          mkdir -p python/lib/python3.10/site-packages
-          pip install --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.10 --implementation cp --upgrade  --target=./python -r requirements.txt
+          rm -rf ./python ./lib.zip
+          mkdir -p python/lib/python3.12/site-packages
+          pip install --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.12 --implementation cp --upgrade  --target=./python -r requirements.txt
           zip -vqr ./lib.zip ./python
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "20"
-      - run: npm install && npm run build
+      - run: npm ci && npm run build
       - name: cdk deploy # will execute the file adapt-cdk.ts in the bin folder via the cdk.json config file
-        uses: youyo/aws-cdk-github-actions@v2
-        with:
-          cdk_subcommand: "deploy"
-          cdk_stack: "*"
-          cdk_args: "--require-approval never"
-          actions_comment: false
+        run: npx cdk deploy "*" --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -71,6 +101,9 @@ jobs:
           ADMIN_SUB_DOMAIN: ${{ env.ADMIN_SUB_DOMAIN }}
           VIEWER_SUB_DOMAIN: ${{ env.VIEWER_SUB_DOMAIN }}
           DEPLOYMENT_BUILD_RELEASE_NO: ${{ env.DEPLOYMENT_BUILD_RELEASE_NO }}
+          ENABLE_CLIENT_DB_VPN: ${{ env.ENABLE_CLIENT_DB_VPN }}
+          CLIENT_VPNS: ${{ secrets.CLIENT_VPNS }}
+          GLUE_VPC_CIDR: ${{ env.GLUE_VPC_CIDR }}
           #See the adapt-cdk.ts file in the bin folder for default values
           CALLBACK_URL: "https://${{ env.ADMIN_SUB_DOMAIN }}.${{ env.HOSTED_ZONE }}/auth/redirect"
           PUBLIC_VAPID_KEY: ${{ secrets.PUBLIC_VAPID_KEY }}

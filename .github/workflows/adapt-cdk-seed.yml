@@ -3,12 +3,18 @@ run-name: ${{ github.actor }} pushed an update for env ${{ github.ref_name }}
 on:
   workflow_dispatch:
   push:
-    paths: "seed/**"
+    paths:
+      - "seed/**"
     branches:
       - "dev"
       - "qa"
       - "uat"
       - "main" # prod
+
+concurrency:
+  group: seed-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   dynamodb-seeding:
     runs-on: ubuntu-latest
@@ -17,11 +23,11 @@ jobs:
     environment: ${{ github.ref_name }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+        uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
         with:
           node-version: "20"
-      - run: npm install && npm run build
+      - run: npm ci && npm run build
       - name: Run Seeding script
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY_ID }}
