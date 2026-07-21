@@ -1,8 +1,8 @@
 {
   "type": "DataCollection",
-  "id": "ID#personnel#YEAR#2024",
+  "id": "ID#personnel#YEAR#2026",
   "dataCollectionId": "personnel",
-  "reportingYear": "2024",
+  "reportingYear": "2026",
   "dataViewDescription": "This data view captures the number of full-time equivalent (FTE) special education teachers, related service personnel, and paraprofessionals that are employed or contracted to provide services to children with disabilities (IDEA) aged 3 through 21.",
   "fields": [
     {
@@ -49,7 +49,7 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '070' and ReportLevel = 'sea' and ReportYear = 2024"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '070' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "description": "The number of full-time equivalent (FTE) special education teachers employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],
@@ -86,7 +86,7 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '099' and ReportLevel = 'sea' and ReportYear = 2024"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '099' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "description": "The number of full-time equivalent (FTE) related services personnel employed or contracted to provide related services for children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],
@@ -124,7 +124,7 @@
         "stafffulltimeequivalency"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '112' and ReportLevel = 'sea' and ReportYear = 2024"
+        "query": "select * from RDS.ReportEdFactsK12StaffCounts where ReportCode = '112' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "description": "The number of full-time equivalent (FTE) paraprofessionals employed or contracted to work with children with disabilities (IDEA) who were ages 3 through 21.",
       "included_in_all": [],

@@ -172,12 +172,12 @@
     "community": {
       "label": "Community-Based Setting",
       "description": "Community-based setting",
-      "definition": "The one-day count of infants and toddlers who get their services in a setting where children without disabilities usually go. Some examples include: child care centers, Early Head Start Programs, preschools, early childhood centers, etc."
+      "definition": "The one-day count of infants and toddlers who get their services in a setting where children without disabilities usually go. These places include child care centers, Early Head Start Programs, preschools, and early childhood centers."
     },
     "other": {
       "label": "Other Setting",
       "description": "Other setting",
-      "definition": "The one-day count of infants and toddlers who receive services in settings other than the home or community. Some examples include: hospitals, schools, therapist offices, physician offices or clinics, etc."
+      "definition": "The one-day count of infants and toddlers who get their services neither home or community-based places for example, hospitals, therapist office, doctor's office or clinic."
     },
     "Female": {
       "label": "Female",
@@ -357,39 +357,39 @@
     },
     "ATMTCNTCTUNSCFL": {
       "label": "Attempts to contact unsuccessful",
-      "definition": "\"Attempts to contact unsuccessful\" refers to children who were enrolled in the IDEA Part C early intervention program but were exited from the program because attempts to contact the family were unsuccessful"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in special education at the end of the period because attempts to contact the parent and/or child were unsuccessful."
     },
     "WTHDRWLBYPRNT": {
       "label": "Withdrawal",
-      "definition": "\"Withdrawal\" refers to children who were enrolled in the IDEA Part C early intervention program but were exited because the child was withdrawn from the program by their parent or guardian"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because the parent (or guardian) withdrew them."
     },
     "MVDOUTOFSTE": {
       "label": "Moved",
-      "definition": "\"Moved\" refers to children who were enrolled in the IDEA Part C early intervention program but were exited because they moved out of their program's area"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they moved to another state."
     },
     "PTBELIGNTDETOTH": {
       "label": "Not determined",
-      "definition": "\"Not determined\" refers to children who were enrolled in the IDEA Part C early intervention program and exited the program with their Part B eligibility not determined"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because their eligibility for Part B has not been determined."
     },
     "NTELIGPTBEXTNRF": {
       "label": "Not Part B eligible, exiting with no referrals",
-      "definition": "\"Not Part B eligible, exiting with no referrals\" refers to children who were enrolled in the IDEA Part C early intervention program and were exited from the program not eligible for Part B preschool education services and with no referrals to any other services"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they were not eligible for Part B and were not referred to any other services."
     },
     "NTELIGPTBEXTRF": {
       "label": "Not Part B eligible, exiting with referrals",
-      "definition": "\"Not Part B eligible, exiting with referrals\" refers to children who were enrolled in the IDEA Part C early intervention program and were exited from the program not eligible for Part B preschool education services and with a referral to other services"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they were not eligible for Part B and were referred to other programs instead."
     },
     "PTBELIGCONTPTC": {
       "label": "Part B eligible, continuing in Part C",
-      "definition": "\"Part B eligible, continuing in Part C\" refers to children who reach age 3, qualify for Part B preschool special education services, but whose parents opt to keep them in the IDEA Part C early intervention program instead"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in special education at the end of the period because they became eligible for Part B services but are still continuing in Part C."
     },
     "PTBELIGEXTPTC": {
       "label": "Part B eligible, exiting Part C",
-      "definition": "\"Part B eligible, exiting Part C\" refers to toddlers who reach the age of three and transition/exit from early intervention services to preschool special education"
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they became eligible for Part B special education services and exited Part C."
     },
     "NOLGRELGPTC": {
       "label": "No longer eligible",
-      "definition": "\"No longer eligible\" refers to children who were enrolled in the IDEA Part C early intervention program but were exited because they were no longer eligible for the program before turning three. "
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they are no longer eligible for Part C services before turning three."
     },
     "REGASSWOACC": {
       "label": "Regular assessments without accommodations",
@@ -480,12 +480,12 @@
       "definition": "The student did not participate in the state assessments due to significant medical emergencies."
     },
     "REMDW": {
-      "label": "Unilateral Removal by School District",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by school staff for not more than 45 days because they have drugs, weapons, or have caused serious injury to someone else. A unilateral removal by school ditrict does NOT include placement changes made by IEP team."
+      "label": "Removed to an IAES by school personnel",
+      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by school staff because they have drugs, weapons, or have caused serious injury to someone else."
     },
     "REMHO": {
-      "label": "Unilateral Removal by State Level Hearing Officer",
-      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by a Hearing Officer because of a strong chance they could hurt themselves or others. Per Rule 55,  a hearing officer is appointed by the NDE."
+      "label": "Removed to an IAES by a hearing officer",
+      "definition": "A student with disabilities is moved to a temporary educational setting away from the student's current placement by a Hearing Officer because of a strong chance they could hurt themselves or others."
     },
     "INSCHOOL": {
       "label": "In-School Suspensions",
@@ -493,7 +493,7 @@
     },
     "OUTOFSCHOOL": {
       "label": "Out-of-School Suspensions/Expulsions",
-      "definition": "Out-of-School Suspensions: A student with disabilities is removed from his/her regular school for disciplinary purposes to another placement (like home or a behavior center). This includes removals in which no IEP services are provided because the removal is 10 days or less and removals in which the student continues to receive services according to his/her IEP. Expulsion: A student with disabilities is removed from his/her regular school for disciplinary purposes for the remainder of the school year or longer in accordance with school district policy. This includes removals resulting from violations of the Gun Free Schools Act that are modified to less than 365 days."
+      "definition": "A student with disabilities is removed from regular school for discipline temporarily, for the rest of the school year, or longer depending on school district policy."
     },
     "LTOREQ10": {
       "label": "Less than 10 days",
@@ -540,8 +540,8 @@
       "definition": "This means a person who is qualified to assess and support students who have hearing problems, including the use of hearing aids and educating students, families, and other school staff about the student's hearing problems."
     },
     "SPEECHPATH": {
-      "label": "Speech Pathologists",
-      "definition": "This means a person who is assigned to assess communicative disorders; to plan, direct, and participate in many habilitative and instructional programs for children and youth who have communicative disorders; and to seek to prevent language, speech, and hearing disorders whenever possible. May also include the job title: Language Pathologist, Speech Therapist."
+      "label": "Speech-language pathologists",
+      "definition": "This means a person who is qualified to assess and support students with speech or language problems to improve the student's communication skills and/or make communication accessible at school."
     },
     "INTERPRET": {
       "label": "Interpreters",
@@ -561,7 +561,7 @@
     },
     "PEANDREC": {
       "label": "Physical education teachers and recreation specialists",
-      "definition": "This means a person who is assigned and responsible for providing related services specific to recreational therapy that utilizes recreation and other activity-based interventions to address the assessed needs of individuals with illness and/or disabling conditions, as a means to psychological and physical health, recovery and well-being."
+      "definition": "This means a person who is qualified to assess and support students who need adapted teaching, environments, and/or equipment for physical activity at school, including physical, leisure, and recreation education."
     },
     "SOCIALWORK": {
       "label": "Social workers",
@@ -569,7 +569,7 @@
     },
     "MEDNURSE": {
       "label": "Medical/nursing service staff",
-      "definition": "This means a person who is qualified to assess and support students with medical conditions, including giving medication, responding to medical emergencies, and working with teachers and parents to meet students' medical needs at school. School nurses can be Registered Nurses (RN) or Licensed Practice Nurses (LPN)."
+      "definition": "This means a person who is qualified to assess and support students with medical conditions, including giving medication, responding to medical emergencies, and working with teachers and parents to meet students'  medical needs at school."
     },
     "COUNSELOR": {
       "label": "Counselors and rehabilitation counselors",
@@ -588,7 +588,7 @@
       "definition": "This means a staff person does not have the necessary training to provide academic and functional support for students with disabilities, under the direction of other certified or qualified staff."
     },
     "009-D": {
-      "label": "Deceased",
+      "label": "Died",
       "definition": "This means a student with a disability left special education because they die."
     },
     "007-D": {
@@ -597,7 +597,7 @@
     },
     "901-D": {
       "label": "Deceased",
-      "definition": "\"Deceased\" refers to children who passed away while they were enrolled in the IDEA Part C early intervention program "
+      "definition": "The child who was in early intervention at the beginning of the reporting period is no longer in early intervention at the end of the period because they passed away."
     },
     "GHS": {
       "label": "Graduated with regular high school diploma",
@@ -696,7 +696,7 @@
       "definition": "Specific learning disability means having a disorder that affects one or more of the basic mental processes needed to understand or use language, whether spoken or written. This can make it hard to listen, think, speak, read, write, spell, or do math. It includes conditions like dyslexia, brain injuries, and other challenges that affect learning."
     },
     "SLI": {
-      "label": "Speech - language impairment",
+      "label": "Speech or language impairment",
       "definition": "Speech or language impairment means a communication disorder, such as stuttering, impaired articulation, a language impairment, or a voice impairment, that adversely affects a child's educational performance."
     },
     "TBI": {
@@ -704,7 +704,7 @@
       "definition": "Traumatic brain injury means a brain injury caused by an outside physical force, which can lead to full or partial disabilities, or problems with social behavior, and can make it harder for a child to succeed in school. This type of injury can affect thinking, memory, language, attention, problem-solving, senses, movement, behavior, physical abilities, and speech. It doesn\u2019t include brain injuries present at birth, those that get worse over time, or those caused by birth trauma."
     },
     "VI": {
-      "label": "Visual impairment, including blindness",
+      "label": "Visual impairment",
       "definition": "Visual impairment, including blindness, means having vision problems that, even with glasses or other help, make it hard for a child to do well in school. This includes both partial sight and complete blindness."
     },
     "F": {

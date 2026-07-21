@@ -19,6 +19,7 @@ import pyspark
 from itertools import combinations
 import hashlib
 from pyspark.sql import SQLContext
+from pyspark.sql.types import StringType
 import pandas as pd
 
 def hash_row(row, columns):
@@ -65,7 +66,11 @@ try:
     
     print('DATA VIEW', dynamo_report['dataView'].replace("-", "_"))
 
-    new_node = glueContext.create_data_frame.from_catalog(database=glue_database, table_name=dynamo_report['dataView'].replace("-", "_"), additional_options={"useCatalogSchema": True, "useSparkDataSource": True})   
+    new_node = glueContext.create_data_frame.from_catalog(database=glue_database, table_name=dynamo_report['dataView'].replace("-", "_"), additional_options={"useCatalogSchema": True, "useSparkDataSource": True})
+
+    # Track which columns are strings so we can keep '' for them but restore real
+    # nulls on the numeric/date columns before rebuilding the Spark frame below.
+    string_columns = {field.name for field in new_node.schema.fields if isinstance(field.dataType, StringType)}
 
     data_frame = new_node.toPandas().fillna('')
 
@@ -116,6 +121,15 @@ try:
                 continue
 
     clearS3(report_data_s3, report)
+
+    # fillna('') above turned nulls in non-string columns into empty strings. When
+    # spark.createDataFrame infers the schema it then sees both Decimal (populated
+    # rows) and String ('' rows) for the same column and fails with
+    # "Can not merge type DecimalType and StringType". Restore real nulls (None ->
+    # NullType, which merges cleanly with any type) on every non-string column.
+    for column in data_frame.columns:
+        if column not in string_columns:
+            data_frame[column] = data_frame[column].apply(lambda value: None if value == '' else value)
 
     glueContext.write_dynamic_frame.from_options(
         frame=DynamicFrame.fromDF(spark.createDataFrame(data_frame), glueContext, str(uuid.uuid4())),

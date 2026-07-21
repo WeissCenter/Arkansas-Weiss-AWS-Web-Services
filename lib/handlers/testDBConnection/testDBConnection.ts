@@ -52,13 +52,18 @@ async function tryMSSQL(input: TestDBConnectionInput) {
     password: input.password,
     database: input.database,
     server: input.url,
+    ...(input.port ? { port: parseInt(input.port, 10) } : {}),
+    // Fail within the Lambda / API Gateway 29s window rather than hanging if the
+    // VPN tunnel is down or the DB is unreachable.
+    connectionTimeout: 15000,
     pool: {
       max: 10,
       min: 0,
       idleTimeoutMillis: 30000
     },
     options: {
-      trustServerCertificate: true // change to true for local dev / self-signed certs
+      encrypt: true, // required for Azure SQL Managed Instance; safe elsewhere
+      trustServerCertificate: true // accept self-signed / MI certs (the VPN already encrypts the wire)
     }
   };
 

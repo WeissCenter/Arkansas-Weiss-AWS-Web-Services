@@ -29,7 +29,7 @@ export class AdaptPythonLambda extends Function {
 
     const assetOpts = {
       bundling: {
-        image: Runtime.PYTHON_3_10.bundlingImage,
+        image: Runtime.PYTHON_3_12.bundlingImage,
         // command: [
         //   "bash",
         //   "-c",
@@ -60,7 +60,7 @@ export class AdaptPythonLambda extends Function {
       // End overridable defaults
       ...props,
       // Set non-overridable defaults (these must be last and defined in the omit props list)
-      runtime: Runtime.PYTHON_3_10,
+      runtime: Runtime.PYTHON_3_12,
       functionName: `${props.prefix}-${id}`,
       code: Code.fromAsset(codePath, existsSync(path.join(codePath, "requirements.txt")) ? assetOpts : undefined)
       // End non-overridable defaults

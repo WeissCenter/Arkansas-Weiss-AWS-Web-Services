@@ -4,7 +4,10 @@ import * as cdk from "aws-cdk-lib";
 import { AdaptStack } from "../lib/adapt-stack";
 import { AdaptDynamoStack } from "../lib/adapt-dynamo-stack";
 import { AdaptDataStack } from "../lib/adapt-data-stack";
+import { AdaptNetworkStack } from "../lib/adapt-network-stack";
+import { AdaptClientVpn } from "../constructs/AdaptClientVpn";
 import { AdaptLoggingStack } from "../lib/adapt-logging-stack";
+import { AdaptAuditStack } from "../lib/adapt-audit-stack";
 import { AdaptCognitoStack } from "../lib/adapt-cognito-stack";
 import { AdaptUserPermissionStack } from "../lib/adapt-user-permission-stack";
 import { AdaptStaticSite } from "../lib/adapt-static-site-stack";
@@ -30,6 +33,30 @@ const AWS_DEFAULT_REGION = process.env["AWS_DEFAULT_REGION"] || "us-east-1";
 
 const DEPLOYMENT_BUILD_RELEASE_NO = process.env["DEPLOYMENT_BUILD_RELEASE_NO"] || "unknown";
 
+// Client DB connectivity (Glue Data VPC + per-client Site-to-Site VPN) is opt-in:
+// it provisions a VPC, VGW, and interface endpoints that cost money, so only
+// environments that integrate with external client databases should enable it.
+const ENABLE_CLIENT_DB_VPN = process.env["ENABLE_CLIENT_DB_VPN"] === "true";
+// CIDR for the Glue Data VPC. MUST NOT overlap any client's hub/spoke CIDR.
+const GLUE_VPC_CIDR = process.env["GLUE_VPC_CIDR"] || "10.100.0.0/16";
+
+// Per-client static Site-to-Site VPN config (one VPN per entry), as a JSON array in
+// the CLIENT_VPNS env var. Cloud/on-prem agnostic — only peerIp (client's VPN device
+// IP) and the routed cidrs differ; asn omitted = static routing. Inert when empty.
+//   CLIENT_VPNS='[{"name":"acme","peerIp":"203.0.113.4","cidrs":["10.50.0.0/24"],"asn":65000}]'
+interface ClientVpnConfig {
+  name: string;
+  peerIp: string;
+  cidrs: string[];
+  asn?: number;
+}
+let CLIENT_VPNS: ClientVpnConfig[] = [];
+try {
+  CLIENT_VPNS = JSON.parse(process.env["CLIENT_VPNS"] || "[]");
+} catch (err) {
+  throw new Error(`CLIENT_VPNS must be a valid JSON array of {name, peerIp, cidrs[], asn?}: ${err}`);
+}
+
 const app = new cdk.App();
 
 const cognitoStack = new AdaptCognitoStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptCognitoStack`, {
@@ -47,6 +74,30 @@ const dynamoStack = new AdaptDynamoStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptDy
   stage: AWS_RESOURCE_UNIQUE_ID
 });
 
+const networkStack = ENABLE_CLIENT_DB_VPN
+  ? new AdaptNetworkStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptNetworkStack`, {
+      stage: AWS_RESOURCE_UNIQUE_ID,
+      glueVpcCidr: GLUE_VPC_CIDR
+    })
+  : undefined;
+
+// Per-client Site-to-Site VPNs attach to the Glue Data VPC's VGW — one per
+// CLIENT_VPNS entry, regardless of whether the client is in AWS, Azure, or on-prem.
+if (networkStack) {
+  for (const client of CLIENT_VPNS) {
+    if (!client?.name || !client?.peerIp || !client?.cidrs?.length) {
+      throw new Error(`Invalid CLIENT_VPNS entry (need name, peerIp, cidrs[]): ${JSON.stringify(client)}`);
+    }
+    new AdaptClientVpn(networkStack, `${client.name}-ClientVpn`, {
+      vpc: networkStack.vpc,
+      clientName: client.name,
+      peerIp: client.peerIp,
+      clientCidrs: client.cidrs,
+      asn: client.asn
+    });
+  }
+}
+
 const dataStack = new AdaptDataStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptDataStack`, {
   stage: AWS_RESOURCE_UNIQUE_ID,
   dynamoTables: dynamoStack.tables,
@@ -54,7 +105,17 @@ const dataStack = new AdaptDataStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptDataSt
     publicKey: PUBLIC_VAPID_KEY,
     privateKey: PRIVATE_VAPID_KEY
   },
-  logGroup: loggingStack.logGroup
+  logGroup: loggingStack.logGroup,
+  // Placement networking for the data-pull Glue job (in-VPC execution over the VPN).
+  glueVpc: networkStack?.vpc,
+  glueSubnet: networkStack?.glueSubnet,
+  glueSecurityGroup: networkStack?.glueSecurityGroup
+});
+
+new AdaptAuditStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptAuditStack`, {
+  stage: AWS_RESOURCE_UNIQUE_ID,
+  dynamoTablesToAudit: [dynamoStack.tables.dataSourceTable, dynamoStack.tables.reportTable],
+  bucketsToAudit: [dataStack.stagingBucketName]
 });
 
 // stack for adapt backend resources
@@ -80,7 +141,10 @@ const apiStack = new AdaptStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptStack`, {
   suppressionServiceFunction: dataStack.suppressionServiceFunctionName,
   logGroup: loggingStack.logGroup,
   adminReportCache: dataStack.adminReportCache,
-  viewerReportCache: dataStack.viewerReportCache
+  viewerReportCache: dataStack.viewerReportCache,
+  glueVpc: networkStack?.vpc,
+  glueSubnet: networkStack?.glueSubnet,
+  glueSecurityGroup: networkStack?.glueSecurityGroup
 });
 
 const userPermissionStack = new AdaptUserPermissionStack(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptUserPermissionStack`, {
@@ -100,7 +164,10 @@ const adaptViewerStack = new AdaptViewerStack(app, `${AWS_RESOURCE_UNIQUE_ID}-Ad
 });
 
 const adminSite = new AdaptStaticSite(app, `${AWS_RESOURCE_UNIQUE_ID}-AdaptStaticSiteStack`, {
-  stage: AWS_RESOURCE_UNIQUE_ID
+  stage: AWS_RESOURCE_UNIQUE_ID,
+  hostedZone: HOSTED_ZONE,
+  subDomain: ADMIN_SUB_DOMAIN,
+  certificateArn: HOSTED_ZONE_CERT_ARN,
 });
 
 const viewerSite = new AdaptViewerSite(app, `${AWS_RESOURCE_UNIQUE_ID}-ViewerSiteStack`, {

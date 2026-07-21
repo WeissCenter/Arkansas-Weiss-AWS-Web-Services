@@ -3,12 +3,17 @@ import * as cdk from "aws-cdk-lib";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as cloudfront_origins from "aws-cdk-lib/aws-cloudfront-origins";
+import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 import { CfnOutput, Duration, RemovalPolicy, Stack } from "aws-cdk-lib";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
 import { AdaptStackProps } from "./adpat-stack-props";
 
-export interface AdaptStaticSiteProps extends AdaptStackProps {}
+export interface AdaptStaticSiteProps extends AdaptStackProps {
+  hostedZone?: string;
+  subDomain?: string;
+  certificateArn?: string;
+}
 
 /**
  * Static site infrastructure, which deploys site content to an S3 bucket.
@@ -53,6 +58,15 @@ export class AdaptStaticSite extends cdk.Stack {
     );
     new CfnOutput(this, "Bucket", { value: siteBucket.bucketName });
 
+    const certProps = (props.certificateArn && props.subDomain && props.hostedZone)
+      ? {
+          certificate: certificatemanager.Certificate.fromCertificateArn(
+            this, "Certificate", props.certificateArn
+          ),
+          domainNames: [`${props.subDomain}.${props.hostedZone}`],
+        }
+      : {};
+
     // CloudFront distribution
     const distribution = new cloudfront.Distribution(this, "SiteDistribution", {
       minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
@@ -77,13 +91,14 @@ export class AdaptStaticSite extends cdk.Stack {
         }
       ],
       defaultBehavior: {
-        origin: new cloudfront_origins.S3Origin(siteBucket, {
+        origin: cloudfront_origins.S3BucketOrigin.withOriginAccessIdentity(siteBucket, {
           originAccessIdentity: cloudfrontOAI
         }),
         compress: true,
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
-      }
+      },
+      ...certProps,
     });
     new CfnOutput(this, "DistributionId", {
       value: distribution.distributionId
