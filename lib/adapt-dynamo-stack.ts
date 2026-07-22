@@ -3,17 +3,20 @@ import { AdaptStackProps } from "./adpat-stack-props";
 import { Construct } from "constructs";
 import { AdaptDynamoTable } from "../constructs/AdaptDynamoTable";
 import { AttributeType } from "aws-cdk-lib/aws-dynamodb";
+interface AdaptDynamoStackProps extends AdaptStackProps {
+}
 
 export class AdaptDynamoStack extends cdk.Stack {
   tables: { [key: string]: AdaptDynamoTable } = {};
 
-  constructor(scope: Construct, id: string, props: AdaptStackProps) {
+  constructor(scope: Construct, id: string, props: AdaptDynamoStackProps) {
     super(scope, id, props);
 
     const dataSourceTable = new AdaptDynamoTable(this, `${id}-adapt-data-source`, {
       partitionKey: { name: "type", type: AttributeType.STRING },
       sortKey: { name: "id", type: AttributeType.STRING },
-      tableName: `${props.stage}-AdaptDataSource`
+      tableName: `${props.stage}-AdaptDataSource`,
+      stream: cdk.aws_dynamodb.StreamViewType.NEW_IMAGE
     });
 
     const templatesTable = new AdaptDynamoTable(this, `${id}-adapt-templates`, {
@@ -25,7 +28,8 @@ export class AdaptDynamoStack extends cdk.Stack {
     const reportTable = new AdaptDynamoTable(this, `${id}-adapt-report`, {
       partitionKey: { name: "type", type: AttributeType.STRING },
       sortKey: { name: "id", type: AttributeType.STRING },
-      tableName: `${props.stage}-AdaptReport`
+      tableName: `${props.stage}-AdaptReport`,
+      stream: cdk.aws_dynamodb.StreamViewType.NEW_IMAGE
     });
 
     reportTable.addGlobalSecondaryIndex({

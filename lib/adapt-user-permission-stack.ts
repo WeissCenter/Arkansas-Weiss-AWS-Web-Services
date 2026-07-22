@@ -69,7 +69,7 @@ const API_PERMISSIONS: PermissionMatrix = {
     Write: [
       {
         actions: ["execute-api:Invoke"],
-        resources: [`/POST/report`, `/PUT/report/*`, `/POST/report/*/translate`]
+        resources: [`/POST/report`, `/PUT/report/*`, `/POST/report/*/translate`, `/DELETE/report/*`]
       }
     ],
     Approve: [

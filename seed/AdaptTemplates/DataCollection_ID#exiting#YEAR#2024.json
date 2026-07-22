@@ -65,7 +65,7 @@
         "StudentCount"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = '009' and LOWER(ReportLevel) = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = '009' and LOWER(ReportLevel) = 'sea' and ReportYear = 2024"
       },
       "description": "The unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
       "included_in_all": ["specialeducationexitreason"],

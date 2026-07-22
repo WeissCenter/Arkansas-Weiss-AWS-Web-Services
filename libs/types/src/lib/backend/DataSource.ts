@@ -19,6 +19,8 @@ export interface DataSource {
   validFile?: boolean;
   fileErrors?: { error: string; header: string; id: string }[];
   connectionInfo: string | DataSourceConnectionInfo; // secret manager id
+  glueConnection?: string; // name of the Glue connection created by addNewDataSource
+  crawler?: string; // name of the per-source Glue crawler created by addNewDataSource
 }
 
 export enum DataSourceFileType {

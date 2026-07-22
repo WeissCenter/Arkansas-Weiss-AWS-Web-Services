@@ -2,6 +2,7 @@ import * as cdk from "aws-cdk-lib";
 import * as path from "path";
 import { Construct } from "constructs";
 import { Effect, Policy, PolicyStatement, Role } from "aws-cdk-lib/aws-iam";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { AdaptRestApi } from "../constructs/AdaptRestApi";
 import { AdaptNodeLambda } from "../constructs/AdaptNodeLambda";
 import { RequestAuthorizer } from "aws-cdk-lib/aws-apigateway";
@@ -36,6 +37,12 @@ interface AdaptApiStackProps extends AdaptStackProps {
   renderTemplateServiceFunction: AdaptNodeLambda;
   viewerReportCache: s3express.CfnDirectoryBucket;
   adminReportCache: s3express.CfnDirectoryBucket;
+  // Glue Data VPC networking (from AdaptNetworkStack); used to place the client Glue
+  // connection + the test/preview Lambdas in-VPC so they reach client DBs over the
+  // VPN. Undefined when ENABLE_CLIENT_DB_VPN is off — handlers fall back to non-VPC.
+  glueVpc?: ec2.IVpc;
+  glueSubnet?: ec2.ISubnet;
+  glueSecurityGroup?: ec2.ISecurityGroup;
   version?: string;  // This is used to track the version/build-no/release-no of the current deployment
 }
 
@@ -278,7 +285,18 @@ export class AdaptStack extends cdk.Stack {
                     effect: Effect.ALLOW,
                     actions: ["glue:CreateCrawler", "glue:CreateConnection", "glue:CreateDatabase", "glue:CreateTable", "glue:DeleteCrawler", "glue:StartCrawler"],
                     resources: ["*"] // TODO: restrict to the glue database
-                  })
+                  }),
+                  // Creating a connection with PhysicalConnectionRequirements validates
+                  // the subnet/SG, so the handler needs read access. Only when enabled.
+                  ...(props.glueSubnet
+                    ? [
+                        new PolicyStatement({
+                          effect: Effect.ALLOW,
+                          actions: ["ec2:DescribeSubnets", "ec2:DescribeSecurityGroups", "ec2:DescribeVpcs", "ec2:DescribeAvailabilityZones", "ec2:DescribeRouteTables", "ec2:DescribeVpcEndpoints"],
+                          resources: ["*"] // ec2:Describe* actions do not support resource-level scoping
+                        })
+                      ]
+                    : [])
                 ]
               })
             ],
@@ -287,7 +305,16 @@ export class AdaptStack extends cdk.Stack {
               LOG_GROUP: props.logGroup.logGroupName,
               DATA_CATALOG: props.dataCatalog.catalogId,
               DATA_CATALOG_NAME: props.dataCatalog.databaseName,
-              CRAWLER_ROLE: props.crawlerRole.roleName
+              CRAWLER_ROLE: props.crawlerRole.roleName,
+              // VPC placement for the client DB connection; absent when
+              // ENABLE_CLIENT_DB_VPN is off (connections created without placement).
+              ...(props.glueSubnet && props.glueSecurityGroup
+                ? {
+                    GLUE_SUBNET_ID: props.glueSubnet.subnetId,
+                    GLUE_SG_ID: props.glueSecurityGroup.securityGroupId,
+                    GLUE_AZ: props.glueSubnet.availabilityZone
+                  }
+                : {})
             }
           })
         },
@@ -613,6 +640,8 @@ export class AdaptStack extends cdk.Stack {
               TABLE_NAME: props.dynamoTables["dataSourceTable"].tableName,
               LOG_GROUP: props.logGroup.logGroupName,
               GLUE_JOB: props.glueJob.jobName
+              // No VPN flag needed: the data-pull job's in-VPC placement comes from the
+              // NETWORK connection on its definition (AdaptDataStack), not from here.
             }
           })
         },
@@ -646,7 +675,16 @@ export class AdaptStack extends cdk.Stack {
               TABLE_NAME: props.dynamoTables["dataSourceTable"].tableName,
               STAGING_BUCKET: props.stagingBucket.bucketName
             },
-            nodeModules: ["kysely", "mssql", "xlsx"]
+            nodeModules: ["kysely", "mssql", "xlsx"],
+            // When enabled, run in-VPC (Glue Data VPC) so handleSQL reaches client DBs
+            // over the VPN; CDK adds the VPC-access role. Default networking when off.
+            ...(props.glueVpc && props.glueSubnet && props.glueSecurityGroup
+              ? {
+                  vpc: props.glueVpc,
+                  vpcSubnets: { subnets: [props.glueSubnet] },
+                  securityGroups: [props.glueSecurityGroup]
+                }
+              : {})
           })
         },
         "/validate-file/{dataViewID}": {
@@ -749,6 +787,34 @@ export class AdaptStack extends cdk.Stack {
               LOG_GROUP: props.logGroup.logGroupName,
               CACHE_BUCKET: props.adminReportCache.bucketName!,
               TEMPLATE_TABLE: props.dynamoTables["templatesTable"].tableName
+            }
+          }),
+          DELETE: new AdaptNodeLambda(this, "deleteReportHandler", {
+            prefix: props.stage,
+            handler: "handler",
+            entry: path.join(__dirname, ".", "./handlers/deleteReport/deleteReport.ts"),
+            attachPolicies: [
+              new Policy(this, "deleteReport", {
+                statements: [
+                  this.loggingStatement,
+                  new PolicyStatement({
+                    effect: Effect.ALLOW,
+                    actions: ["dynamodb:DeleteItem", "dynamodb:Query"],
+                    resources: [props.dynamoTables["reportTable"].tableArn]
+                  }),
+                  new PolicyStatement({
+                    effect: Effect.ALLOW,
+                    actions: ["s3:*"], // TODO: restrict
+                    resources: [props.stagingBucket.bucketArn, `${props.stagingBucket.bucketArn}/*`, props.repoBucket.bucketArn, `${props.repoBucket.bucketArn}/*`]
+                  })
+                ]
+              })
+            ],
+            environment: {
+              REPORT_TABLE: props.dynamoTables["reportTable"].tableName,
+              LOG_GROUP: props.logGroup.logGroupName,
+              STAGING_BUCKET: props.stagingBucket.bucketName,
+              REPO_BUCKET: props.repoBucket.bucketName
             }
           })
         },
@@ -1058,7 +1124,17 @@ export class AdaptStack extends cdk.Stack {
             handler: "handler",
             entry: path.join(__dirname, ".", "./handlers/testDBConnection/testDBConnection.ts"),
             attachPolicies: [],
-            environment: {}
+            environment: {},
+            nodeModules: ["mssql"],
+            // When enabled, run in-VPC (Glue Data VPC) so it reaches client DBs over
+            // the VPN; CDK adds the VPC-access role. Default networking when off.
+            ...(props.glueVpc && props.glueSubnet && props.glueSecurityGroup
+              ? {
+                  vpc: props.glueVpc,
+                  vpcSubnets: { subnets: [props.glueSubnet] },
+                  securityGroups: [props.glueSecurityGroup]
+                }
+              : {})
           })
         },
         "/user": {

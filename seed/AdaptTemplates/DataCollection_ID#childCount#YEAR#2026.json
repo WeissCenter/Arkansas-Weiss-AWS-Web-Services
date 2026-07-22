@@ -1,8 +1,8 @@
 {
   "type": "DataCollection",
-  "id": "ID#childCount#YEAR#2025",
+  "id": "ID#childCount#YEAR#2026",
   "dataCollectionId": "childCount",
-  "reportingYear": "2025",
+  "reportingYear": "2026",
   "name": "Child Count for State Level",
   "dataViewDescription": "For creating Child Count (Part B) reports, States/entities are required to report the Child Count data under Title 1, Part A, Subsection 618 of IDEA.",
   "fields": [
@@ -41,7 +41,7 @@
         }
       ],
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '089' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '089' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "previewHeaders": [
         "File Record Number",
@@ -76,7 +76,7 @@
       "name": "FS002 - Children with Disabilities (IDEA) School Age",
       "description": "The unduplicated number of children with disabilities (IDEA) who are ages 5 (in kindergarten) through 21 and receiving special education and related service according to an individualized education program (IEP) or a services plan in place on the state's child count date.",
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '002' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentCounts where ReportCode = '002' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "previewHeaders": [
         "File Record Number",

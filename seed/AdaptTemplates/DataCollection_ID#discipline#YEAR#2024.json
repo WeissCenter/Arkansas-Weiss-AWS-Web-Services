@@ -34,7 +34,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '005' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '005' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) DISCIPLINE",
@@ -83,7 +83,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '006' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '006' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
@@ -132,7 +132,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '007' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '007' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) REMOVAL",
@@ -181,7 +181,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '088' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '088' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT",
@@ -223,7 +223,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '143' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '143' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL",
@@ -265,7 +265,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '144' and ReportLevel = 'sea' and ReportYear = ${reportingYear}"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '144' and ReportLevel = 'sea' and ReportYear = 2024"
       },
       "report_levels": {
         "sea": "SEA EDUCATIONAL SERVICES",

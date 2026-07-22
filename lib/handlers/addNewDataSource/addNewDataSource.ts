@@ -1,9 +1,9 @@
 import { APIGatewayEvent, Context, Handler } from "aws-lambda";
-import { CreateBackendResponse, CreateBackendErrorResponse, AddDataInput, aws_generateDailyLogStreamID, aws_LogEvent, DataSourceType, EventType, getUserDataFromEvent } from "../../../libs/types/src";
+import { CreateBackendResponse, CreateBackendErrorResponse, AddDataInput, aws_generateDailyLogStreamID, aws_LogEvent, DataSourceType, EventType, getUserDataFromEvent, SQLType } from "../../../libs/types/src";
 import { CloudWatchLogsClient } from "@aws-sdk/client-cloudwatch-logs";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
-import { SecretsManagerClient, CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
+import { SecretsManagerClient, CreateSecretCommand, DeleteSecretCommand } from "@aws-sdk/client-secrets-manager";
 import { GlueClient, CreateConnectionCommand, CreateCrawlerCommand, DeleteCrawlerCommand, DeleteConnectionCommand, CreateConnectionCommandOutput, CreateCrawlerCommandOutput } from "@aws-sdk/client-glue";
 
 import { randomUUID } from "crypto";
@@ -14,6 +14,29 @@ const LOG_GROUP = process.env.LOG_GROUP || "";
 const DATA_CATALOG = process.env.DATA_CATALOG || "";
 const DATA_CATALOG_NAME = process.env.DATA_CATALOG_NAME || "";
 const CRAWLER_ROLE = process.env.CRAWLER_ROLE || "";
+// Glue Data VPC placement (from AdaptNetworkStack) — stamped onto the connection so
+// the data pull runs in-VPC and routes to the client DB over the Site-to-Site VPN.
+const GLUE_SUBNET_ID = process.env.GLUE_SUBNET_ID || "";
+const GLUE_SG_ID = process.env.GLUE_SG_ID || "";
+const GLUE_AZ = process.env.GLUE_AZ || "";
+
+/**
+ * JDBC URL for the connection's engine (all current clients are MS SQL Server,
+ * canonical `;databaseName=` form). NOTE: Glue's URL validator rejects trailing
+ * driver params (`;encrypt=...`), so TLS options must go in ConnectionProperties
+ * (JDBC_ENFORCE_SSL), never the URL. The VPN already encrypts the wire.
+ */
+function buildJdbcUrl(type: SQLType, host: string, port: number, database: string): string {
+  switch (type) {
+    case SQLType.POSTGRES:
+      return `jdbc:postgresql://${host}:${port}/${database}`;
+    case SQLType.MYSQL:
+      return `jdbc:mysql://${host}:${port}/${database}`;
+    case SQLType.MSSQL:
+    default:
+      return `jdbc:sqlserver://${host}:${port};databaseName=${database}`;
+  }
+}
 
 // AWS SDK Clients
 const client = new DynamoDBClient({ region: "us-east-1" });
@@ -27,9 +50,12 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
   const logStream = aws_generateDailyLogStreamID();
   const username = getUserDataFromEvent(event).fullName;
   const dataSourceID = randomUUID();
+  // Declared up front so the rollback in catch can clean the secret up too.
+  const secretID = `${dataSourceID}_SQLConnectionCredentials`;
 
   let crawler;
   let connectionName;
+  let secretCreated = false;
   let crawlerResult: CreateCrawlerCommandOutput = {} as CreateCrawlerCommandOutput;
   let connectionResult: CreateConnectionCommandOutput = {} as CreateConnectionCommandOutput;
 
@@ -45,14 +71,13 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
 
     const connectionInfo = body.connectionInfo;
 
-    const secretID = `${dataSourceID}_SQLConnectionCredentials`;
-
     const newSecretCommand = new CreateSecretCommand({
       Name: secretID,
       SecretString: JSON.stringify(connectionInfo)
     });
 
     await secrets.send(newSecretCommand);
+    secretCreated = true;
 
     const newDBItem = {
       type: "DataSource",
@@ -76,16 +101,32 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
 
     connectionName = `adapt-data-source-${dataSourceID}-connector`;
 
+    // VPC placement only when the Glue Data VPC is provisioned (ENABLE_CLIENT_DB_VPN);
+    // otherwise the connection reaches publicly-routable DBs only (original behavior).
+    const usePhysicalConnection = Boolean(GLUE_SUBNET_ID && GLUE_SG_ID && GLUE_AZ);
+
     const createConn = new CreateConnectionCommand({
       CatalogId: DATA_CATALOG,
       ConnectionInput: {
         Name: connectionName,
         ConnectionType: "JDBC",
         ConnectionProperties: {
-          USERNAME: connectionInfo.username,
-          PASSWORD: connectionInfo.password,
-          JDBC_CONNECTION_URL: `jdbc:sqlserver://${body.path}:${connectionInfo.port}/${connectionInfo.database}`
-        } as any
+          // Reference the secret instead of inlining credentials — Glue resolves
+          // the username/password from it at connect time.
+          SECRET_ID: secretID,
+          JDBC_CONNECTION_URL: buildJdbcUrl(connectionInfo.type, body.path, connectionInfo.port, connectionInfo.database)
+        } as any,
+        // Run the connection (and any job/crawler that uses it) inside the Glue
+        // Data VPC so traffic routes to the client DB over the Site-to-Site VPN.
+        ...(usePhysicalConnection
+          ? {
+              PhysicalConnectionRequirements: {
+                SubnetId: GLUE_SUBNET_ID,
+                SecurityGroupIdList: [GLUE_SG_ID],
+                AvailabilityZone: GLUE_AZ
+              }
+            }
+          : {})
       }
     });
 
@@ -160,6 +201,15 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
       });
 
       await glue.send(deleteConnection);
+    }
+
+    // Remove the secret so failed creations don't leak orphaned secrets.
+    if (secretCreated) {
+      try {
+        await secrets.send(new DeleteSecretCommand({ SecretId: secretID, ForceDeleteWithoutRecovery: true }));
+      } catch (cleanupErr) {
+        console.error("Failed to delete secret during rollback", cleanupErr);
+      }
     }
 
     return CreateBackendErrorResponse(500, "Failed to add new data source");

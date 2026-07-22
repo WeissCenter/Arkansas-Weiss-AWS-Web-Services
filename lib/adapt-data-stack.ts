@@ -1,8 +1,9 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { AdaptStackProps } from "./adpat-stack-props";
-import { Database, PySparkEtlJob, Code, GlueVersion, WorkerType } from "@aws-cdk/aws-glue-alpha";
+import { Database, PySparkEtlJob, Code, GlueVersion, WorkerType, Connection, ConnectionType } from "@aws-cdk/aws-glue-alpha";
 import { CfnCrawler } from "aws-cdk-lib/aws-glue";
+import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { HttpMethods } from "aws-cdk-lib/aws-s3";
 import { AdaptS3Bucket } from "../constructs/AdaptS3Bucket";
 import { Effect, Policy, PolicyStatement, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
@@ -24,11 +25,19 @@ interface AdaptDataStackProps extends AdaptStackProps {
     privateKey: string;
   };
   logGroup: LogGroup;
+  // Glue Data VPC networking (from AdaptNetworkStack). When present, the data-pull
+  // job is associated with a NETWORK connection placed in this subnet/SG so Glue
+  // runs it inside the VPC and it can reach client DBs over the Site-to-Site VPN.
+  // Undefined when client DB connectivity is disabled (ENABLE_CLIENT_DB_VPN).
+  glueVpc?: ec2.IVpc;
+  glueSubnet?: ec2.ISubnet;
+  glueSecurityGroup?: ec2.ISecurityGroup;
 }
 
 export class AdaptDataStack extends cdk.Stack {
   stagingBucket: AdaptS3Bucket;
   repoBucket: AdaptS3Bucket;
+  repoBucketName: string;
   queryResultBucket: AdaptS3Bucket;
   assetsBucket: AdaptS3Bucket;
   reportDataBucket: AdaptS3Bucket;
@@ -38,6 +47,7 @@ export class AdaptDataStack extends cdk.Stack {
   publishJob: PySparkEtlJob;
   dataSourceGlueRole: Role;
   suppressionServiceFunctionName: string;
+  stagingBucketName: string;
   loggingStatement: PolicyStatement;
   adminReportCache: s3express.CfnDirectoryBucket;
   viewerReportCache: s3express.CfnDirectoryBucket;
@@ -56,8 +66,9 @@ export class AdaptDataStack extends cdk.Stack {
     });
     this.dataCatalog = adaptDataCatalog;
 
+    this.repoBucketName = `${id}-AdaptDataRepositoryBucket`.toLowerCase();
     const repositoryBucket = new AdaptS3Bucket(this, `AdaptDataRepositoryBucket`, {
-      bucketName: `${id}-AdaptDataRepositoryBucket`
+      bucketName: this.repoBucketName
     });
     this.repoBucket = repositoryBucket;
 
@@ -74,6 +85,7 @@ export class AdaptDataStack extends cdk.Stack {
       ]
     });
     this.stagingBucket = stagingBucket;
+    this.stagingBucketName = stagingBucket.bucketName!;
 
     const queryResultBucket = new AdaptS3Bucket(this, `AdaptQueryResultBucket`, {
       bucketName: `${id}-AdaptQueryResultBucket`
@@ -132,6 +144,33 @@ export class AdaptDataStack extends cdk.Stack {
           actions: ["logs:*"], // TODO: limit the actions
           effect: Effect.ALLOW,
           resources: ["*"] // TODO: determine the correct resources
+        }),
+        // Required for Glue jobs/crawlers that use a VPC-bound connection (external
+        // client DBs): Glue creates ENIs in the Glue Data VPC subnet to reach the DB
+        // over the Site-to-Site VPN. Without these the in-VPC run fails immediately.
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: [
+            "ec2:CreateNetworkInterface",
+            "ec2:DeleteNetworkInterface",
+            "ec2:DescribeNetworkInterfaces",
+            "ec2:DescribeSubnets",
+            "ec2:DescribeSecurityGroups",
+            "ec2:DescribeVpcs",
+            "ec2:DescribeVpcEndpoints",
+            "ec2:DescribeRouteTables",
+            "ec2:DescribeDhcpOptions",
+            "ec2:CreateTags",
+            "ec2:DeleteTags"
+          ],
+          resources: ["*"] // ENI/Describe actions do not support resource-level scoping
+        }),
+        // The Glue connection references the per-source secret via SECRET_ID; the
+        // job/crawler role resolves the credentials at connect time.
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["secretsmanager:GetSecretValue"],
+          resources: [`arn:aws:secretsmanager:${this.region}:${this.account}:secret:*_SQLConnectionCredentials-*`]
         })
       ]
     });
@@ -191,17 +230,24 @@ export class AdaptDataStack extends cdk.Stack {
       }
     });
 
-    const uploadedScriptObject = new BucketDeployment(this, `${id}-PythonScripts`, {
-      sources: [Source.asset(`./scripts`)],
-      destinationBucket: assetsBucket,
-      destinationKeyPrefix: "scripts"
-    });
-
     const uploadedDataPullLibObject = new BucketDeployment(this, `${id}-DataPullLib`, {
       sources: [Source.asset(`libs/adapt-data-pull-lib.zip`)],
       destinationBucket: assetsBucket,
       extract: false,
       destinationKeyPrefix: "libs"
+    });
+
+    // Pre-built pure-Python deps shipped on --extra-py-files (built by the CI "Zip
+    // Python Dependencies" step): the job runs in the isolated VPC subnet, so
+    // --additional-python-modules can't reach PyPI.
+    // Distinct prefix ("deps" vs "libs") is required: BucketDeployment defaults to
+    // prune:true (`s3 sync --delete` over its prefix), so two deployments sharing a
+    // prefix delete each other's zip — the loser 404s at job launch.
+    const uploadedDataPullDepsObject = new BucketDeployment(this, `${id}-DataPullDeps`, {
+      sources: [Source.asset(`libs/adapt-data-pull-deps.zip`)],
+      destinationBucket: assetsBucket,
+      extract: false,
+      destinationKeyPrefix: "deps"
     });
 
     // const uploadedReportPublishLibObject = new BucketDeployment(
@@ -215,16 +261,30 @@ export class AdaptDataStack extends cdk.Stack {
     //   }
     // );
 
+    // A Glue job's VPC placement comes ONLY from connections on its definition
+    // (StartJobRun has no Connections field; --connections is not a job arg). This
+    // placement-only NETWORK connection boots the pull inside the Glue Data VPC so it
+    // reaches client DBs over the VPN; dataPull.py still picks the per-source JDBC
+    // connection at runtime. All source connections share this subnet/SG, so one suffices.
+    const glueVpcConnection =
+      props.glueSubnet && props.glueSecurityGroup
+        ? new Connection(this, `${id}-GlueVpcConnection`, {
+            type: ConnectionType.NETWORK,
+            subnet: props.glueSubnet,
+            securityGroups: [props.glueSecurityGroup]
+          })
+        : undefined;
+
     const adaptDataPullJob = new PySparkEtlJob(this, `${id}-AdaptDataPullJob`, {
       jobName: `${id}-AdaptDataPullJob`,
       role: dataSourceGlueRole,
       maxRetries: 0,
       maxConcurrentRuns: 5,
       glueVersion: GlueVersion.V4_0,
-      script: Code.fromBucket(assetsBucket, `scripts/dataPull.py`),
+      script: Code.fromAsset(`scripts/dataPull.py`),
+      ...(glueVpcConnection ? { connections: [glueVpcConnection] } : {}),
       defaultArguments: {
-        "--extra-py-files": `s3://${assetsBucket.bucketName}/libs/${cdk.Fn.select(0, uploadedDataPullLibObject.objectKeys)}`,
-        "--additional-python-modules": "sql-metadata,lxml,beautifulsoup4",
+        "--extra-py-files": `s3://${assetsBucket.bucketName}/libs/${cdk.Fn.select(0, uploadedDataPullLibObject.objectKeys)},s3://${assetsBucket.bucketName}/deps/${cdk.Fn.select(0, uploadedDataPullDepsObject.objectKeys)}`,
         "--data-pull-s3": repositoryBucket.bucketName,
         "--data-set-id": "default",
         "--table-name": props.dynamoTables["dataSourceTable"].tableName,
@@ -245,7 +305,7 @@ export class AdaptDataStack extends cdk.Stack {
       maxRetries: 0,
       maxConcurrentRuns: 5,
       glueVersion: GlueVersion.V4_0,
-      script: Code.fromBucket(assetsBucket, `scripts/publish.py`),
+      script: Code.fromAsset(`scripts/publish.py`),
       defaultArguments: {
         "--additional-python-modules": "sql-metadata,numpy,dar-tool==1.0.6,pandas",
         "--data-pull-s3": repositoryBucket.bucketName,
@@ -285,7 +345,7 @@ export class AdaptDataStack extends cdk.Stack {
     });
 
     const dataSuppressionLambdaLayer = new LayerVersion(this, `${id}-adapt-suppression-service-layer`, {
-      compatibleRuntimes: [Runtime.PYTHON_3_10],
+      compatibleRuntimes: [Runtime.PYTHON_3_12],
       code: new AssetCode(path.join(__dirname, "layers", "suppress-layer", "lib.zip")),
       description: "suppression service dependencies"
     });

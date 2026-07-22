@@ -201,9 +201,6 @@ def handleQueryDataSource(nodes, data_source, dynamo_data_source):
     nodes.append(sql_node)
 
 def handleDBDataCollection(nodes, dbClient, table_name, dynamo_data_view):
- 
-
-
     data_source = dynamo_data_view['data']['dataSource']
 
     dynamoDSResponse = dbClient.get_item(TableName=table_name, Key={"type": {"S": "DataSource"}, "id": {"S": f"ID#{data_source}"}})
@@ -216,12 +213,18 @@ def handleDBDataCollection(nodes, dbClient, table_name, dynamo_data_view):
     # reduce fields array to object
 
     values = {field['id'] : field['value'] for field in dynamo_data_view['data']['fields']}
-            
     for file in dynamo_data_view['data']['files']:
 
         query_nodes = []
         
         query = file['database']['query']
+
+        # Build the dynamic column list only for files that define one. Templates
+        # still using `select * ...` have no `columns` array and must not crash here.
+        if 'columns' in file:
+            # exclude metadata columns (assumed to be those containing '_')
+            table_cols = [col for col in file['columns'] if '_' not in col]
+            values['columns'] = ", ".join(table_cols)
 
         # parse and replace markers
 
@@ -297,7 +300,9 @@ def handleFileDataCollection(nodes, dynamo_data_view, data_staging_s3):
                 response = s3_client.get_object(Bucket=data_staging_s3, Key=f"{dynamo_data_view['dataViewID']}/{fileSpec}/{file['location']}")
                 html_content = response['Body'].read().decode('utf-8')
 
-                html_dfs = pd.read_html(html_content)
+                # flavor='bs4' uses BeautifulSoup + html5lib (both bundled) instead of
+                # lxml, which isn't installed (no C-extension deps in the isolated VPC).
+                html_dfs = pd.read_html(html_content, flavor='bs4')
 
                 # empty_df = spark.createDataFrame([])
                 # new_node = DynamicFrame.fromDF(empty_df, glueContext, str(uuid.uuid4()))

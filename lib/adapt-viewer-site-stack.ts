@@ -39,6 +39,8 @@ export class AdaptViewerSite extends cdk.Stack {
     const cluster = new ecs.Cluster(this, `${id}-Cluster`, { vpc });
     cluster.addCapacity(`${id}-AutoScalingGroupCapacity`, {
       instanceType: new ec2.InstanceType("t3a.large"),
+      // Amazon Linux 2 ECS-optimized AMI is reaching end of life; pin to AL2023.
+      machineImage: ecs.EcsOptimizedImage.amazonLinux2023(),
       desiredCapacity: 1
     });
 

@@ -1,8 +1,8 @@
 {
   "type": "DataCollection",
-  "id": "ID#discipline#YEAR#2025",
+  "id": "ID#discipline#YEAR#2026",
   "dataCollectionId": "discipline",
-  "reportingYear": "2025",
+  "reportingYear": "2026",
   "name": "Children with Disabilities (IDEA) Discipline for State Level",
   "dataViewDescription": "This data view captures the count of children ages 3 through 21 who were subject to disciplinary removals, including suspensions, expulsions, placements in interim alternative educational settings, and removals due to violations such as drug or weapon offenses, serious bodily injury, and violations of the Gun-Free Schools Act (GFSA).",
   "fields": [
@@ -34,7 +34,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '005' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '005' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) DISCIPLINE",
@@ -83,7 +83,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '006' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '006' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "LEA CHILDREN WITH DISAB (IDEA) MULTI SUSPEN EXPU",
@@ -132,7 +132,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '007' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '007' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) REMOVAL",
@@ -181,7 +181,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '088' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '088' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISABILITIES (IDEA) DISCIP ACT",
@@ -223,7 +223,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '143' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '143' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "SEA CHILDREN WITH DISAB (IDEA) TOTAL DISC REMOVAL",
@@ -265,7 +265,7 @@
         "fieldAccept": ".csv"
       },
       "database": {
-        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '144' and ReportLevel = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEDFactsK12StudentDisciplines where ReportCode = '144' and ReportLevel = 'sea' and ReportYear = 2026"
       },
       "report_levels": {
         "sea": "SEA EDUCATIONAL SERVICES",
