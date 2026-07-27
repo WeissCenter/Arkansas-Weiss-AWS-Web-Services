@@ -149,3 +149,8 @@ scripts/.vscode
 
 res/github-environment-setup/*.env
 !res/github-environment-setup/example-*.env
+
+# Glue job artifacts built in CI (adapt-cdk-deploy.yml) — never commit
+libs/adapt-data-pull-lib.zip
+libs/adapt-data-pull-deps.zip
+libs/pydeps/

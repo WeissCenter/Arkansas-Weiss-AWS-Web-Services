@@ -147,8 +147,18 @@ async function handleSQL(dataView: DataView, secrets: SecretsManagerClient, db: 
       if (!file.database) {
         throw new Error(`Database information is missing for file ${file.id}`);
       }
-      const query = buildQuery(file.database.query, dataView.data.fields);
-
+      // add the reporting year in because it is no longer a part of the data view fields by default
+      const dataViewFields: DataViewField[] = [
+        ...dataView.data.fields,
+        {
+          id: "reportingYear",
+          label: "Reporting Year",
+          value: dataView.reportingYear
+        }
+      ];
+      console.log('Query before buildQuery:', file.database.query);
+      const query = buildQuery(file.database.query, dataViewFields, file.columns);
+      console.log('SQL Query:', query);
       switch (decryptedConnectionInfo.type) {
         case SQLType.MSSQL: {
           return {
@@ -158,10 +168,12 @@ async function handleSQL(dataView: DataView, secrets: SecretsManagerClient, db: 
         }
         case SQLType.MYSQL: {
           // TODO: Implement these
+          console.error('MySQL handling not implemented yet');
           break;
         }
         case SQLType.POSTGRES: {
           // TODO: Implement these
+          console.error('Postgres handling not implemented yet');
           break;
         }
       }
@@ -173,18 +185,31 @@ async function handleSQL(dataView: DataView, secrets: SecretsManagerClient, db: 
   return CreateBackendResponse(200, allRecords);
 }
 
-function buildQuery(base: string, dataViewFields: DataViewField[]) {
-  const vars = dataViewFields.reduce((accum, field) => Object.assign(accum, { [field.id]: field.value }), {});
+function buildQuery(base: string, dataViewFields: DataViewField[], columns?: string[]) {
+  const vars = dataViewFields.reduce((accum, field) => Object.assign(accum, { [field.id]: field.value }), {} as Record<string, any>);
 
-  const query = dynamicSQLTemplate(base, { sql: SQL, ...vars });
+  // `${columns}` must expand to the file's column list as raw SQL (a comma-separated
+  // identifier list in the SELECT clause), not a bound parameter. Column names come from
+  // the trusted data collection template, so embedding them raw is safe.
+  if (columns?.length) {
+    vars.columns = SQL.raw(columns.join(", "));
+  }
 
-  return query.compile(queryBuilder) as CompiledQuery;
-}
+  // Split the template on ${name} placeholders. With the capture group, split() yields
+  // alternating literal SQL (even indices) and variable names (odd indices). Literal text
+  // is embedded raw; each placeholder's value is interpolated via the `sql` tag, so
+  // primitives bind as parameters while raw fragments (e.g. columns) embed inline.
+  const fragments = base.split(/\$\{(\w+)\}/).map((part, index) => {
+    if (index % 2 === 0) {
+      return SQL.raw(part);
+    }
+    if (!(part in vars)) {
+      throw new Error(`Query references \${${part}} but no matching field was provided`);
+    }
+    return SQL`${vars[part]}`;
+  });
 
-function dynamicSQLTemplate(template: string, vars = {}) {
-  const handler = new Function("vars", ["const tagged = ( " + Object.keys(vars).join(", ") + " ) =>", "sql`" + template + "`", "return tagged(...Object.values(vars))"].join("\n"));
-
-  return handler(vars);
+  return SQL.join(fragments, SQL.raw("")).compile(queryBuilder) as CompiledQuery;
 }
 
 async function handleMSSQL(pool: sql.ConnectionPool, query: CompiledQuery, limit?: number) {
@@ -194,9 +219,18 @@ async function handleMSSQL(pool: sql.ConnectionPool, query: CompiledQuery, limit
     request.input(`${index + 1}`, sql.VarChar, param);
   }
 
-  const result = await request.query(query.sql);
+  // Apply the limit in SQL via TOP rather than slicing the recordset in memory.
+  // Wrapping the original query as a subselect keeps it generic regardless of the
+  // template's own clauses, and binds the limit as a parameter.
+  let sqlText = query.sql;
+  if (limit !== undefined) {
+    request.input("limit", sql.Int, limit);
+    sqlText = `SELECT TOP (@limit) * FROM (${query.sql}) AS limited_query`;
+  }
+
+  const result = await request.query(sqlText);
 
   // await pool.close();
 
-  return limit !== undefined ? result.recordset.slice(0, limit) : result.recordset;
+  return result.recordset;
 }

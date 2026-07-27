@@ -22,7 +22,9 @@ class partCChildCountAndSettingsTransformer(fileTransformer):
 
     def _get_additional_html_info(self, html_content, part_c_parse_config):
         additional_rows = []
-        soup = BeautifulSoup(html_content)
+        # Parser made explicit: lxml is not installed in the isolated VPC, so we use
+        # the bundled html5lib (browser-grade leniency) rather than letting bs4 guess.
+        soup = BeautifulSoup(html_content, 'html5lib')
 
         sections = ['A', 'B', 'C', 'D', 'E']
 

@@ -44,9 +44,16 @@ export const handler: Handler = async (event: APIGatewayEvent, context: Context)
 
     await updateDataViewQueueStatus(db, TABLE_NAME, dataViewID, DataSetQueueStatus.REQUESTED);
 
+    const jobArguments: Record<string, string> = { "--data-view-id": dataViewID, "--user": username };
+
+    // In-VPC placement is NOT set here: StartJobRun has no Connections field and
+    // --connections is not a recognized job arg (no-op). The job is bound to a NETWORK
+    // connection at its definition (AdaptDataStack); dataPull.py picks the source's
+    // JDBC connection at runtime via from_options(connectionName=...).
+
     const startJobCommand = new StartJobRunCommand({
       JobName: GLUE_JOB,
-      Arguments: { "--data-view-id": dataViewID, "--user": username }
+      Arguments: jobArguments
     });
 
     await glueClient.send(startJobCommand);

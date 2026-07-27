@@ -22,6 +22,7 @@ export interface DBDataViewDataCollection {
     dataParse?: DataParseDefinition;
     location: string;
     errors?: any;
+    columns?: string[];
   }[];
 }
 

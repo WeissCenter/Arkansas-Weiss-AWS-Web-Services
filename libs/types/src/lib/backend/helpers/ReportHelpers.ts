@@ -22,6 +22,25 @@ export async function getReportFromDynamo(db: any, TABLE_NAME: string, id: strin
   return result?.Item as IReport;
 }
 
+export async function getReportVersionsAndLangsFromDynamo(db: any, TABLE_NAME: string, id: string): Promise<(IReport & { type: "Report", id: string })[]> {
+  const queryParams = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression: "#type = :type AND  begins_with(#id, :id)",
+    ExpressionAttributeNames: {
+      "#type": "type",
+      "#id": "id"
+    },
+    ExpressionAttributeValues: {
+      ":type": "Report",
+      ":id": `ID#${id}`
+    }
+  };
+
+  const result = await db.query(queryParams);
+
+  return result?.Items || [];
+}
+
 export async function getReportVersionsFromDynamo(db: any, TABLE_NAME: string, id: string): Promise<IReport[]> {
   const queryParams = {
     TableName: TABLE_NAME,

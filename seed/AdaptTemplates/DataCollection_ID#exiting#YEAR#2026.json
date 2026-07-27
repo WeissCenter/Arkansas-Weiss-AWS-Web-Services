@@ -1,8 +1,8 @@
 {
   "type": "DataCollection",
-  "id": "ID#exiting#YEAR#2025",
+  "id": "ID#exiting#YEAR#2026",
   "dataCollectionId": "exiting",
-  "reportingYear": "2025",
+  "reportingYear": "2026",
   "name": "Children with Disabilities (IDEA) Exiting for State Level",
   "dataViewDescription": "IDEA Part B Exiting provides the unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
   "fields": [
@@ -65,7 +65,7 @@
         "StudentCount"
       ],
       "database": {
-        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = '009' and LOWER(ReportLevel) = 'sea' and ReportYear = 2025"
+        "query": "select * from RDS.ReportEdFactsK12StudentCounts where LOWER(ReportCode) = '009' and LOWER(ReportLevel) = 'sea' and ReportYear = 2026"
       },
       "description": "The unduplicated number of students with disabilities (IDEA) who are ages 14 through 21, were in special education at the start of the reporting period and were not in special education at the end of the reporting period.",
       "included_in_all": ["specialeducationexitreason"],
